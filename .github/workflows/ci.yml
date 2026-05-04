@@ -33,6 +33,7 @@ jobs:
       SECRET_KEY: ci-secret-key
       JWT_SECRET_KEY: ci-jwt-secret-key
       ALLOWED_HOSTS: '["localhost", "127.0.0.1", "testserver"]'
+      PYTHONPATH: .
 
     steps:
       - uses: actions/checkout@v4
@@ -64,7 +65,7 @@ jobs:
         with:
           node-version: "20"
       - name: Install dependencies
-        run: npm ci
+        run: npm install --legacy-peer-deps
       - name: Lint
         run: npm run lint
       - name: Build
