@@ -1,0 +1,57 @@
+services:
+  # ── Backend API (Python/FastAPI) ──────────────────────────────────────────
+  - type: web
+    name: sentinelnexus-backend
+    runtime: python
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: sentinelnexus-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: sentinelnexus-cache
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        value: .onrender.com,localhost,127.0.0.1
+      - key: CLERK_SECRET_KEY
+        sync: false
+      - key: CLERK_JWKS_URL
+        sync: false
+      - key: CLERK_ISSUER
+        sync: false
+
+  # ── Frontend (Next.js) ──────────────────────────────────────────────────
+  - type: web
+    name: sentinelnexus-frontend
+    runtime: node
+    buildCommand: cd frontend && npm install && npm run build
+    startCommand: cd frontend && npm run start
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          type: web
+          name: sentinelnexus-backend
+          property: url
+        path: /api/v1
+      - key: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+        sync: false
+      - key: CLERK_SECRET_KEY
+        sync: false
+
+databases:
+  - name: sentinelnexus-db
+    plan: free
+
+# ── Managed Redis ───────────────────────────────────────────────────────────
+redis:
+  - name: sentinelnexus-cache
+    plan: free
+    ipAllowList: [] # Only allow internal connections
