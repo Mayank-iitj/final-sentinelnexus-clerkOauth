@@ -18,7 +18,7 @@ def upgrade() -> None:
         sa.Column("username", sa.String(length=64), nullable=False),
         sa.Column("full_name", sa.String(length=255), nullable=True),
         sa.Column("hashed_password", sa.String(length=255), nullable=False),
-        sa.Column("is_active", sa.Boolean(), nullable=False, server_default=sa.text("1")),
+        sa.Column("is_active", sa.Boolean(), nullable=False, server_default="true"),
         sa.Column("oauth_provider", sa.String(length=32), nullable=True),
         sa.Column("oauth_provider_id", sa.String(length=255), nullable=True),
     )
@@ -40,7 +40,7 @@ def upgrade() -> None:
         sa.Column("pii_risk_score", sa.Integer(), nullable=False, server_default="0"),
         sa.Column("risk_level", sa.String(length=16), nullable=False, server_default="'low'"),
         sa.Column("metadata", sa.JSON(), nullable=False, server_default=sa.text("'{}'")),
-        sa.Column("is_archived", sa.Boolean(), nullable=False, server_default=sa.text("0")),
+        sa.Column("is_archived", sa.Boolean(), nullable=False, server_default="false"),
         sa.Column("result", sa.Text(), nullable=True),
     )
 
