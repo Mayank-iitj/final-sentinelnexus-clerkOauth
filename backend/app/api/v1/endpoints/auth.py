@@ -47,7 +47,7 @@ def _set_auth_cookies(response: JSONResponse, request: Request, *, user_id: str,
 def login_disabled():
     raise HTTPException(
         status_code=status.HTTP_403_FORBIDDEN,
-        detail="Password login disabled – use Google OAuth.",
+        detail="Password login disabled – use Clerk.",
     )
 
 
@@ -55,7 +55,7 @@ def login_disabled():
 def register_disabled():
     raise HTTPException(
         status_code=status.HTTP_403_FORBIDDEN,
-        detail="Manual registration disabled – use Google OAuth.",
+        detail="Manual registration disabled – use Clerk.",
     )
 
 
@@ -170,21 +170,6 @@ async def logout(request: Request):
     return resp
 
 
-@router.get("/token-echo")
-async def token_echo(
-    request: Request,
-    access_token: str | None = Cookie(default=None),
-):
-    """
-    Reads the httpOnly access_token cookie and echoes the value as JSON.
-    Used exclusively by the frontend OAuth session bridge so that NextAuth can
-    call signIn('backend-jwt') with the token value. Without this endpoint the
-    browser JS cannot read an httpOnly cookie.
-
-    This endpoint is intentionally unauthenticated — it only echoes a cookie
-    the browser already possesses. An attacker gains nothing they don't already have.
-    """
-    return JSONResponse({"access_token": access_token})
 
 
 @router.get("/me")

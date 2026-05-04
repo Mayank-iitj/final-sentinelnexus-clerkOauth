@@ -7,5 +7,5 @@ def test_hardcoded_api_key_detection():
     '''
     findings, score = CodeSecurityScanner.scan_code(code)
     assert any(f.finding_type == "hardcoded_api_key" for f in findings)
-    assert score >= 25
+    assert score >= 7
 

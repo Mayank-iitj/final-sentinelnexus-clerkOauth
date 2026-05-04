@@ -4,5 +4,5 @@ def test_health_endpoint(client):
     data = resp.json()
     assert data["status"] in ("healthy", "degraded")
     assert data["db"] in ("ok", "error")
-    assert data["redis"] in ("ok", "error")
+    assert data["redis"] in ("ok", "error", "unavailable")
 

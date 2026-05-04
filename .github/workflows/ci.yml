@@ -30,8 +30,9 @@ jobs:
     env:
       DATABASE_URL: postgresql://sentinel:sentinel@localhost:5432/sentinel_nexus
       REDIS_URL: redis://localhost:6379/0
-      SECRET_KEY: ${{ secrets.CI_SECRET_KEY }}
-      JWT_SECRET_KEY: ${{ secrets.CI_JWT_SECRET_KEY }}
+      SECRET_KEY: ci-secret-key
+      JWT_SECRET_KEY: ci-jwt-secret-key
+      ALLOWED_HOSTS: '["localhost", "127.0.0.1", "testserver"]'
 
     steps:
       - uses: actions/checkout@v4
@@ -54,11 +55,14 @@ jobs:
     defaults:
       run:
         working-directory: frontend
+    env:
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_Y2xlcmsuYWJjZC4xMjM0NS5kZXZlbG9wbWVudC5jbGVyay5hY2NvdW50cy5kZXYk
+      CLERK_SECRET_KEY: sk_test_51Mz...
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          node-version: "20"
       - name: Install dependencies
         run: npm ci
       - name: Lint
