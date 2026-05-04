@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.env
+.env.*
+!.env.example
+.pytest_cache/
+.git/
+.gitignore
+sentinel_nexus.db
+*.db
+tests/
+alembic/versions/*.py
+!alembic/versions/__init__.py
+.mypy_cache/
+.ruff_cache/

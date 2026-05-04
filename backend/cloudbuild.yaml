@@ -1,0 +1,73 @@
+# ── Google Cloud Run Deployment ───────────────────────────────────────────────
+#
+# Prerequisites:
+#   1. Enable Cloud Run & Cloud Build APIs
+#   2. Create a project in Google Cloud Console
+#
+# Deploy commands:
+#
+#   # One-time: set project
+#   gcloud config set project YOUR_PROJECT_ID
+#
+#   # Build & deploy
+#   gcloud run deploy sentinelnexus-api \
+#     --source . \
+#     --region us-central1 \
+#     --platform managed \
+#     --allow-unauthenticated \
+#     --set-env-vars "ENV=production,DEBUG=false" \
+#     --set-secrets "SECRET_KEY=sentinelnexus-secret:latest,JWT_SECRET_KEY=sentinelnexus-jwt-secret:latest,GOOGLE_CLIENT_ID=google-client-id:latest,GOOGLE_CLIENT_SECRET=google-client-secret:latest,DATABASE_URL=database-url:latest,REDIS_URL=redis-url:latest"
+#
+# Or use this cloudbuild.yaml with `gcloud builds submit`:
+
+steps:
+  # Build the Docker image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "build"
+      - "-t"
+      - "gcr.io/$PROJECT_ID/sentinelnexus-api:$SHORT_SHA"
+      - "-t"
+      - "gcr.io/$PROJECT_ID/sentinelnexus-api:latest"
+      - "."
+
+  # Push to Container Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "push"
+      - "gcr.io/$PROJECT_ID/sentinelnexus-api:$SHORT_SHA"
+
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "push"
+      - "gcr.io/$PROJECT_ID/sentinelnexus-api:latest"
+
+  # Deploy to Cloud Run
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      - "run"
+      - "deploy"
+      - "sentinelnexus-api"
+      - "--image"
+      - "gcr.io/$PROJECT_ID/sentinelnexus-api:$SHORT_SHA"
+      - "--region"
+      - "us-central1"
+      - "--platform"
+      - "managed"
+      - "--allow-unauthenticated"
+      - "--memory"
+      - "512Mi"
+      - "--cpu"
+      - "1"
+      - "--min-instances"
+      - "0"
+      - "--max-instances"
+      - "10"
+      - "--timeout"
+      - "120"
+      - "--set-env-vars"
+      - "ENV=production,DEBUG=false,FRONTEND_BASE_URL=https://sentinelnexus.mayyanks.app,BACKEND_BASE_URL=https://sentinelnexus-api-YOUR_HASH.run.app"
+
+images:
+  - "gcr.io/$PROJECT_ID/sentinelnexus-api:$SHORT_SHA"
+  - "gcr.io/$PROJECT_ID/sentinelnexus-api:latest"

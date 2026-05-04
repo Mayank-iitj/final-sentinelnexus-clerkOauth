@@ -1,0 +1,43 @@
+# Python
+backend/.venv/
+.venv312/
+backend/__pycache__/
+backend/.pytest_cache/
+backend/.mypy_cache/
+backend/*.pyc
+backend/**/__pycache__/
+backend/**/*.pyc
+
+# Database files (never commit)
+backend/*.db
+backend/*.sqlite
+backend/*.sqlite3
+
+# Node
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.turbo/
+frontend/.vercel/
+frontend/sentinel-ui/
+
+# Env / secrets (never commit)
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+frontend/.env.local
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
+# OS/Editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Alembic generated versions (keep structure, not migration files)
+# backend/alembic/versions/*.py  # Uncomment if you want to exclude migrations

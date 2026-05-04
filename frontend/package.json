@@ -1,0 +1,32 @@
+{
+  "name": "sentinelnexus-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "author": "Mayank Sharma <contact@mayankiitj.in> (https://mayyanks.app)",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@clerk/nextjs": "^7.3.0",
+    "@types/jsonwebtoken": "^9.0.10",
+    "framer-motion": "^12.38.0",
+    "jsonwebtoken": "^9.0.3",
+    "next": "14.2.7",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.10",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.27",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.2.7",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.5.4"
+  }
+}
