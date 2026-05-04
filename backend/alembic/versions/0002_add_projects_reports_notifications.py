@@ -47,7 +47,7 @@ def upgrade() -> None:
         batch_op.add_column(sa.Column("alert_type", sa.String(length=32), nullable=False, server_default="'code_finding'"))
         batch_op.add_column(sa.Column("cvss_score", sa.Float(), nullable=True))
         batch_op.add_column(sa.Column("link", sa.String(length=1024), nullable=True))
-        batch_op.add_column(sa.Column("is_read", sa.Boolean(), nullable=False, server_default=sa.text("0")))
+        batch_op.add_column(sa.Column("is_read", sa.Boolean(), nullable=False, server_default="false"))
     op.create_index("ix_alerts_user_id", "alerts", ["user_id"])
     op.create_index("ix_alerts_scan_id", "alerts", ["scan_id"])
 
