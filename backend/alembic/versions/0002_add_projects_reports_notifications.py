@@ -4,7 +4,7 @@ from alembic import op
 import sqlalchemy as sa
 
 
-revision = "0002_add_projects_reports_notifications"
+revision = "0002_add_projects_reports_notifs"
 down_revision = "0001_initial_schema"
 branch_labels = None
 depends_on = None

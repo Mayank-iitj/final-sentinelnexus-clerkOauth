@@ -5,7 +5,7 @@ import sqlalchemy as sa
 
 
 revision = "0003_user_oauth_extensions"
-down_revision = "0002_add_projects_reports_notifications"
+down_revision = "0002_add_projects_reports_notifs"
 branch_labels = None
 depends_on = None
 
