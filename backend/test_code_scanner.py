@@ -8,10 +8,10 @@ import os
 import subprocess
 
 # Hardcoded secrets
-api_key = "sk-THISISALONGSECRETKEY1234567890ABCDEF"
-password = "SuperSecret123!"
-db_url = "postgresql://admin:password123@prod-db.example.com:5432/mydb"
-aws_key = "AKIAIOSFODNN7EXAMPLE"
+api_key = "sk-DUMMY-OPENAI-KEY-FOR-TESTING-123456"
+password = "DUMMY_PASSWORD_123"
+db_url = "postgresql://dummy_user:dummy_pass@localhost:5432/dummy_db"
+aws_key = "AKIA_DUMMY_AWS_KEY_FOR_TESTING"
 
 # SQL Injection
 def get_user(username):
