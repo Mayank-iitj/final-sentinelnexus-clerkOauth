@@ -99,6 +99,14 @@ def create_app() -> FastAPI:
 
     @app.on_event("startup")
     async def _startup() -> None:
+        # Initialize database tables if they don't exist (for development)
+        try:
+            from app.db.database import Base
+            Base.metadata.create_all(bind=engine)
+            logger.info("Database tables initialized")
+        except Exception as e:
+            logger.error(f"Failed to initialize database tables: {e}")
+        
         try:
             # Redis (shared)
             redis: Redis = redis_from_url(settings.REDIS_URL, encoding="utf-8", decode_responses=True)

@@ -3,8 +3,9 @@ services:
   - type: web
     name: sentinelnexus-backend
     runtime: python
-    buildCommand: pip install -r backend/requirements.txt
-    startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    buildCommand: pip install -r backend/requirements.txt && cd backend && alembic upgrade head
+    startCommand: cd backend && gunicorn app.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT
+    healthCheckPath: /health
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -19,14 +20,30 @@ services:
         generateValue: true
       - key: JWT_SECRET_KEY
         generateValue: true
+      - key: ENV
+        value: production
+      - key: DEBUG
+        value: false
       - key: ALLOWED_HOSTS
-        value: .onrender.com,localhost,127.0.0.1
+        value: ".onrender.com,.vercel.app,sentinelnexus.mayyanks.app,www.sentinelnexus.mayyanks.app"
+      - key: ALLOWED_ORIGINS
+        value: '["https://sentinelnexus.vercel.app", "https://www.sentinelnexus.vercel.app", "https://sentinelnexus.mayyanks.app"]'
+      - key: FRONTEND_BASE_URL
+        value: https://sentinelnexus.vercel.app
+      - key: BACKEND_BASE_URL
+        value: https://sentinelnexus-backend.onrender.com
       - key: CLERK_SECRET_KEY
         sync: false
       - key: CLERK_JWKS_URL
         sync: false
       - key: CLERK_ISSUER
         sync: false
+      - key: RATE_LIMIT_ENABLED
+        value: "true"
+      - key: RATE_LIMIT_REQUESTS
+        value: "100"
+      - key: RATE_LIMIT_WINDOW_SECONDS
+        value: "60"
 
   # ── Frontend (Next.js) ──────────────────────────────────────────────────
   - type: web
@@ -34,6 +51,7 @@ services:
     runtime: node
     buildCommand: cd frontend && npm install && npm run build
     startCommand: cd frontend && npm run start
+    healthCheckPath: /
     envVars:
       - key: NEXT_PUBLIC_API_URL
         fromService:
@@ -41,6 +59,15 @@ services:
           name: sentinelnexus-backend
           property: url
         path: /api/v1
+      - key: BACKEND_URL
+        fromService:
+          type: web
+          name: sentinelnexus-backend
+          property: url
+      - key: NEXT_PUBLIC_SITE_URL
+        value: https://sentinelnexus.vercel.app
+      - key: NODE_ENV
+        value: production
       - key: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
         sync: false
       - key: CLERK_SECRET_KEY
@@ -48,10 +75,11 @@ services:
 
 databases:
   - name: sentinelnexus-db
-    plan: free
+    plan: standard
+    postgresMajorVersion: "15"
 
 # ── Managed Redis ───────────────────────────────────────────────────────────
 redis:
   - name: sentinelnexus-cache
-    plan: free
+    plan: standard
     ipAllowList: [] # Only allow internal connections
