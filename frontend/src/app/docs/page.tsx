@@ -1,88 +1,226 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
-import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Documentation", description: "SentinelNexus API and platform documentation." };
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://sentinelnexus-backend.onrender.com/api/v1";
 
-const sections = [
-  { title: "Getting Started", items: [
-    { name: "Quick Start Guide", desc: "Set up your first scan in under 2 minutes.", href: "#quickstart" },
-    { name: "Authentication", desc: "Google OAuth flow and session management.", href: "#auth" },
-    { name: "API Overview", desc: "RESTful API endpoints and authentication.", href: "#api" },
-  ]},
-  { title: "Scan Engines", items: [
-    { name: "Code Scanner", desc: "120+ SAST rules for secrets, injections, and IaC.", href: "#code" },
-    { name: "Prompt Scanner", desc: "Jailbreak detection and prompt injection defense.", href: "#prompt" },
-    { name: "Text Scanner", desc: "PII detection with Luhn validation and IBAN checks.", href: "#text" },
-  ]},
-  { title: "API Reference", items: [
-    { name: "POST /api/v1/scans", desc: "Run a new security scan.", href: "#scans-create" },
-    { name: "GET /api/v1/scans/:id", desc: "Retrieve scan results and findings.", href: "#scans-get" },
-    { name: "GET /api/v1/dashboard/stats", desc: "Dashboard aggregation data.", href: "#dashboard" },
-    { name: "POST /api/v1/reports/generate/:id", desc: "Generate a PDF report.", href: "#reports" },
-    { name: "GET /api/v1/projects", desc: "List and manage projects.", href: "#projects" },
-    { name: "GET /api/v1/notifications", desc: "List alert notifications.", href: "#notifications" },
-  ]},
-  { title: "Security", items: [
-    { name: "CVSS v3.1 Scoring", desc: "How we calculate base scores and severity labels.", href: "#cvss" },
-    { name: "Finding Deduplication", desc: "SHA-256 fingerprinting for duplicate detection.", href: "#dedup" },
-    { name: "CWE Mappings", desc: "Common Weakness Enumeration identifiers.", href: "#cwe" },
-  ]},
+const endpoints = [
+  {
+    category: "Authentication",
+    items: [
+      {
+        method: "WEBHOOK",
+        path: "/auth/clerk/webhook",
+        desc: "Clerk User Sync Webhook. Hardened with Svix signature verification.",
+        auth: "Public (Svix Header Required)",
+      },
+      {
+        method: "GET",
+        path: "/users/me",
+        desc: "Retrieve current authenticated user profile and session data.",
+        auth: "Clerk JWT",
+      },
+    ],
+  },
+  {
+    category: "Scanning Engine",
+    items: [
+      {
+        method: "POST",
+        path: "/scans",
+        desc: "Initialize a new security scan. Supports 'code', 'prompt', and 'text' types.",
+        payload: '{ "content": "...", "scan_type": "code", "project_id": "..." }',
+        auth: "Clerk JWT",
+      },
+      {
+        method: "GET",
+        path: "/scans/:id",
+        desc: "Get detailed results, CVSS scores, and findings for a specific scan.",
+        auth: "Clerk JWT",
+      },
+    ],
+  },
+  {
+    category: "Project Management",
+    items: [
+      {
+        method: "GET",
+        path: "/projects",
+        desc: "List all active security projects for the current workspace.",
+        auth: "Clerk JWT",
+      },
+      {
+        method: "POST",
+        path: "/projects",
+        desc: "Create a new project container for grouped vulnerability tracking.",
+        payload: '{ "name": "API v2", "description": "..." }',
+        auth: "Clerk JWT",
+      },
+    ],
+  },
+  {
+    category: "Reports & Intelligence",
+    items: [
+      {
+        method: "POST",
+        path: "/reports/generate/:scan_id",
+        desc: "Generate a comprehensive PDF security report with CWE mappings.",
+        auth: "Clerk JWT",
+      },
+      {
+        method: "GET",
+        path: "/dashboard/stats",
+        desc: "Aggregation data for risk heatmaps and severity distribution.",
+        auth: "Clerk JWT",
+      },
+    ],
+  },
 ];
 
-export default function DocsPage() {
+export default function ApiDocsPage() {
+  const [copied, setCopied] = useState<string | null>(null);
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(text);
+    setTimeout(() => setCopied(null), 2000);
+  };
+
   return (
-    <main className="mesh-background min-h-screen text-white">
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-black/35 backdrop-blur-xl">
-        <div className="section-shell flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-3"><div className="glass-card flex h-9 w-9 items-center justify-center rounded-xl text-xs font-bold">SN</div><span className="font-display text-lg font-semibold">SentinelNexus</span></Link>
-          <Link href="/login" className="rounded-full border border-white/20 px-4 py-2 text-sm text-gray-200 hover:border-violet-400 hover:text-white transition">Sign In</Link>
+    <main className="mesh-background min-h-screen text-white pt-24 pb-20">
+      <div className="section-shell max-w-5xl">
+        {/* Header Link Back */}
+        <Link href="/" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-white transition-colors mb-8">
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Back to Home
+        </Link>
+
+        {/* Hero Section */}
+        <div className="mb-12">
+          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
+            API Reference
+          </h1>
+          <p className="mt-4 text-gray-400 text-lg max-w-2xl">
+            Integrate SentinelNexus security intelligence directly into your CI/CD pipelines and developer workflows.
+          </p>
         </div>
-      </header>
 
-      <div className="section-shell py-12">
-        <h1 className="font-display text-4xl font-extrabold mb-2">Documentation</h1>
-        <p className="text-gray-400 mb-10">Complete reference for the SentinelNexus API and platform capabilities.</p>
+        {/* Base URL Card */}
+        <div className="mb-10 p-6 rounded-3xl bg-violet-600/5 border border-violet-500/20 backdrop-blur-sm relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+            <svg className="w-24 h-24 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <h2 className="text-sm font-semibold text-violet-300 uppercase tracking-wider mb-2">Production Base URL</h2>
+          <div className="flex items-center gap-3">
+            <code className="text-lg sm:text-xl font-mono text-white break-all">{BASE_URL}</code>
+            <button 
+              onClick={() => copyToClipboard(BASE_URL)}
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white"
+            >
+              {copied === BASE_URL ? (
+                <span className="text-xs text-emerald-400 font-medium">Copied!</span>
+              ) : (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+              )}
+            </button>
+          </div>
+        </div>
 
-        <div className="space-y-10">
-          {sections.map((s) => (
-            <section key={s.title}>
-              <h2 className="text-xl font-bold mb-4 text-violet-300">{s.title}</h2>
-              <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-                {s.items.map((item) => (
-                  <div key={item.name} className="glass-card glare-hover rounded-xl p-4 hover:border-violet-400/30 transition-colors">
-                    <h3 className="text-sm font-semibold text-white">{item.name}</h3>
-                    <p className="text-xs text-gray-400 mt-1">{item.desc}</p>
+        {/* Auth Info */}
+        <div className="mb-16 grid gap-6 md:grid-cols-2">
+          <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
+            <h3 className="font-bold text-white mb-2 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-violet-400 animate-pulse" />
+              Authentication
+            </h3>
+            <p className="text-sm text-gray-400 leading-relaxed">
+              All endpoints except webhooks require a Bearer JWT token from Clerk. 
+              In the browser, this is handled automatically via session cookies.
+            </p>
+          </div>
+          <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
+            <h3 className="font-bold text-white mb-2 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400" />
+              Rate Limiting
+            </h3>
+            <p className="text-sm text-gray-400 leading-relaxed">
+              Standard tier allows 100 requests per minute per user. 
+              Enterprise users can request higher limits via support.
+            </p>
+          </div>
+        </div>
+
+        {/* Endpoints */}
+        <div className="space-y-16">
+          {endpoints.map((cat) => (
+            <div key={cat.category}>
+              <h2 className="text-lg font-bold text-white mb-6 border-l-2 border-violet-500 pl-4">
+                {cat.category}
+              </h2>
+              <div className="space-y-4">
+                {cat.items.map((item) => (
+                  <div key={item.path} className="group p-5 rounded-2xl bg-black/40 border border-white/[0.06] hover:border-violet-500/30 transition-all duration-300">
+                    <div className="flex flex-wrap items-center gap-3 mb-3">
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
+                        item.method === 'GET' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
+                        item.method === 'POST' ? 'bg-violet-500/10 text-violet-400 border border-violet-500/20' :
+                        item.method === 'WEBHOOK' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' :
+                        'bg-gray-500/10 text-gray-400 border border-gray-500/20'
+                      }`}>
+                        {item.method}
+                      </span>
+                      <code className="text-sm font-mono text-white/90">{item.path}</code>
+                      <span className="ml-auto text-[10px] text-gray-500 font-medium uppercase tracking-tighter">
+                        Auth: {item.auth}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-400 mb-4">{item.desc}</p>
+                    
+                    {item.payload && (
+                      <div className="relative">
+                        <pre className="p-3 rounded-xl bg-black/60 text-[11px] font-mono text-violet-300/80 overflow-x-auto border border-white/[0.03]">
+                          {item.payload}
+                        </pre>
+                        <button 
+                          onClick={() => copyToClipboard(item.payload!)}
+                          className="absolute top-2 right-2 p-1.5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/10 rounded-md"
+                        >
+                          <svg className="w-3.5 h-3.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                          </svg>
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
-            </section>
+            </div>
           ))}
         </div>
 
-        <section id="quickstart" className="mt-16 glass-card rounded-2xl p-6">
-          <h2 className="text-xl font-bold mb-4">Quick Start</h2>
-          <div className="space-y-4 text-sm text-gray-300">
-            <p>1. Sign in with your Google account at <code className="text-violet-300">/login</code></p>
-            <p>2. Navigate to the <strong>Scanner</strong> page</p>
-            <p>3. Paste code, a prompt, or plain text and select the scan type</p>
-            <p>4. Click <strong>Run Scan</strong> — results appear in seconds with CVSS scores</p>
-            <p>5. Generate a PDF report from the results or view findings in the scan detail page</p>
-          </div>
-        </section>
-
-        <section id="api" className="mt-10 glass-card rounded-2xl p-6">
-          <h2 className="text-xl font-bold mb-4">API Authentication</h2>
-          <div className="text-sm text-gray-300 space-y-3">
-            <p>All API requests require authentication via <code className="text-violet-300">access_token</code> cookie (set during OAuth flow).</p>
-            <pre className="bg-black/40 rounded-lg p-4 text-xs font-mono overflow-x-auto">
-{`# Example: Run a scan
-curl -X POST http://localhost:8000/api/v1/scans \\
-  -H "Content-Type: application/json" \\
-  -b "access_token=YOUR_JWT" \\
-  -d '{"target": "test", "content": "password = secret123", "scan_type": "code"}'`}
-            </pre>
-          </div>
-        </section>
+        {/* Footer Note */}
+        <div className="mt-20 p-8 rounded-3xl bg-gradient-to-br from-violet-600/10 to-transparent border border-violet-500/10 text-center">
+          <h3 className="text-white font-bold mb-2">Need a custom integration?</h3>
+          <p className="text-sm text-gray-400 mb-6 max-w-md mx-auto">
+            Our engineering team can help you build custom security scanners for proprietary codebases or specific compliance requirements.
+          </p>
+          <Link 
+            href="/contact"
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-violet-600 text-white text-sm font-semibold hover:bg-violet-500 transition-all shadow-[0_0_20px_rgba(124,58,237,0.3)]"
+          >
+            Contact Integration Team
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </Link>
+        </div>
       </div>
     </main>
   );
