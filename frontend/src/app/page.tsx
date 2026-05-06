@@ -218,7 +218,6 @@ export default function HomePage() {
         </Reveal>
 
         <div className="relative mx-auto max-w-4xl space-y-6">
-          <div className="absolute left-7 top-8 hidden h-[70%] w-px bg-gradient-to-b from-violet-500/50 to-transparent md:block" />
           {processSteps.map((step, i) => (
             <Reveal key={step.num} delay={i * 0.12} variant={i % 2 === 0 ? "slideLeft" : "slideRight"}>
               <motion.div
