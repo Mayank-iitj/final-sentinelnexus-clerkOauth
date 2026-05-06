@@ -1,5 +1,6 @@
 from fastapi import Cookie, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
+from loguru import logger
 
 from app.core.config import get_settings
 from app.core.security import decode_token
@@ -30,7 +31,6 @@ def _get_or_create_dev_user(db: Session) -> User:
             db.refresh(user)
         return user
     except Exception as e:
-        from loguru import logger
         logger.error(f"Failed to create dev user: {e}")
         raise
 
@@ -58,22 +58,31 @@ def get_current_user(
 ) -> User:
     """
     Get current user from token or return development user.
-    In production: requires valid token.
-    In development: returns test user if no valid token.
+    Tries multiple auth methods:
+    1. Clerk JWT (from Authorization header)
+    2. Local JWT (from cookie)
+    3. Development mode fallback
     """
     token, maybe_clerk = get_token(request, access_token)
 
     # Try token-based authentication first
     if token:
         if maybe_clerk:
+            # Try Clerk authentication
             payload = verify_clerk_token(token)
             if payload:
                 email = payload.get("email") or payload.get("email_address")
                 clerk_id = payload.get("sub")
                 
+                logger.debug(f"Clerk token verified for clerk_id={clerk_id}, email={email}")
+                
                 # Try lookup by clerk id first
-                user = db.query(User).filter(User.oauth_provider_id == clerk_id, User.oauth_provider == "clerk").first()
+                user = db.query(User).filter(
+                    User.oauth_provider_id == clerk_id, 
+                    User.oauth_provider == "clerk"
+                ).first()
                 if user:
+                    logger.debug(f"Found user {user.email} by Clerk ID")
                     return user
                     
                 # If not found, try by email
@@ -83,15 +92,25 @@ def get_current_user(
                         # Link clerk account
                         user.oauth_provider = "clerk"
                         user.oauth_provider_id = clerk_id
+                        user.full_name = payload.get("name") or payload.get("full_name") or user.full_name
+                        user.avatar_url = payload.get("picture") or payload.get("image_url") or user.avatar_url
                         db.commit()
+                        logger.debug(f"Linked Clerk account to existing user {user.email}")
                         return user
                     
                     # Auto-create user if email present
+                    username_base = email.split("@")[0]
+                    username = username_base
+                    counter = 1
+                    while db.query(User).filter(User.username == username).first():
+                        username = f"{username_base}_{counter}"
+                        counter += 1
+                    
                     user = User(
                         email=email,
-                        username=email.split("@")[0] + "_clerk",
-                        full_name=payload.get("name") or payload.get("full_name"),
-                        hashed_password="!",
+                        username=username,
+                        full_name=payload.get("name") or payload.get("full_name") or username,
+                        hashed_password="!clerk-oauth",
                         oauth_provider="clerk",
                         oauth_provider_id=clerk_id,
                         avatar_url=payload.get("picture") or payload.get("image_url")
@@ -99,30 +118,40 @@ def get_current_user(
                     db.add(user)
                     db.commit()
                     db.refresh(user)
+                    logger.info(f"Auto-created user {email} from Clerk token")
                     return user
+                else:
+                    logger.warning(f"Clerk token missing email")
+            else:
+                logger.warning(f"Clerk token verification failed")
 
-        # Try local JWT
+        # Try local JWT as fallback
         try:
             payload = decode_token(token)
             user_id = payload.get("sub")
             if user_id:
                 user = db.query(User).filter(User.id == user_id).first()
                 if user:
+                    logger.debug(f"Found user {user.email} by local JWT")
                     return user
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"Local JWT decode failed: {e}")
 
     # Development mode: allow without token
     if not settings.is_production:
+        logger.debug(f"Development mode: using test user")
         return _get_or_create_dev_user(db)
 
     # Production: require valid token
-    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+    logger.warning(f"Authentication failed: no valid token provided")
+    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or missing token")
 
 
 def get_current_active_user(current_user: User = Depends(get_current_user)) -> User:
+    """Ensure current user is active."""
     if not current_user.is_active:
-        raise HTTPException(status_code=400, detail="Inactive user")
+        logger.warning(f"Inactive user attempted access: {current_user.email}")
+        raise HTTPException(status_code=400, detail="User account is inactive")
     return current_user
 
 

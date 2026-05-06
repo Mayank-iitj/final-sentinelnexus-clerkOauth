@@ -144,6 +144,43 @@ export default function ProjectsPage() {
           </div>
         )}
 
+        {/* Featured Projects Section */}
+        <div className="space-y-3 mb-8">
+          <div>
+            <h2 className="text-lg font-bold">Featured Projects</h2>
+            <p className="text-xs text-gray-500">Showcase projects & frameworks</p>
+          </div>
+          <div
+            onClick={() => window.location.href = "/cyberpentest"}
+            className="rounded-2xl nub-card p-6 flex flex-col gap-4 hover:border-violet-400/30 transition-all cursor-pointer group"
+          >
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <div className="text-2xl mb-2">🔐</div>
+                <div className="text-sm font-bold text-white">Autonomous Cyber-Pentest Framework</div>
+                <div className="text-xs text-gray-400 mt-2">Production-grade Python security testing with autonomous scanning, tech fingerprinting, exploit detection, and auto-generated pentest reports.</div>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-2 text-xs">
+              <div className="rounded-lg bg-violet-500/10 px-3 py-2 border border-violet-500/20">
+                <div className="text-violet-300 font-semibold">12+ Features</div>
+              </div>
+              <div className="rounded-lg bg-violet-500/10 px-3 py-2 border border-violet-500/20">
+                <div className="text-violet-300 font-semibold">CVSS Scoring</div>
+              </div>
+              <div className="rounded-lg bg-violet-500/10 px-3 py-2 border border-violet-500/20">
+                <div className="text-violet-300 font-semibold">REST API</div>
+              </div>
+            </div>
+            <div className="flex items-center justify-between text-[11px]">
+              <div className="flex items-center gap-2">
+                <span className="text-gray-500">Created by MAYANK SHARMA</span>
+              </div>
+              <span className="text-violet-400 group-hover:translate-x-1 transition-transform">Explore →</span>
+            </div>
+          </div>
+        </div>
+
         {loading && <div className="text-sm text-white0 animate-pulse">Loading…</div>}
 
         {!loading && projects.length === 0 && (

@@ -189,3 +189,129 @@ async def me(
         "avatar_url":     user.avatar_url,
         "oauth_provider": user.oauth_provider,
     }
+
+
+@router.post("/clerk/webhook")
+async def clerk_webhook(
+    request: Request,
+    db: Session = Depends(get_db),
+):
+    """
+    Webhook endpoint for Clerk user events (user.created, user.updated, user.deleted).
+    Syncs user data from Clerk to our database with signature verification.
+    """
+    from loguru import logger
+    from svix.webhooks import Webhook, WebhookVerificationError
+    
+    # 1. Verify webhook signature
+    if settings.CLERK_WEBHOOK_SECRET:
+        svix_id = request.headers.get("svix-id")
+        svix_timestamp = request.headers.get("svix-timestamp")
+        svix_signature = request.headers.get("svix-signature")
+
+        if not svix_id or not svix_timestamp or not svix_signature:
+            logger.warning("Missing svix headers in Clerk webhook")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Missing svix headers")
+
+        payload = await request.body()
+        wh = Webhook(settings.CLERK_WEBHOOK_SECRET)
+        try:
+            wh.verify(payload, {
+                "svix-id": svix_id,
+                "svix-timestamp": svix_timestamp,
+                "svix-signature": svix_signature,
+            })
+        except WebhookVerificationError:
+            logger.warning("Invalid svix signature in Clerk webhook")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid signature")
+    else:
+        logger.warning("CLERK_WEBHOOK_SECRET not set – skipping verification")
+
+    try:
+        body = await request.json()
+        event_type = body.get("type")
+        data = body.get("data", {})
+        
+        clerk_id = data.get("id")
+        email = data.get("email_addresses", [{}])[0].get("email_address") if data.get("email_addresses") else None
+        first_name = data.get("first_name", "")
+        last_name = data.get("last_name", "")
+        image_url = data.get("image_url")
+        
+        if not email or not clerk_id:
+            logger.warning(f"Clerk webhook missing email or clerk_id: {data}")
+            return {"status": "error", "detail": "Missing email or clerk_id"}
+        
+        if event_type == "user.created":
+            # Check if user already exists
+            existing_user = db.query(User).filter(
+                User.oauth_provider_id == clerk_id,
+                User.oauth_provider == "clerk"
+            ).first()
+            
+            if existing_user:
+                logger.info(f"User {clerk_id} already exists, skipping creation")
+                return {"status": "ok", "action": "skipped"}
+            
+            # Create new user
+            username_base = email.split("@")[0]
+            username = username_base
+            counter = 1
+            while db.query(User).filter(User.username == username).first():
+                username = f"{username_base}_{counter}"
+                counter += 1
+            
+            user = User(
+                email=email,
+                username=username,
+                full_name=f"{first_name} {last_name}".strip() or email.split("@")[0],
+                hashed_password="!clerk-oauth-only",
+                oauth_provider="clerk",
+                oauth_provider_id=clerk_id,
+                avatar_url=image_url,
+                is_active=True
+            )
+            db.add(user)
+            db.commit()
+            logger.info(f"Created user {email} from Clerk webhook")
+            return {"status": "ok", "action": "created", "user_id": user.id}
+        
+        elif event_type == "user.updated":
+            user = db.query(User).filter(
+                User.oauth_provider_id == clerk_id,
+                User.oauth_provider == "clerk"
+            ).first()
+            
+            if user:
+                user.email = email
+                user.full_name = f"{first_name} {last_name}".strip() or user.full_name
+                user.avatar_url = image_url or user.avatar_url
+                db.commit()
+                logger.info(f"Updated user {email} from Clerk webhook")
+                return {"status": "ok", "action": "updated"}
+            
+            logger.warning(f"Clerk user {clerk_id} not found for update event")
+            return {"status": "ok", "action": "not_found"}
+        
+        elif event_type == "user.deleted":
+            user = db.query(User).filter(
+                User.oauth_provider_id == clerk_id,
+                User.oauth_provider == "clerk"
+            ).first()
+            
+            if user:
+                user.is_active = False
+                db.commit()
+                logger.info(f"Deactivated user {email} from Clerk webhook")
+                return {"status": "ok", "action": "deactivated"}
+            
+            return {"status": "ok", "action": "not_found"}
+        
+        else:
+            logger.warning(f"Unhandled Clerk webhook event: {event_type}")
+            return {"status": "ok", "action": "unhandled"}
+    
+    except Exception as e:
+        from loguru import logger
+        logger.error(f"Clerk webhook error: {e}", exc_info=True)
+        return {"status": "error", "detail": str(e)}

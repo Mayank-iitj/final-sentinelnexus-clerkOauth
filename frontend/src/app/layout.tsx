@@ -1,24 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Script from "next/script";
-import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider, SignInButton, SignUpButton, Show, UserButton } from "@clerk/nextjs";
 import { Providers } from "../components/Providers";
 import { SplashScreen } from "../components/SplashScreen";
 import { SOCIAL_LINKS } from "../lib/social-links";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-space-grotesk",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://sentinelnexus.mayankiitj.in"),
@@ -61,7 +48,6 @@ export const metadata: Metadata = {
       {
         url: "/og-image.png",
         width: 1200,
-        height: 630,
         alt: "SentinelNexus AI Security",
       },
     ],
@@ -130,7 +116,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${spaceGrotesk.variable} antialiased`} style={{ fontFamily: "var(--font-inter, 'Inter'), system-ui, sans-serif" }}>
+      <body className="antialiased" style={{ fontFamily: "Inter, system-ui, sans-serif" }}>
         <Script
           src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs"
           type="module"

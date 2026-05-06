@@ -43,13 +43,15 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (isLoaded && isSignedIn) {
-      router.replace("/dashboard");
+      setLoading(true);
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 500);
     }
   }, [isSignedIn, isLoaded, router]);
 
   return (
     <main className="nubien-bg min-h-screen flex items-center justify-center p-4 relative">
-      {/* Violet glow */}
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[350px] bg-violet-600/8 rounded-full blur-[100px] pointer-events-none" />
 
       <motion.div
@@ -58,23 +60,22 @@ export default function LoginPage() {
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="relative w-full max-w-sm space-y-8"
       >
-        {/* Logo */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.15 }}
           className="text-center space-y-3"
         >
-            <Link href="/" className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-violet-500/5 border border-violet-400/20 shadow-[0_0_40px_rgba(124,58,237,.1)] mb-1 overflow-hidden transition-all duration-300 hover:border-violet-400/40 hover:shadow-[0_0_50px_rgba(124,58,237,.2)]">
+          {/* @ts-expect-error */}
+          <Link href="/" className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-violet-500/5 border border-violet-400/20 shadow-[0_0_40px_rgba(124,58,237,.1)] mb-1 overflow-hidden transition-all duration-300 hover:border-violet-400/40 hover:shadow-[0_0_50px_rgba(124,58,237,.2)]">
             <Image src="/favicon.png" alt="SentinelNexus" width={56} height={56} className="object-cover" />
           </Link>
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-white">SentinelNexus</h1>
-            <p className="text-sm text-gray-500 mt-1">AI Security &amp; Compliance Platform</p>
+            <p className="text-sm text-gray-500 mt-1">AI Security & Compliance Platform</p>
           </div>
         </motion.div>
 
-        {/* Card */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -83,10 +84,9 @@ export default function LoginPage() {
         >
           <div className="text-center">
             <h2 className="text-base font-semibold text-white">Sign in to your account</h2>
-            <p className="text-xs text-gray-600 mt-1">Continue with your Google account</p>
+            <p className="text-xs text-gray-600 mt-1">Continue with your Clerk account</p>
           </div>
 
-          {/* Error banner */}
           {errorMsg && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
@@ -97,18 +97,19 @@ export default function LoginPage() {
             </motion.div>
           )}
 
-          {/* Clerk Sign In */}
           <div className="space-y-3">
             <SignInButton mode="modal" fallbackRedirectUrl="/dashboard" forceRedirectUrl="/dashboard">
               <motion.button
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.98 }}
-                id="btn-google-login"
+                disabled={loading}
                 className="w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl border font-semibold text-sm transition-all duration-200 bg-white/[0.03] hover:bg-white/[0.06] text-white border-white/[0.08] hover:border-violet-400/30 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black focus:ring-violet-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span className="w-5 h-5 flex items-center justify-center"><GoogleIcon /></span>
-                <span className="flex-1 text-left">Continue with Google</span>
-                <span className="text-gray-600 text-xs">→</span>
+                <span className="flex-1 text-left">
+                  {loading ? "Signing in..." : "Continue with Clerk"}
+                </span>
+                <span className="text-gray-600 text-xs">{loading ? "" : "→"}</span>
               </motion.button>
             </SignInButton>
           </div>
@@ -119,36 +120,39 @@ export default function LoginPage() {
               animate={{ opacity: 1 }}
               className="text-center text-xs text-gray-500 animate-pulse pt-1"
             >
-              Initializing Clerk…
+              Loading...
             </motion.div>
           )}
 
-          {/* Divider */}
-          <div className="flex items-center gap-3 text-gray-700">
-            <div className="flex-1 h-px bg-white/[0.06]" />
-            <span className="text-[10px] uppercase tracking-wider">Secure SSO</span>
-            <div className="flex-1 h-px bg-white/[0.06]" />
+          <div className="relative flex items-center gap-2 before:content-[''] before:flex-1 before:h-px before:bg-white/10 after:content-[''] after:flex-1 after:h-px after:bg-white/10">
+            <span className="text-xs text-gray-600">No account?</span>
           </div>
 
-          <p className="text-[11px] text-gray-600 text-center leading-relaxed">
-            Your account is automatically created on first sign-in.
-            We never store your Google password.
-          </p>
+          {/* @ts-expect-error */}
+          <Link href="/signup" className="block">
+            <motion.button
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full px-4 py-2.5 rounded-2xl border border-violet-400/30 text-violet-300 text-sm font-medium transition-colors hover:bg-violet-500/10 focus:outline-none focus:ring-2 focus:ring-violet-500"
+            >
+              Create an account
+            </motion.button>
+          </Link>
         </motion.div>
 
-        {/* Footer */}
-        <motion.div
+        <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.4, delay: 0.4 }}
-          className="text-center text-[11px] text-gray-600 space-x-3"
+          transition={{ delay: 0.5 }}
+          className="text-center text-xs text-gray-600"
         >
-          <a href="/legal/privacy" className="hover:text-gray-400 transition-colors duration-200">Privacy Policy</a>
-          <span>·</span>
-          <a href="/legal/terms" className="hover:text-gray-400 transition-colors duration-200">Terms of Service</a>
-          <span>·</span>
-          <a href="/support" className="hover:text-gray-400 transition-colors duration-200">Support</a>
-        </motion.div>
+          By signing in, you agree to our{" "}
+          {/* @ts-expect-error */}
+          <Link href="/legal/terms" className="text-violet-400 hover:underline">Terms of Service</Link>
+          {" "}and{" "}
+          {/* @ts-expect-error */}
+          <Link href="/legal/privacy" className="text-violet-400 hover:underline">Privacy Policy</Link>
+        </motion.p>
       </motion.div>
     </main>
   );

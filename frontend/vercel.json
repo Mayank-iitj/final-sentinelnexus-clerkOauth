@@ -3,6 +3,24 @@
   "framework": "nextjs",
   "buildCommand": "next build",
   "installCommand": "npm install",
+  "env": [
+    {
+      "key": "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
+      "description": "Clerk publishable key for frontend authentication"
+    },
+    {
+      "key": "CLERK_SECRET_KEY",
+      "description": "Clerk secret key for backend authentication (used in middleware if needed)"
+    },
+    {
+      "key": "NEXT_PUBLIC_SITE_URL",
+      "description": "Public site URL for metadata and links"
+    },
+    {
+      "key": "NEXT_PUBLIC_API_URL",
+      "description": "Backend API URL for client requests"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -12,8 +30,15 @@
         { "key": "X-Frame-Options", "value": "DENY" },
         { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
         { "key": "X-DNS-Prefetch-Control", "value": "on" },
-        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" }
+        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
+        { "key": "Content-Security-Policy", "value": "default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com https://*.clerk.accounts.dev; style-src 'self' 'unsafe-inline' https://unpkg.com; img-src 'self' data: https:; connect-src 'self' https://*.clerk.accounts.dev;" }
       ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/v1/:path*",
+      "destination": "${NEXT_PUBLIC_API_URL}/api/v1/:path*"
     }
   ]
 }

@@ -39,6 +39,7 @@ class Settings(BaseSettings):
     CLERK_SECRET_KEY: str = ""
     CLERK_JWKS_URL: str = ""
     CLERK_ISSUER: str = ""
+    CLERK_WEBHOOK_SECRET: str = ""
 
     # Rate limiting
     RATE_LIMIT_ENABLED: bool = True

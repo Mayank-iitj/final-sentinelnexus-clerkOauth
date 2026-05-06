@@ -6,6 +6,7 @@ import uuid
 from typing import Any, Dict
 
 from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
@@ -16,6 +17,7 @@ from redis.asyncio import Redis
 from redis.asyncio import from_url as redis_from_url
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.middleware.sessions import SessionMiddleware
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api.v1.api import api_router
 from app.core.config import get_settings
@@ -157,10 +159,43 @@ def create_app() -> FastAPI:
 
         return {"status": status_str, "db": db, "redis": redis_status}
 
+    # Global exception handlers
+    @app.exception_handler(StarletteHTTPException)
+    async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+        logger.warning(f"HTTP {exc.status_code}: {exc.detail}")
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={"detail": exc.detail, "status_code": exc.status_code}
+        )
+
+    @app.exception_handler(RequestValidationError)
+    async def validation_exception_handler(request: Request, exc: RequestValidationError):
+        logger.warning(f"Validation error: {exc.errors()}")
+        return JSONResponse(
+            status_code=422,
+            content={
+                "detail": "Validation error",
+                "errors": [
+                    {"field": str(e["loc"]), "message": e["msg"]}
+                    for e in exc.errors()
+                ]
+            }
+        )
+
     @app.exception_handler(Exception)
     async def unhandled_exception_handler(request: Request, exc: Exception):
-        logger.exception("Unhandled exception")
-        return JSONResponse(status_code=500, content={"detail": "Internal server error"})
+        logger.error(f"Unhandled exception: {type(exc).__name__}: {exc}", exc_info=True)
+        
+        # Don't expose internal error details in production
+        if settings.is_production:
+            detail = "Internal server error"
+        else:
+            detail = f"{type(exc).__name__}: {str(exc)}"
+        
+        return JSONResponse(
+            status_code=500,
+            content={"detail": detail, "status_code": 500}
+        )
 
     return app
 
