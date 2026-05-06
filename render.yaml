@@ -44,6 +44,8 @@ services:
         value: "100"
       - key: RATE_LIMIT_WINDOW_SECONDS
         value: "60"
+      - key: CLERK_WEBHOOK_SECRET
+        value: {{CLERK_WEBHOOK_SECRET}}
 
   # ── Frontend (Next.js) ──────────────────────────────────────────────────
   - type: web
