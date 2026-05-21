@@ -109,6 +109,16 @@ const websiteSchema = {
   }
 };
 
+const clerkPublishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ?? "";
+const isTestClerkKey = /^pk_test_[A-Za-z0-9]+$/.test(clerkPublishableKey);
+const isLiveClerkKey = /^pk_live_[A-Za-z0-9]+$/.test(clerkPublishableKey);
+const siteUrlHost = process.env.NEXT_PUBLIC_SITE_URL
+  ? new URL(process.env.NEXT_PUBLIC_SITE_URL).hostname.toLowerCase()
+  : "";
+const isAllowedLiveHost =
+  siteUrlHost === "mayankiitj.in" || siteUrlHost.endsWith(".mayankiitj.in");
+const hasUsableClerkPublishableKey = isTestClerkKey || (isLiveClerkKey && isAllowedLiveHost);
+
 export default function RootLayout({
   children,
 }: {
@@ -125,26 +135,35 @@ export default function RootLayout({
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }} />
         <SplashScreen />
-        <ClerkProvider>
-          <header className="fixed top-4 right-20 z-50 flex items-center gap-4">
-            <Show when="signed-out">
-              <SignInButton mode="modal">
-                <button className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-violet-700">
-                  Sign In
-                </button>
-              </SignInButton>
-              <SignUpButton mode="modal">
-                <button className="rounded-lg border border-violet-500/30 bg-violet-500/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-violet-500/20">
-                  Sign Up
-                </button>
-              </SignUpButton>
-            </Show>
-            <Show when="signed-in">
-              <UserButton afterSignOutUrl="/" />
-            </Show>
-          </header>
-          <Providers>{children}</Providers>
-        </ClerkProvider>
+        {hasUsableClerkPublishableKey ? (
+          <ClerkProvider publishableKey={clerkPublishableKey}>
+            <header className="fixed top-4 right-20 z-50 flex items-center gap-4">
+              <Show when="signed-out">
+                <SignInButton mode="modal">
+                  <button className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-violet-700">
+                    Sign In
+                  </button>
+                </SignInButton>
+                <SignUpButton mode="modal">
+                  <button className="rounded-lg border border-violet-500/30 bg-violet-500/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-violet-500/20">
+                    Sign Up
+                  </button>
+                </SignUpButton>
+              </Show>
+              <Show when="signed-in">
+                <UserButton afterSignOutUrl="/" />
+              </Show>
+            </header>
+            <Providers>{children}</Providers>
+          </ClerkProvider>
+        ) : (
+          <>
+            <header className="fixed top-4 right-20 z-50 rounded-lg border border-amber-400/25 bg-amber-300/10 px-4 py-2 text-xs font-medium text-amber-200 backdrop-blur-sm">
+              Auth disabled: use pk_test locally or mayankiitj.in with pk_live
+            </header>
+            <Providers>{children}</Providers>
+          </>
+        )}
         <Link
           href={SOCIAL_LINKS.website}
           target="_blank"

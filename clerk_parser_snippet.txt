@@ -1,0 +1,143 @@
+
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:639:    ()=>STAGING_ENV_SUFFIXES,
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:640:    "f",
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:641:    ()=>STAGING_FAPI_URL,
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:642:    "i",
+> .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:643:    ()=>LEGACY_DEV_INSTANCE_SUFFIXES,
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:644:    "l",
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:645:    ()=>PROD_FAPI_URL,
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:646:    "n",
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:647:    ()=>DEFAULT_PROXY_PATH,
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:648:    "o",
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:649:    ()=>LOCAL_ENV_SUFFIXES,
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:650:    "p",
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:651:    ()=>iconImageUrl,
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:652:    "r",
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:653:    ()=>DEV_OR_STAGING_SUFFIXES,
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:658:    "u",
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:659:    ()=>STAGING_API_URL
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:660:]);
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:661://#region src/constants.ts
+> .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:662:const LEGACY_DEV_INSTANCE_SUFFIXES = [
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:663:    ".lcl.dev",
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:664:    ".lclstage.dev",
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:665:    ".lclclerk.com"
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:666:];
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:667:const CURRENT_DEV_INSTANCE_SUFFIXES = [
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:668:    ".accounts.dev",
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:669:    ".accountsstage.dev",
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:670:    ".accounts.lclclerk.com"
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:671:];
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:672:const DEV_OR_STAGING_SUFFIXES = [
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:761:    ()=>isProductionFromPublishableKey,
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:762:    "t",
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:763:    ()=>buildPublishableKey,
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:764:    "u",
+> .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:765:    ()=>parsePublishableKey
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:766:]);
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:767:var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$shared$2f$dist$2f$runtime$2f$constants$2d$Bta24VLk$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@clerk/shared/dist/runtime/constants-Bta24VLk.mjs [app-ssr] (ecmascript)");
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:768:var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$shared$2f$dist$2f$runtime$2f$isomorphicAtob$2d$CoF80qYz$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@clerk/shared/dist/runtime/isomorphicAtob-CoF80qYz.mjs [app-ssr] (ecmascript)");
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:769:var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$shared$2f$dist$2f$runtime$2f$isomorphicBtoa$2d$DWmLcIHi$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@clerk/shared/dist/runtime/isomorphicBtoa-DWmLcIHi.mjs [app-ssr] (ecmascript)");
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:770:;
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:771:;
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:772:;
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:773://#region src/keys.ts
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:774:/** Prefix used for production publishable keys */ const PUBLISHABLE_KEY_LIVE_PREFIX = "pk_live_";
+> .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:775:/** Prefix used for development publishable keys */ const PUBLISHABLE_KEY_TEST_PREFIX = "pk_test_";
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:776:/**
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:777:* Regular expression that matches development frontend API keys.
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:778:* Matches patterns like: foo-bar-13.clerk.accounts.dev.
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:779:*/ const PUBLISHABLE_FRONTEND_API_DEV_REGEX = /^(([a-z]+)-){2}([0-9]{1,2})\.clerk\.accounts([a-z.]*)(dev|com)$/i;
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:780:/**
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:781:* Converts a frontend API URL into an unpadded base64-encoded publishable key.
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:782:*
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:783:* @param frontendApi - The frontend API URL (e.g., 'clerk.example.com').
+> .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:784:* @returns An unpadded base64-encoded publishable key with appropriate prefix (pk_live_ or pk_test_).
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:785:*/ function buildPublishableKey(frontendApi) {
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:786:    return `${PUBLISHABLE_FRONTEND_API_DEV_REGEX.test(frontendApi) || frontendApi.startsWith("clerk.") && __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$shared$2f$dist$2f$runtime$2f$constants$2d$Bta24VLk$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["i"].some((s)=>frontendApi.endsWith(s)) ? PUBLISHABLE_KEY_TEST_PREFIX : PUBLISHABLE_KEY_LIVE_PREFIX}${(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$shared$2f$dist$2f$runtime$2f$isomorphicBtoa$2d$DWmLcIHi$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["t"])(`${frontendApi}$`).replace(/=+$/, "")}`;
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:787:}
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:788:/**
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:789:* Derives a publishable key from the current hostname. Intended for multi-domain
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:790:* setups (e.g. custom domains on top of a default domain) where the correct key
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:791:* must be resolved per request.
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:792:*
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:793:* Pass the configured publishable key as `fallbackKey` so that development
+> .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:794:* instances (pk_test_) are returned as-is instead of being incorrectly derived
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:795:* from the host (e.g. localhost).
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:796:*
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:797:* @example
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:798:* // React (use window.location.hostname, not window.location.host, to avoid including the port)
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:799:* <ClerkProvider publishableKey={publishableKeyFromHost(window.location.hostname, import.meta.env.VITE_CLERK_PUBLISHABLE_KEY)}>
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:800:*
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:801:* @example
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:802:* // Express (inside clerkMiddleware callback)
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:803:* // Validate req.hostname against a known allowlist before passing it in.
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:804:* // When `trust proxy` is enabled, req.hostname reads from X-Forwarded-Host
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:837:* @param options.isSatellite
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:838:* @returns Parsed publishable key object with instanceType and frontendApi, or null if invalid.
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:839:*
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:840:* @throws {Error} When options.fatal is true and key is missing or invalid.
+> .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:841:*/ function parsePublishableKey(key, options = {}) {
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:842:    key = key || "";
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:843:    if (!key || !isPublishableKey(key)) {
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:844:        if (options.fatal && !key) throw new Error("Publishable key is missing. Ensure that your publishable key is correctly configured. Double-check your environment configuration for your keys, or access them here: https://dashboard.clerk.com/last-active?path=api-keys");
+> .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:845:        if (options.fatal && !isPublishableKey(key)) throw new Error("Publishable key not valid.");
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:846:        return null;
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:847:    }
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:848:    const instanceType = key.startsWith(PUBLISHABLE_KEY_LIVE_PREFIX) ? "production" : "development";
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:849:    let decodedFrontendApi;
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:850:    try {
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:851:        decodedFrontendApi = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$shared$2f$dist$2f$runtime$2f$isomorphicAtob$2d$CoF80qYz$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["t"])(key.split("_")[2]);
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:852:    } catch  {
+> .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:853:        if (options.fatal) throw new Error("Publishable key not valid: Failed to decode key.");
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:854:        return null;
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:855:    }
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:856:    if (!isValidDecodedPublishableKey(decodedFrontendApi)) {
+> .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:857:        if (options.fatal) throw new Error("Publishable key not valid: Decoded key has invalid format.");
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:858:        return null;
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:859:    }
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:860:    let frontendApi = decodedFrontendApi.slice(0, -1);
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:861:    if (options.proxyUrl) frontendApi = options.proxyUrl;
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:862:    else if (instanceType !== "development" && options.domain && options.isSatellite) frontendApi = `clerk.${options.domain}`;
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:863:    return {
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:864:        instanceType,
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:865:        frontendApi
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:866:    };
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:867:}
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:903:    };
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:904:}
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:905:/**
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:906:* Checks if a publishable key is for a development environment.
+> .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:907:* Supports both legacy format (test_) and new format (pk_test_).
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:908:*
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:909:* @param apiKey - The API key to check.
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:910:* @returns `true` if the key is for development, `false` otherwise.
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:911:*/ function isDevelopmentFromPublishableKey(apiKey) {
+> .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:912:    return apiKey.startsWith("test_") || apiKey.startsWith("pk_test_");
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:913:}
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:914:/**
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:915:* Checks if a publishable key is for a production environment.
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:916:* Supports both legacy format (live_) and new format (pk_live_).
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:917:*
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:918:* @param apiKey - The API key to check.
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:919:* @returns `true` if the key is for production, `false` otherwise.
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:920:*/ function isProductionFromPublishableKey(apiKey) {
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:921:    return apiKey.startsWith("live_") || apiKey.startsWith("pk_live_");
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:922:}
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:6911:*
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:6912:* @example
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:6913:* ```typescript
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:6914:* try {
+> .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:6915:*   await loadClerkJsScript({ publishableKey: 'pk_test_...' });
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:6916:*   console.log('Clerk loaded successfully');
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:6917:* } catch (error) {
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:6918:*   console.error('Failed to load Clerk:', error.message);
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:6919:* }
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:6920:* ```
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:6921:*/ const loadClerkJSScript = async (opts)=>{
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:6922:    const timeout = opts?.scriptLoadTimeout ?? 15e3;
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:6923:    const rejectWith = (error)=>new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$shared$2f$dist$2f$runtime$2f$clerkRuntimeError$2d$DqAmLuLY$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["t"]("Failed to load Clerk JS" + (error?.message ? `, ${error.message}` : ""), {
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:6924:            code: "failed_to_load_clerk_js",
+  .next\dev\server\chunks\ssr\node_modules_@clerk_shared_dist_runtime_0hfs56v._.js:6925:            cause: error
+
+
