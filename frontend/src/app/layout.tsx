@@ -110,7 +110,8 @@ const websiteSchema = {
 };
 
 const envKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || "";
-const isValidKey = envKey.startsWith("pk_test_") || envKey.startsWith("pk_live_");
+const isVercelPreview = process.env.VERCEL_ENV === "preview" || process.env.NEXT_PUBLIC_VERCEL_ENV === "preview";
+const isValidKey = (envKey.startsWith("pk_test_") || envKey.startsWith("pk_live_")) && !(envKey.startsWith("pk_live_") && isVercelPreview);
 const safePublishableKey = isValidKey ? envKey : "pk_test_ZHVtbXkua2V5LmNsZXJrLmFjY291bnRzLmRldiQ";
 
 export default function RootLayout({
