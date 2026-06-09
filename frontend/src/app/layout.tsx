@@ -112,12 +112,7 @@ const websiteSchema = {
 const clerkPublishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ?? "";
 const isTestClerkKey = clerkPublishableKey.startsWith("pk_test_");
 const isLiveClerkKey = clerkPublishableKey.startsWith("pk_live_");
-const siteUrlHost = process.env.NEXT_PUBLIC_SITE_URL
-  ? new URL(process.env.NEXT_PUBLIC_SITE_URL).hostname.toLowerCase()
-  : "";
-const isAllowedLiveHost =
-  siteUrlHost === "mayankiitj.in" || siteUrlHost.endsWith(".mayankiitj.in");
-const hasUsableClerkPublishableKey = isTestClerkKey || (isLiveClerkKey && isAllowedLiveHost);
+const hasUsableClerkPublishableKey = isTestClerkKey || isLiveClerkKey;
 
 export default function RootLayout({
   children,
