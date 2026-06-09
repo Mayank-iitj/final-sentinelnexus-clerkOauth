@@ -135,8 +135,8 @@ export default function RootLayout({
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }} />
         <SplashScreen />
-        {hasUsableClerkPublishableKey ? (
-          <ClerkProvider publishableKey={clerkPublishableKey}>
+        <ClerkProvider publishableKey={hasUsableClerkPublishableKey ? clerkPublishableKey : "pk_test_ZHVtbXkua2V5LmNsZXJrLmFjY291bnRzLmRldiQ"}>
+          {hasUsableClerkPublishableKey ? (
             <header className="fixed top-4 right-20 z-50 flex items-center gap-4">
               <Show when="signed-out">
                 <SignInButton mode="modal">
@@ -154,16 +154,13 @@ export default function RootLayout({
                 <UserButton />
               </Show>
             </header>
-            <Providers>{children}</Providers>
-          </ClerkProvider>
-        ) : (
-          <ClerkProvider publishableKey={clerkPublishableKey || "pk_test_ZHVtbXkua2V5LmNsZXJrLmFjY291bnRzLmRldiQ"}>
+          ) : (
             <header className="fixed top-4 right-20 z-50 rounded-lg border border-amber-400/25 bg-amber-300/10 px-4 py-2 text-xs font-medium text-amber-200 backdrop-blur-sm">
               Auth disabled: use pk_test locally or mayankiitj.in with pk_live
             </header>
-            <Providers>{children}</Providers>
-          </ClerkProvider>
-        )}
+          )}
+          <Providers>{children}</Providers>
+        </ClerkProvider>
         <Link
           href={SOCIAL_LINKS.website}
           target="_blank"
