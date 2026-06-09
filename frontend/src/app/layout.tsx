@@ -110,8 +110,8 @@ const websiteSchema = {
 };
 
 const clerkPublishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ?? "";
-const isTestClerkKey = /^pk_test_[A-Za-z0-9]+$/.test(clerkPublishableKey);
-const isLiveClerkKey = /^pk_live_[A-Za-z0-9]+$/.test(clerkPublishableKey);
+const isTestClerkKey = clerkPublishableKey.startsWith("pk_test_");
+const isLiveClerkKey = clerkPublishableKey.startsWith("pk_live_");
 const siteUrlHost = process.env.NEXT_PUBLIC_SITE_URL
   ? new URL(process.env.NEXT_PUBLIC_SITE_URL).hostname.toLowerCase()
   : "";
@@ -151,7 +151,7 @@ export default function RootLayout({
                 </SignUpButton>
               </Show>
               <Show when="signed-in">
-                <UserButton afterSignOutUrl="/" />
+                <UserButton />
               </Show>
             </header>
             <Providers>{children}</Providers>

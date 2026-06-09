@@ -67,7 +67,6 @@ export default function LoginPage() {
           transition={{ duration: 0.5, delay: 0.15 }}
           className="text-center space-y-3"
         >
-          {/* @ts-expect-error */}
           <Link href="/" className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-violet-500/5 border border-violet-400/20 shadow-[0_0_40px_rgba(124,58,237,.1)] mb-1 overflow-hidden transition-all duration-300 hover:border-violet-400/40 hover:shadow-[0_0_50px_rgba(124,58,237,.2)]">
             <Image src="/favicon.png" alt="SentinelNexus" width={56} height={56} className="object-cover" />
           </Link>
@@ -129,7 +128,6 @@ export default function LoginPage() {
             <span className="text-xs text-gray-600">No account?</span>
           </div>
 
-          {/* @ts-expect-error */}
           <Link href="/signup" className="block">
             <motion.button
               whileHover={{ scale: 1.01 }}
@@ -148,10 +146,8 @@ export default function LoginPage() {
           className="text-center text-xs text-gray-600"
         >
           By signing in, you agree to our{" "}
-          {/* @ts-expect-error */}
           <Link href="/legal/terms" className="text-violet-400 hover:underline">Terms of Service</Link>
           {" "}and{" "}
-          {/* @ts-expect-error */}
           <Link href="/legal/privacy" className="text-violet-400 hover:underline">Privacy Policy</Link>
         </motion.p>
       </motion.div>

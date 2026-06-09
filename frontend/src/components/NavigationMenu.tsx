@@ -1,5 +1,5 @@
 import React from 'react';
-import StaggeredMenu from './StaggeredMenu';
+import { StaggeredMenu } from './StaggeredMenu';
 
 interface NavigationMenuProps {
   logoUrl?: string;

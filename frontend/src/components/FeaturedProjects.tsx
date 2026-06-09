@@ -1,5 +1,5 @@
 import React from 'react';
-import MagicBento from './MagicBento';
+import { MagicBento } from './MagicBento';
 
 interface FeaturedProject {
   color: string;

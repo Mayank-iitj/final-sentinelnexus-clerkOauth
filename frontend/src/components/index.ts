@@ -28,7 +28,7 @@
  * 
  * Dependencies: GSAP
  */
-export { default as StaggeredMenu } from '@/components/StaggeredMenu';
+export { StaggeredMenu } from './StaggeredMenu';
 
 /**
  * MagicBento
@@ -50,7 +50,7 @@ export { default as StaggeredMenu } from '@/components/StaggeredMenu';
  * 
  * Dependencies: GSAP
  */
-export { default as MagicBento } from '@/components/MagicBento';
+export { MagicBento } from './MagicBento';
 
 // ============================================================================
 // WRAPPER COMPONENTS (Pre-configured)
@@ -80,7 +80,7 @@ export { default as MagicBento } from '@/components/MagicBento';
  * Usage:
  * <NavigationMenu position="right" accentColor="#5227FF" />
  */
-export { NavigationMenu } from '@/components/NavigationMenu';
+export { NavigationMenu } from './NavigationMenu';
 
 /**
  * FeaturedProjects
@@ -106,7 +106,7 @@ export { NavigationMenu } from '@/components/NavigationMenu';
  *   glowColor="132, 0, 255"
  * />
  */
-export { FeaturedProjects } from '@/components/FeaturedProjects';
+export { FeaturedProjects } from './FeaturedProjects';
 
 // ============================================================================
 // SHOWCASE PAGES
