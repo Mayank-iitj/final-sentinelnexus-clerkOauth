@@ -109,10 +109,9 @@ const websiteSchema = {
   }
 };
 
-const clerkPublishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ?? "";
-const isTestClerkKey = clerkPublishableKey.startsWith("pk_test_");
-const isLiveClerkKey = clerkPublishableKey.startsWith("pk_live_");
-const hasUsableClerkPublishableKey = isTestClerkKey || isLiveClerkKey;
+const envKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || "";
+const isValidKey = envKey.startsWith("pk_test_") || envKey.startsWith("pk_live_");
+const safePublishableKey = isValidKey ? envKey : "pk_test_ZHVtbXkua2V5LmNsZXJrLmFjY291bnRzLmRldiQ";
 
 export default function RootLayout({
   children,
@@ -130,30 +129,24 @@ export default function RootLayout({
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }} />
         <SplashScreen />
-        <ClerkProvider publishableKey={hasUsableClerkPublishableKey ? clerkPublishableKey : "pk_test_ZHVtbXkua2V5LmNsZXJrLmFjY291bnRzLmRldiQ"}>
-          {hasUsableClerkPublishableKey ? (
-            <header className="fixed top-4 right-20 z-50 flex items-center gap-4">
-              <Show when="signed-out">
-                <SignInButton mode="modal">
-                  <button className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-violet-700">
-                    Sign In
-                  </button>
-                </SignInButton>
-                <SignUpButton mode="modal">
-                  <button className="rounded-lg border border-violet-500/30 bg-violet-500/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-violet-500/20">
-                    Sign Up
-                  </button>
-                </SignUpButton>
-              </Show>
-              <Show when="signed-in">
-                <UserButton />
-              </Show>
-            </header>
-          ) : (
-            <header className="fixed top-4 right-20 z-50 rounded-lg border border-amber-400/25 bg-amber-300/10 px-4 py-2 text-xs font-medium text-amber-200 backdrop-blur-sm">
-              Auth disabled: use pk_test locally or mayankiitj.in with pk_live
-            </header>
-          )}
+        <ClerkProvider publishableKey={safePublishableKey}>
+          <header className="fixed top-4 right-20 z-50 flex items-center gap-4">
+            <Show when="signed-out">
+              <SignInButton mode="modal">
+                <button className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-violet-700">
+                  Sign In
+                </button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <button className="rounded-lg border border-violet-500/30 bg-violet-500/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-violet-500/20">
+                  Sign Up
+                </button>
+              </SignUpButton>
+            </Show>
+            <Show when="signed-in">
+              <UserButton />
+            </Show>
+          </header>
           <Providers>{children}</Providers>
         </ClerkProvider>
         <Link

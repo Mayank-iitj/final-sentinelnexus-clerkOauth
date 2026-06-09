@@ -57,7 +57,7 @@ jobs:
       run:
         working-directory: frontend
     env:
-      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_clerk_dummy
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_ZHVtbXkua2V5LmNsZXJrLmFjY291bnRzLmRldiQ
       CLERK_SECRET_KEY: sk_test_clerk_dummy
     steps:
       - uses: actions/checkout@v4
