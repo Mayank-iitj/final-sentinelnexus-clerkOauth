@@ -26,10 +26,19 @@ const isPublicRoute = createRouteMatcher([
 ]);
 
 export default clerkMiddleware(async (auth, request) => {
-  if (!isPublicRoute(request)) {
-    await auth.protect();
+  try {
+    if (!isPublicRoute(request)) {
+      await auth.protect();
+    }
+  } catch (err) {
+    console.error("Clerk Middleware Error:", err);
+    // If auth fails on Vercel edge, redirect to login instead of crashing
+    const url = new URL("/login", request.url);
+    return Response.redirect(url, 302);
   }
 });
+
+export const runtime = "nodejs";
 
 export const config = {
   matcher: [

@@ -13,6 +13,8 @@ import { Providers } from "../components/Providers";
 import { SplashScreen } from "../components/SplashScreen";
 import { SOCIAL_LINKS } from "../lib/social-links";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://sentinelnexus.mayankiitj.in"),
   title: {

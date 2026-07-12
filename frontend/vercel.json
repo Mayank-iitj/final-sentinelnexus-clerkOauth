@@ -3,24 +3,7 @@
   "framework": "nextjs",
   "buildCommand": "next build",
   "installCommand": "npm install",
-  "env": [
-    {
-      "key": "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
-      "description": "Clerk publishable key for frontend authentication"
-    },
-    {
-      "key": "CLERK_SECRET_KEY",
-      "description": "Clerk secret key for backend authentication (used in middleware if needed)"
-    },
-    {
-      "key": "NEXT_PUBLIC_SITE_URL",
-      "description": "Public site URL for metadata and links"
-    },
-    {
-      "key": "NEXT_PUBLIC_API_URL",
-      "description": "Backend API URL for client requests"
-    }
-  ],
+
   "headers": [
     {
       "source": "/(.*)",
