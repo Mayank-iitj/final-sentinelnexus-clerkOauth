@@ -11,6 +11,29 @@ import {
 } from "../lib/animations";
 import Image from "next/image";
 import { SOCIAL_LINKS } from "../lib/social-links";
+import { CardNav, CardSwap, Card, ScrollStack, ScrollStackItem, LogoLoop, BorderGlow, StarBorder } from "../components";
+
+const navItems = [
+  {
+    label: "Product",
+    bgColor: "#1B1722",
+    textColor: "#fff",
+    links: [
+      { label: "Features", href: "#features" },
+      { label: "How it Works", href: "#workflow" },
+      { label: "Pricing", href: "#pricing" }
+    ]
+  },
+  {
+    label: "Resources", 
+    bgColor: "#2F293A",
+    textColor: "#fff",
+    links: [
+      { label: "Documentation", href: "/docs" },
+      { label: "Blog", href: "/blog" }
+    ]
+  }
+];
 
 /* ── Data ─────────────────────────────────────────────────────────────────── */
 const features = [
@@ -57,47 +80,21 @@ export default function HomePage() {
   return (
     <main className="nubien-bg min-h-screen text-white overflow-hidden">
       {/* ── Header (initial + animate) ─────────────────────────────────── */}
-      <motion.header
-        initial={{ y: -30, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ ...springSmooth, delay: 0.1 }}
-        className="sticky top-0 z-50 border-b border-white/[0.06] bg-black/60 backdrop-blur-xl"
-      >
-        <div className="section-shell flex h-[72px] items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 group">
-              <motion.div
-              animate={pulseGlow}
-              className="nub-card flex h-9 w-9 items-center justify-center rounded-xl overflow-hidden transition-all duration-300 group-hover:border-violet-400/40"
-            >
-              <Image src="/favicon.png" alt="SentinelNexus" width={36} height={36} className="object-cover" />
-            </motion.div>
-            <span className="text-lg font-semibold tracking-tight">SentinelNexus</span>
-          </Link>
-
-          <nav className="hidden lg:flex items-center gap-8 text-sm text-gray-400">
-            {[
-              { href: "#features", label: "Features" },
-              { href: "#workflow", label: "How it Works" },
-              { href: "#pricing", label: "Pricing" },
-              { href: "/docs", label: "Docs" },
-              { href: "/blog", label: "Blog" },
-            ].map((l) => (
-              <motion.div key={l.href} whileHover={{ y: -2, color: "#fff" }} transition={{ type: "spring", stiffness: 500, damping: 20 }}>
-                <Link href={l.href}>{l.label}</Link>
-              </motion.div>
-            ))}
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <motion.div whileHover={hoverScale} whileTap={tapShrink}>
-              <Link href="/login" className="btn-ghost !py-2 !px-5 text-xs sm:text-sm">Sign In</Link>
-            </motion.div>
-            <motion.div whileHover={hoverScale} whileTap={tapBounce}>
-              <Link href="/signup" className="btn-primary !py-2 !px-5 text-xs sm:text-sm hidden sm:inline-flex">Get Started</Link>
-            </motion.div>
-          </div>
+      {/* ── Header (CardNav) ───────────────────────────────────────────── */}
+      <div className="sticky top-0 z-50 pt-4 pointer-events-none">
+        <div className="pointer-events-auto">
+          <CardNav
+            logo="/favicon.png"
+            logoAlt="SentinelNexus Logo"
+            items={navItems}
+            baseColor="rgba(0,0,0,0.7)"
+            menuColor="#fff"
+            buttonBgColor="#7c3aed"
+            buttonTextColor="#fff"
+            className="backdrop-blur-xl"
+          />
         </div>
-      </motion.header>
+      </div>
 
       {/* ── Hero (parallax + scroll + spring) ──────────────────────────── */}
       <section ref={heroRef} className="relative section-shell pt-24 pb-20 text-center">
@@ -126,7 +123,17 @@ export default function HomePage() {
           <Reveal delay={0.3}>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <motion.div whileHover={{ scale: 1.05, boxShadow: "0 0 50px rgba(124,58,237,0.35)" }} whileTap={tapBounce} transition={springBouncy}>
-                <Link href="/signup" className="btn-primary text-base !px-8 !py-3.5">Get Started Free</Link>
+                <StarBorder
+                  as="div"
+                  color="rgba(124,58,237,0.8)"
+                  speed="4s"
+                  thickness={2}
+                  className="rounded-full p-0"
+                >
+                  <Link href="/signup" className="btn-primary text-base !px-8 !py-3.5 m-[2px] block w-full h-full rounded-full">
+                    Get Started Free
+                  </Link>
+                </StarBorder>
               </motion.div>
               <motion.div whileHover={{ scale: 1.03, borderColor: "rgba(124,58,237,0.5)" }} whileTap={tapShrink}>
                 <a href="#workflow" className="btn-ghost text-base !px-8 !py-3.5">See How It Works</a>
@@ -136,28 +143,22 @@ export default function HomePage() {
           </Reveal>
         </motion.div>
 
-        {/* Dashboard preview (scale-in + hover lift) */}
-        <Reveal delay={0.45} variant="scaleIn" className="mt-16 relative z-10">
-          <div className="relative mx-auto max-w-5xl">
-            <div className="absolute -inset-4 rounded-3xl bg-gradient-to-b from-violet-600/15 via-transparent to-transparent blur-2xl pointer-events-none" />
-            <motion.div whileHover={hoverLift} className="nub-card violet-glow relative overflow-hidden rounded-3xl p-7 text-left">
-              <div className="mb-6 flex items-center justify-between text-sm text-gray-400">
-                <span className="font-medium text-white">SentinelNexus Dashboard</span>
-                <motion.span animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 2, repeat: Infinity }} className="section-pill !text-[10px] !py-1">Live Preview</motion.span>
-              </div>
-              <motion.div variants={staggerContainer} initial="hidden" whileInView="show" viewport={{ once: true }} className="grid gap-4 md:grid-cols-3">
-                {[
-                  ["Critical Alerts", "07", "text-red-400"],
-                  ["Prompt Attacks", "31", "text-amber-400"],
-                  ["PII Incidents", "04", "text-violet-400"],
-                ].map(([label, val, color]) => (
-                  <motion.div key={label} variants={fadeUp} whileHover={{ scale: 1.04, ...hoverGlow }} whileTap={tapShrink} className="rounded-2xl border border-white/[0.06] bg-black/40 p-5 cursor-default">
-                    <div className="text-xs text-gray-500">{label}</div>
-                    <div className={`mt-2 text-3xl font-bold ${color}`}>{val}</div>
-                  </motion.div>
-                ))}
-              </motion.div>
-            </motion.div>
+        {/* CardSwap feature showcase */}
+        <Reveal delay={0.45} variant="scaleIn" className="mt-24 relative z-10 flex justify-center">
+          <div className="relative mx-auto" style={{ height: '400px', width: '500px' }}>
+            <CardSwap cardDistance={60} verticalDistance={70} delay={4000} pauseOnHover={true}>
+              {[
+                ["Critical Alerts", "07", "text-red-400", "Detected in last 24h"],
+                ["Prompt Attacks", "31", "text-amber-400", "Jailbreak attempts blocked"],
+                ["PII Incidents", "04", "text-violet-400", "Data exfiltration prevented"],
+              ].map(([label, val, color, subtitle]) => (
+                <Card key={label} className="nub-card violet-glow flex flex-col justify-center items-center h-full w-full p-8 text-center bg-black/90 backdrop-blur-2xl border-white/[0.1]">
+                  <div className="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-6">{label}</div>
+                  <div className={`text-8xl font-black tracking-tighter ${color}`}>{val}</div>
+                  <div className="mt-6 text-sm text-gray-500">{subtitle}</div>
+                </Card>
+              ))}
+            </CardSwap>
           </div>
         </Reveal>
       </section>
@@ -174,76 +175,101 @@ export default function HomePage() {
             <motion.div
               key={f.title}
               variants={i % 2 === 0 ? slideLeft : slideRight}
-              whileHover={{ y: -8, scale: 1.01, boxShadow: "0 0 50px rgba(124,58,237,0.08)", borderColor: "rgba(124,58,237,0.25)" }}
               whileTap={tapShrink}
-              className="nub-card glare-hover h-full rounded-2xl p-7 cursor-default group"
+              className="h-full"
             >
-              <motion.div
-                whileHover={{ rotate: [0, -10, 10, 0], scale: 1.1 }}
-                transition={{ duration: 0.5 }}
-                className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.03] text-sm font-bold text-violet-300 transition-all duration-300 group-hover:bg-violet-500/10 group-hover:border-violet-400/30"
+              <BorderGlow
+                className="h-full w-full"
+                backgroundColor="#0a0a0a"
+                glowColor="268 100 76"
+                edgeSensitivity={40}
+                glowRadius={50}
+                animated={true}
               >
-                {f.icon}
-              </motion.div>
-              <h3 className="mb-2 text-lg font-semibold">{f.title}</h3>
-              <p className="text-sm text-gray-500 leading-relaxed">{f.desc}</p>
+                <div className="h-full rounded-2xl p-7 cursor-default group border border-white/[0.04]">
+                  <motion.div
+                    whileHover={{ rotate: [0, -10, 10, 0], scale: 1.1 }}
+                    transition={{ duration: 0.5 }}
+                    className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.03] text-sm font-bold text-violet-300 transition-all duration-300 group-hover:bg-violet-500/10 group-hover:border-violet-400/30"
+                  >
+                    {f.icon}
+                  </motion.div>
+                  <h3 className="mb-2 text-lg font-semibold text-white">{f.title}</h3>
+                  <p className="text-sm text-gray-400 leading-relaxed">{f.desc}</p>
+                </div>
+              </BorderGlow>
             </motion.div>
           ))}
         </motion.div>
       </section>
 
-      {/* ── Marquee (infinite tween) ──────────────────────────────────── */}
-      <section className="section-shell py-8 overflow-hidden">
-        <div className="nub-card rounded-2xl px-3 py-3">
-          <div className="infinite-track">
-            {[...marqueeItems, ...marqueeItems].map((item, i) => (
-              <motion.span
-                key={`${item}-${i}`}
-                whileHover={{ scale: 1.1, backgroundColor: "rgba(124,58,237,0.15)" }}
-                className="whitespace-nowrap rounded-full border border-violet-400/20 bg-violet-500/8 px-4 py-1.5 text-xs text-violet-300/80 cursor-default"
-              >
-                {item}
-              </motion.span>
-            ))}
-          </div>
+      {/* ── Marquee (LogoLoop) ────────────────────────────────────────── */}
+      <section className="section-shell py-8">
+        <div className="nub-card rounded-3xl px-6 py-8 flex flex-col gap-6 overflow-hidden relative">
+          <LogoLoop
+            logos={marqueeItems.map(item => ({
+              node: (
+                <span className="whitespace-nowrap rounded-full border border-violet-400/20 bg-violet-500/10 px-5 py-2.5 text-sm font-medium text-violet-300/90 cursor-default shadow-[0_0_15px_rgba(124,58,237,0.1)]">
+                  {item}
+                </span>
+              )
+            }))}
+            speed={40}
+            direction="left"
+            logoHeight={40}
+            gap={24}
+            hoverSpeed={10}
+            fadeOut={true}
+            fadeOutColor="transparent"
+          />
+          <LogoLoop
+            logos={marqueeItems.slice().reverse().map(item => ({
+              node: (
+                <span className="whitespace-nowrap rounded-full border border-violet-400/20 bg-violet-500/10 px-5 py-2.5 text-sm font-medium text-violet-300/90 cursor-default shadow-[0_0_15px_rgba(124,58,237,0.1)]">
+                  {item}
+                </span>
+              )
+            }))}
+            speed={40}
+            direction="right"
+            logoHeight={40}
+            gap={24}
+            hoverSpeed={10}
+            fadeOut={true}
+            fadeOutColor="transparent"
+          />
         </div>
       </section>
 
-      {/* ── How it Works (layout + drag) ──────────────────────────────── */}
-      <section id="workflow" className="section-shell py-24">
-        <Reveal className="mb-14 text-center">
+      {/* ── How it Works (ScrollStack) ────────────────────────────────── */}
+      <section id="workflow" className="w-full">
+        <Reveal className="mb-8 pt-24 text-center">
           <div className="section-pill mx-auto mb-4">Our Process</div>
           <h2 className="text-4xl sm:text-5xl font-bold tracking-tight">for AI-Driven Security</h2>
           <p className="mt-4 text-gray-500 max-w-xl mx-auto">Three steps to production-grade AI protection.</p>
         </Reveal>
 
-        <div className="relative mx-auto max-w-4xl space-y-6">
-          {processSteps.map((step, i) => (
-            <Reveal key={step.num} delay={i * 0.12} variant={i % 2 === 0 ? "slideLeft" : "slideRight"}>
-              <motion.div
-                layout
-                whileHover={{ x: 12, borderColor: "rgba(124,58,237,0.3)" }}
-                whileTap={tapShrink}
-                drag="x"
-                dragConstraints={{ left: 0, right: 0 }}
-                dragElastic={0.1}
-                transition={springSmooth}
-                className="nub-card flex items-start gap-5 rounded-2xl p-7 cursor-grab active:cursor-grabbing"
-              >
-                <motion.div
-                  animate={{ rotate: [0, 360] }}
-                  transition={{ duration: 20 + i * 5, repeat: Infinity, ease: "linear" }}
-                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-violet-400/30 bg-violet-500/10 text-sm font-bold text-violet-300"
-                >
-                  {step.num}
-                </motion.div>
-                <div>
-                  <h3 className="text-xl font-semibold mb-1">{step.title}</h3>
-                  <p className="text-gray-500 leading-relaxed">{step.desc}</p>
+        <div className="h-[120vh] w-full relative -mt-10">
+          <ScrollStack
+            itemDistance={120}
+            itemScale={0.05}
+            itemStackDistance={40}
+            useWindowScroll={true}
+          >
+            {processSteps.map((step) => (
+              <ScrollStackItem key={step.num} itemClassName="max-w-3xl mx-auto">
+                <div className="nub-card flex items-start gap-8 rounded-[40px] p-10 bg-[#0a0a0a] border border-white/[0.08] backdrop-blur-3xl shadow-[0_0_50px_rgba(124,58,237,0.05)]">
+                  <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-[24px] border border-violet-400/30 bg-violet-500/10 text-2xl font-black text-violet-400">
+                    {step.num}
+                  </div>
+                  <div className="pt-2">
+                    <h3 className="text-3xl font-bold mb-3 text-white tracking-tight">{step.title}</h3>
+                    <p className="text-lg text-gray-400 leading-relaxed max-w-xl">{step.desc}</p>
+                  </div>
                 </div>
-              </motion.div>
-            </Reveal>
-          ))}
+              </ScrollStackItem>
+            ))}
+          </ScrollStack>
         </div>
       </section>
 
@@ -367,9 +393,16 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-          <div className="section-shell mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.06] pt-6 text-sm text-gray-600">
+          <div className="section-shell mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.06] pt-6 text-sm text-gray-600 relative z-10">
             <span>© {new Date().getFullYear()} SentinelNexus. All rights reserved.</span>
             <span>Made with ❤️ for AI Safety</span>
+          </div>
+
+          {/* Huge Background Text Watermark */}
+          <div className="pointer-events-none relative flex w-full items-center justify-center overflow-hidden pt-12 pb-2">
+            <span className="text-[15vw] font-black leading-none tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white/[0.07] to-transparent select-none">
+              SENTINELNEXUS
+            </span>
           </div>
         </footer>
       </Reveal>

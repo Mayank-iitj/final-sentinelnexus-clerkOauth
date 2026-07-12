@@ -31,6 +31,79 @@
 export { StaggeredMenu } from './StaggeredMenu';
 
 /**
+ * CardSwap
+ *
+ * Animated card stack with GSAP-powered 3D swapping effect.
+ * Cards cycle through a stack with configurable easing, spacing, and timing.
+ *
+ * Import: import CardSwap, { Card } from '@/components/CardSwap/CardSwap';
+ * Location: frontend/src/components/CardSwap/
+ *
+ * Dependencies: GSAP
+ */
+export { default as CardSwap, Card } from './CardSwap/CardSwap';
+
+/**
+ * CardNav
+ *
+ * Animated card-based navigation menu with GSAP transitions.
+ * Expands to reveal categorized navigation links in styled cards.
+ *
+ * Import: import CardNav from '@/components/CardNav/CardNav';
+ * Location: frontend/src/components/CardNav/
+ *
+ * Dependencies: GSAP
+ */
+export { default as CardNav } from './CardNav/CardNav';
+
+/**
+ * ScrollStack
+ *
+ * Scroll-driven card stacking with pinning, scaling, rotation, and blur.
+ * Uses Lenis for smooth scrolling. Cards stack as the user scrolls down.
+ *
+ * Import: import ScrollStack, { ScrollStackItem } from '@/components/ScrollStack/ScrollStack';
+ * Location: frontend/src/components/ScrollStack/
+ *
+ * Dependencies: Lenis
+ */
+export { default as ScrollStack, ScrollStackItem } from './ScrollStack/ScrollStack';
+
+/**
+ * LogoLoop
+ *
+ * Infinite logo/brand carousel with configurable speed, direction, and hover effects.
+ * Supports both React node logos and image-based logos. Pure CSS + requestAnimationFrame.
+ *
+ * Import: import LogoLoop from '@/components/LogoLoop/LogoLoop';
+ * Location: frontend/src/components/LogoLoop/
+ *
+ * Dependencies: None
+ */
+export { default as LogoLoop } from './LogoLoop/LogoLoop';
+
+/**
+ * BorderGlow
+ *
+ * Interactive border glow effect that responds to cursor proximity.
+ * Creates a beautiful mesh gradient glow on the edges when hovered.
+ *
+ * Import: import BorderGlow from '@/components/BorderGlow/BorderGlow';
+ * Location: frontend/src/components/BorderGlow/
+ */
+export { default as BorderGlow } from './BorderGlow/BorderGlow';
+
+/**
+ * StarBorder
+ *
+ * Animated border gradient component that looks like a shooting star traveling around the border.
+ *
+ * Import: import StarBorder from '@/components/StarBorder/StarBorder';
+ * Location: frontend/src/components/StarBorder/
+ */
+export { default as StarBorder } from './StarBorder/StarBorder';
+
+/**
  * MagicBento
  * 
  * Interactive bento grid cards with particle and spotlight effects.

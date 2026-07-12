@@ -2,7 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Script from "next/script";
 import "./globals.css";
-import { ClerkProvider, SignInButton, SignUpButton, Show, UserButton } from "@clerk/nextjs";
+import {
+  ClerkProvider,
+  Show,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from "@clerk/nextjs";
 import { Providers } from "../components/Providers";
 import { SplashScreen } from "../components/SplashScreen";
 import { SOCIAL_LINKS } from "../lib/social-links";
@@ -109,11 +115,6 @@ const websiteSchema = {
   }
 };
 
-const envKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || "";
-const isVercelPreview = process.env.VERCEL_ENV === "preview" || process.env.NEXT_PUBLIC_VERCEL_ENV === "preview";
-const isValidKey = (envKey.startsWith("pk_test_") || envKey.startsWith("pk_live_")) && !(envKey.startsWith("pk_live_") && isVercelPreview);
-const safePublishableKey = isValidKey ? envKey : "pk_test_ZHVtbXkua2V5LmNsZXJrLmFjY291bnRzLmRldiQ";
-
 export default function RootLayout({
   children,
 }: {
@@ -130,7 +131,7 @@ export default function RootLayout({
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }} />
         <SplashScreen />
-        <ClerkProvider publishableKey={safePublishableKey}>
+        <ClerkProvider>
           <header className="fixed top-4 right-20 z-50 flex items-center gap-4">
             <Show when="signed-out">
               <SignInButton mode="modal">

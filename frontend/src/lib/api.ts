@@ -1,6 +1,6 @@
 /**
  * SentinelNexus API Client
- * Typed fetch-based client using cookie auth (credentials: 'include').
+ * Typed fetch-based client using Clerk JWT for auth.
  * All methods are real, no mocks.
  */
 
@@ -9,6 +9,19 @@ import { buildApiUrl, getApiBaseUrl } from "./api-base";
 const API_BASE = getApiBaseUrl();
 
 type Fetcher = typeof fetch;
+
+// ── Clerk Token Management ──────────────────────────────────────────────────
+// Components call setClerkToken() with the result of useAuth().getToken()
+// to make the token available to all API calls.
+let _clerkToken: string | null = null;
+
+export function setClerkToken(token: string | null) {
+  _clerkToken = token;
+}
+
+export function getClerkToken(): string | null {
+  return _clerkToken;
+}
 
 async function api<T>(
   path: string,
@@ -19,20 +32,9 @@ async function api<T>(
     ...(options.headers as Record<string, string> ?? {}),
   };
 
-  // Add Clerk token if available (client-side only)
-  if (typeof window !== "undefined") {
-    try {
-      // @ts-ignore - Clerk is injected into window
-      const session = window.Clerk?.session;
-      if (session) {
-        const token = await session.getToken();
-        if (token) {
-          headers["Authorization"] = `Bearer ${token}`;
-        }
-      }
-    } catch (e) {
-      console.warn("Failed to get Clerk token", e);
-    }
+  // Attach Clerk JWT if available
+  if (_clerkToken) {
+    headers["Authorization"] = `Bearer ${_clerkToken}`;
   }
 
   const res = await fetch(buildApiUrl(path), {
