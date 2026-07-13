@@ -33,7 +33,7 @@ class Settings(BaseSettings):
 
     # CORS / hosts
     ALLOWED_ORIGINS: List[str] = Field(default_factory=lambda: ["http://localhost:3000"])
-    ALLOWED_HOSTS: List[str] = Field(default_factory=lambda: ["localhost", "127.0.0.1", "testserver"])
+    ALLOWED_HOSTS: List[str] = Field(default_factory=lambda: ["*"])
 
     # Clerk Auth
     CLERK_SECRET_KEY: str = ""
