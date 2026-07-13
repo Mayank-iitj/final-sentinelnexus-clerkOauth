@@ -125,6 +125,16 @@ export { default as StarBorder } from './StarBorder/StarBorder';
  */
 export { MagicBento } from './MagicBento';
 
+/**
+ * GlassSurface
+ * 
+ * Interactive glass surface with displacement map effects.
+ * 
+ * Import: import GlassSurface from '@/components/GlassSurface/GlassSurface';
+ * Location: frontend/src/components/GlassSurface/
+ */
+export { default as GlassSurface } from './GlassSurface/GlassSurface';
+
 // ============================================================================
 // WRAPPER COMPONENTS (Pre-configured)
 // ============================================================================

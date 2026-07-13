@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
@@ -20,7 +21,7 @@ export default function PricingPage() {
     <main className="mesh-background min-h-screen text-white">
       <header className="sticky top-0 z-50 border-b border-white/10 bg-black/35 backdrop-blur-xl">
         <div className="section-shell flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-3"><div className="glass-card flex h-9 w-9 items-center justify-center rounded-xl text-xs font-bold">SN</div><span className="font-display text-lg font-semibold">SentinelNexus</span></Link>
+          <Link href="/" className="flex items-center gap-3"><Image src="/favicon.png" alt="SentinelNexus" width={36} height={36} className="rounded-xl object-cover" /><span className="font-display text-lg font-semibold">SentinelNexus</span></Link>
           <div className="flex items-center gap-3">
             <Link href="/login" className="rounded-full border border-white/20 px-4 py-2 text-sm text-gray-200 hover:border-violet-400 hover:text-white transition">Sign In</Link>
             <Link href="/signup" className="hidden sm:inline-flex rounded-full bg-violet-600 px-5 py-2 text-sm font-semibold text-white hover:bg-violet-500 transition">Get Started</Link>

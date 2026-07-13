@@ -4,8 +4,7 @@ export const dynamic = "force-dynamic";
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { AppShell } from "../../components/AppShell";
-
-const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
+import { getDashboardStats } from "../../lib/api";
 
 interface UserProfile {
   id: string;
@@ -34,12 +33,9 @@ export default function SettingsPage() {
 
     const fetchProfile = async () => {
       try {
-        const dashRes = await fetch(`${API}/dashboard/stats`, { credentials: "include" });
-        if (dashRes.ok) {
-          const stats = await dashRes.json();
-          setScanCount(stats.total_scans ?? 0);
-          setProjectCount(stats.active_projects ?? 0);
-        }
+        const stats = await getDashboardStats();
+        setScanCount(stats.total_scans ?? 0);
+        setProjectCount(stats.active_projects ?? 0);
       } catch {
         // silently fail
       }
@@ -175,7 +171,7 @@ export default function SettingsPage() {
             <div className="space-y-2 text-xs text-gray-400">
               <div className="flex justify-between items-center py-2 border-b border-white/[0.06]">
                 <span>API Base URL</span>
-                <code className="text-violet-300 text-[11px]">{API}</code>
+                <code className="text-violet-300 text-[11px]">/api/v1</code>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-white/[0.06]">
                 <span>Auth Method</span>
