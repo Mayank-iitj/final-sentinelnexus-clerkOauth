@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 const BACKEND_ORIGIN = (
   process.env.BACKEND_URL ||
   process.env.BACKEND_ORIGIN ||
-  "http://localhost:8000"
+  "https://sentinelnexus-backend.onrender.com"
 ).replace(/\/+$/, "");
 
 const HOP_BY_HOP_HEADERS = new Set([
