@@ -22,7 +22,7 @@ const nextConfig = {
   },
   async rewrites() {
     const backendOrigin =
-      process.env.BACKEND_URL || process.env.BACKEND_ORIGIN || "http://localhost:8000";
+      process.env.BACKEND_URL || process.env.BACKEND_ORIGIN || "https://sentinelnexus-backend.onrender.com";
 
     return [
       {
