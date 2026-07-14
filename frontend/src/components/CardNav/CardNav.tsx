@@ -2,6 +2,8 @@
 
 import { useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
 import { gsap } from "gsap";
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 import "./CardNav.css";
 
 /* ── Inline arrow icon (replaces react-icons/go GoArrowUpRight) ────── */
@@ -65,6 +67,9 @@ const CardNav: React.FC<CardNavProps> = ({
   const navRef = useRef<HTMLElement>(null);
   const cardsRef = useRef<HTMLDivElement[]>([]);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
+
+  const { isSignedIn } = useUser();
+  const router = useRouter();
 
   const calculateHeight = () => {
     const navEl = navRef.current;
@@ -211,10 +216,11 @@ const CardNav: React.FC<CardNavProps> = ({
 
           <button
             type="button"
+            onClick={() => router.push(isSignedIn ? "/dashboard" : "/signup")}
             className="card-nav-cta-button"
             style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
           >
-            Get Started
+            {isSignedIn ? "Dashboard" : "Get Started"}
           </button>
         </div>
 

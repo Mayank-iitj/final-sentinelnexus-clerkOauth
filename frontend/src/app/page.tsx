@@ -12,6 +12,7 @@ import {
 import Image from "next/image";
 import { SOCIAL_LINKS } from "../lib/social-links";
 import { CardNav, CardSwap, Card, ScrollStack, ScrollStackItem, LogoLoop, BorderGlow, StarBorder, ScrollVelocity } from "../components";
+import { useUser } from "@clerk/nextjs";
 
 const navItems = [
   {
@@ -71,6 +72,8 @@ const faqItems = [
 
 /* ── Page ─────────────────────────────────────────────────────────────────── */
 export default function HomePage() {
+  const { isSignedIn } = useUser();
+  const getStartedHref = isSignedIn ? "/dashboard" : "/signup";
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const heroY = useTransform(scrollYProgress, [0, 1], [0, -100]);
@@ -130,8 +133,8 @@ export default function HomePage() {
                   thickness={2}
                   className="rounded-full p-0"
                 >
-                  <Link href="/signup" className="btn-primary text-base !px-8 !py-3.5 m-[2px] block w-full h-full rounded-full">
-                    Get Started Free
+                  <Link href={getStartedHref} className="btn-primary text-base !px-8 !py-3.5 m-[2px] block w-full h-full rounded-full">
+                    {isSignedIn ? "Go to Dashboard" : "Get Started Free"}
                   </Link>
                 </StarBorder>
               </motion.div>
@@ -310,7 +313,7 @@ export default function HomePage() {
                 ))}
               </ul>
               <motion.div whileHover={{ scale: 1.03 }} whileTap={tapBounce}>
-                <Link href="/signup" className={`mt-7 ${plan.popular ? "btn-primary" : "btn-ghost"} w-full justify-center`}>{plan.cta}</Link>
+                <Link href={getStartedHref} className={`mt-7 ${plan.popular ? "btn-primary" : "btn-ghost"} w-full justify-center`}>{isSignedIn ? "Go to Dashboard" : plan.cta}</Link>
               </motion.div>
             </motion.div>
           ))}
