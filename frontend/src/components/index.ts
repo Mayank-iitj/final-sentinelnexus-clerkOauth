@@ -139,6 +139,8 @@ export { default as GlassSurface } from './GlassSurface/GlassSurface';
 // WRAPPER COMPONENTS (Pre-configured)
 // ============================================================================
 
+export { ScrollVelocity } from './ScrollVelocity/ScrollVelocity';
+
 /**
  * NavigationMenu
  * 

@@ -11,7 +11,7 @@ import {
 } from "../lib/animations";
 import Image from "next/image";
 import { SOCIAL_LINKS } from "../lib/social-links";
-import { CardNav, CardSwap, Card, ScrollStack, ScrollStackItem, LogoLoop, BorderGlow, StarBorder } from "../components";
+import { CardNav, CardSwap, Card, ScrollStack, ScrollStackItem, LogoLoop, BorderGlow, StarBorder, ScrollVelocity } from "../components";
 
 const navItems = [
   {
@@ -356,6 +356,15 @@ export default function HomePage() {
             </motion.div>
           ))}
         </div>
+      </section>
+
+      {/* ── ScrollVelocity Transition ─────────────────────────────────── */}
+      <section className="py-24 overflow-hidden border-t border-white/[0.06]">
+        <ScrollVelocity
+          texts={['SentinelNexus', 'Enterprise AI Security']} 
+          velocity={50} 
+          className="text-white hover:text-white/80 transition-colors duration-500 cursor-default"
+        />
       </section>
 
       {/* ── Footer ────────────────────────────────────────────────────── */}
