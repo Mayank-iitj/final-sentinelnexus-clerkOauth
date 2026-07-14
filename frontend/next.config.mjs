@@ -7,8 +7,6 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  // Output standalone for optimal Vercel cold starts
-  output: "standalone",
   // Image optimization domains (add any CDN domains here)
   images: {
     formats: ["image/avif", "image/webp"],
