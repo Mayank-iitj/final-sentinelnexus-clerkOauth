@@ -38,7 +38,6 @@ export default clerkMiddleware(async (auth, request) => {
   }
 });
 
-export const runtime = "nodejs";
 
 export const config = {
   matcher: [
