@@ -9,12 +9,34 @@ import Image from "next/image";
 import { getUnreadCount } from "../lib/api";
 
 const navItems = [
-  { href: "/dashboard",      label: "Dashboard",      icon: "◈" },
-  { href: "/scanner",        label: "Scanner",         icon: "⬡" },
-  { href: "/projects",       label: "Projects",        icon: "▤" },
-  { href: "/reports",        label: "Reports",         icon: "☰" },
-  { href: "/notifications",  label: "Notifications",   icon: "⚐" },
-  { href: "/settings",       label: "Settings",        icon: "⚙" },
+  { href: "/dashboard", label: "Dashboard", icon: "◈" },
+  { href: "/boardroom", label: "Boardroom", icon: "❖" },
+  { href: "/trust-score", label: "Trust Score", icon: "✦" },
+  { href: "/heatmap", label: "Risk Heatmap", icon: "🗺" },
+  { href: "/agents/marketplace", label: "Marketplace", icon: "◒" },
+  { href: "/agents/red-team", label: "Red Team AI", icon: "🔴" },
+  { href: "/agents/blue-team", label: "Blue Team AI", icon: "🔵" },
+  { href: "/simulator", label: "Attack Simulator", icon: "⚔" },
+  { href: "/governance", label: "AI Governance", icon: "⬡" },
+  { href: "/compliance", label: "Compliance Auto", icon: "✓" },
+  { href: "/compliance/copilot", label: "Compliance Chat", icon: "💬" },
+  { href: "/regulations", label: "Global Regs", icon: "⚖" },
+  { href: "/explainability", label: "Explainability", icon: "👁" },
+  { href: "/threats/zero-day", label: "Zero-Day Engine", icon: "⚡" },
+  { href: "/threats/deepfake", label: "Deepfake Detection", icon: "🎭" },
+  { href: "/threats/dark-web", label: "Dark Web Monitor", icon: "🕸" },
+  { href: "/supply-chain", label: "Supply Chain", icon: "🔗" },
+  { href: "/digital-twin", label: "Digital Twin", icon: "👯" },
+  { href: "/attack-graph", label: "Attack Graph", icon: "🕸" },
+  { href: "/time-machine", label: "Time Machine", icon: "⏳" },
+  { href: "/remediation", label: "Auto Patch", icon: "🔧" },
+  { href: "/insurance", label: "Cyber Insurance", icon: "🛡" },
+  { href: "/copilot", label: "Exec Copilot", icon: "🤖" },
+  { href: "/scanner", label: "Scanner", icon: "⬡" },
+  { href: "/projects", label: "Projects", icon: "▤" },
+  { href: "/reports", label: "Reports", icon: "☰" },
+  { href: "/notifications", label: "Notifications", icon: "⚐" },
+  { href: "/settings", label: "Settings", icon: "⚙" },
 ];
 
 export function AppShell({ children }: PropsWithChildren) {
@@ -56,7 +78,7 @@ export function AppShell({ children }: PropsWithChildren) {
       {/* Nav */}
       <nav className="flex-1 px-3 py-4 space-y-0.5 text-sm overflow-y-auto">
         {navItems.map((item) => {
-          const active = pathname === item.href || (pathname?.startsWith(item.href + "/") ?? false);
+          const active = pathname === item.href || (item.href !== "/dashboard" && pathname?.startsWith(item.href + "/") ?? false);
           const isNotifications = item.href === "/notifications";
           return (
             <Link
