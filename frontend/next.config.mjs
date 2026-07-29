@@ -5,9 +5,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Fix file tracing root for monorepo — ensures Vercel bundles
-  // all middleware dependencies (Clerk) correctly
-  outputFileTracingRoot: path.resolve(__dirname, ".."),
+  // Fix file tracing root removed — Vercel handles this natively 
+  // when the Project Root is correctly set to 'frontend'.
   reactStrictMode: true,
   poweredByHeader: false,
   // Skip type checks during production builds to avoid

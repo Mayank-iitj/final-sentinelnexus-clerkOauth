@@ -41,8 +41,11 @@ const features = [
   { title: "Code Security Scanning", desc: "120+ SAST rules for secrets, injections, and IaC misconfigurations with CVSS v3.1 scoring.", icon: "</>" },
   { title: "Prompt Injection Defense", desc: "Detect jailbreaks, system prompt leakage, and PII exfiltration across LLM conversations.", icon: "!>" },
   { title: "PII & Data Protection", desc: "Credit cards (Luhn), SSNs, IBANs, emails — automated compliance evidence trails.", icon: "⊕" },
+  { title: "Universal AI Trust Score™", desc: "Real-time, dynamic risk quantification engine combining vulnerabilities, supply chain risk, and brand trust.", icon: "★" },
+  { title: "Real-Time Digital Twin", desc: "Interactive live attack graphs and zero-day threat prediction for your entire AI infrastructure.", icon: "⚄" },
+  { title: "Autonomous Red/Blue Agents", desc: "Continuous automated attack simulation and infrastructure-as-code patch generation.", icon: "⚔" },
   { title: "AI Risk Scoring", desc: "IEEE-precise CVSS v3.1 base scores with 8-metric vector strings and CWE mappings.", icon: "R+" },
-  { title: "Real-time Alerts", desc: "Instant notifications for critical threats with severity filtering and bulk actions.", icon: "⚡" },
+  { title: "Global Regulation Engine", desc: "One-click multi-framework compliance automation with automated evidence collection.", icon: "⚖" },
   { title: "PDF Report Generation", desc: "HackerOne-style PDF security reports with executive summaries and full evidence.", icon: "☰" },
 ];
 
@@ -53,8 +56,17 @@ const plans = [
 ];
 
 const marqueeItems = [
+  "Universal AI Trust Score™", "Real-Time Organizational Digital Twin", "AI Attack Simulator", 
+  "Autonomous AI Red Team Agent", "Autonomous AI Blue Team Agent", "One-Click Compliance Automation", 
+  "Automated Evidence Collection", "Embeddable Trust Certificate", "Continuous Supply Chain Intelligence", 
+  "AI Executive Copilot", "Interactive Live Attack Graph", "Deepfake & AI Fraud Detection", 
+  "Brand Trust & Dark Web Monitoring", "AI Vendor Risk Rating", "Zero-Day Threat Prediction", 
+  "Security Time Machine", "Business Risk Quantification", "AI Compliance Chat Assistant", 
+  "Autonomous Patch Generator", "Cyber Insurance Readiness", "Global Regulation Intelligence", 
+  "AI Explainability Dashboard", "Security Agent Marketplace", "Public Trust API", 
+  "Global Cyber Risk Heatmap", "AI Boardroom Dashboard", "AI Asset Inventory", 
+  "Model Governance", "Runtime Policy Enforcement", "Audit Trail Management",
   "Prompt Injection", "PII Detection", "SOC2 Evidence", "AI Act Mapping",
-  "Zero-Trust Policies", "Live Risk Graph", "Incident Timelines", "Model Guardrails",
   "CVSS Scoring", "PDF Reports", "CWE Mapping", "SHA-256 Dedup",
 ];
 
