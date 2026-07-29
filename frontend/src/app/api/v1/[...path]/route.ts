@@ -1,10 +1,40 @@
 import { NextRequest } from "next/server";
 
-const BACKEND_ORIGIN = (
-  process.env.BACKEND_URL ||
-  process.env.BACKEND_ORIGIN ||
-  "https://sentinelnexus-backend.onrender.com"
-).replace(/\/+$/, "");
+const PRODUCTION_BACKEND = "https://sentinelnexus-backend.onrender.com";
+
+/**
+ * Resolve the backend origin, guarding against localhost/private addresses
+ * leaking into production (which causes DNS_HOSTNAME_RESOLVED_PRIVATE on Vercel).
+ */
+function resolveBackendOrigin(): string {
+  const raw = (
+    process.env.BACKEND_URL ||
+    process.env.BACKEND_ORIGIN ||
+    PRODUCTION_BACKEND
+  ).replace(/\/+$/, "");
+
+  // If the URL points to localhost or a private address, and we're running
+  // in a deployed environment, fall back to the public backend URL.
+  const isPrivate =
+    raw.includes("localhost") ||
+    raw.includes("127.0.0.1") ||
+    raw.includes("0.0.0.0") ||
+    raw.match(/https?:\/\/10\.\d+\.\d+\.\d+/) !== null ||
+    raw.match(/https?:\/\/192\.168\.\d+\.\d+/) !== null ||
+    raw.match(/https?:\/\/172\.(1[6-9]|2\d|3[01])\.\d+\.\d+/) !== null;
+
+  if (isPrivate && process.env.NODE_ENV === "production") {
+    console.warn(
+      `[proxy] BACKEND_URL "${raw}" resolves to a private address — ` +
+        `using ${PRODUCTION_BACKEND} instead.`
+    );
+    return PRODUCTION_BACKEND;
+  }
+
+  return raw;
+}
+
+const BACKEND_ORIGIN = resolveBackendOrigin();
 
 const HOP_BY_HOP_HEADERS = new Set([
   "connection",

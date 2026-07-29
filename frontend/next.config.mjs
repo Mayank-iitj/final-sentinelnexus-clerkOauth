@@ -21,8 +21,23 @@ const nextConfig = {
     minimumCacheTTL: 60,
   },
   async rewrites() {
-    const backendOrigin =
-      process.env.BACKEND_URL || process.env.BACKEND_ORIGIN || "https://sentinelnexus-backend.onrender.com";
+    let backendOrigin = process.env.BACKEND_URL || process.env.BACKEND_ORIGIN || "https://sentinelnexus-backend.onrender.com";
+    
+    const isPrivate =
+      backendOrigin.includes("localhost") ||
+      backendOrigin.includes("127.0.0.1") ||
+      backendOrigin.includes("0.0.0.0") ||
+      backendOrigin.match(/https?:\/\/10\.\d+\.\d+\.\d+/) !== null ||
+      backendOrigin.match(/https?:\/\/192\.168\.\d+\.\d+/) !== null ||
+      backendOrigin.match(/https?:\/\/172\.(1[6-9]|2\d|3[01])\.\d+\.\d+/) !== null;
+
+    if (isPrivate && process.env.NODE_ENV === "production") {
+      console.warn(
+        `[next.config] BACKEND_URL "${backendOrigin}" resolves to a private address — ` +
+          `falling back to https://sentinelnexus-backend.onrender.com`
+      );
+      backendOrigin = "https://sentinelnexus-backend.onrender.com";
+    }
 
     return [
       {
