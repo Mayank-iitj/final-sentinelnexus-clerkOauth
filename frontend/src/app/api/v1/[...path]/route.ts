@@ -23,7 +23,7 @@ function resolveBackendOrigin(): string {
     raw.match(/https?:\/\/192\.168\.\d+\.\d+/) !== null ||
     raw.match(/https?:\/\/172\.(1[6-9]|2\d|3[01])\.\d+\.\d+/) !== null;
 
-  if (isPrivate && process.env.NODE_ENV === "production") {
+  if (isPrivate && process.env.VERCEL === "1") {
     console.warn(
       `[proxy] BACKEND_URL "${raw}" resolves to a private address — ` +
         `using ${PRODUCTION_BACKEND} instead.`
