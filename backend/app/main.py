@@ -104,6 +104,12 @@ def create_app() -> FastAPI:
         # Initialize database tables if they don't exist (for development)
         try:
             from app.db.database import Base
+            import app.models.governance
+            import app.models.threat
+            import app.models.scan
+            import app.models.project
+            import app.models.alert
+            import app.models.report
             Base.metadata.create_all(bind=engine)
             logger.info("Database tables initialized")
         except Exception as e:

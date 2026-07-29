@@ -2,7 +2,19 @@ from __future__ import annotations
 
 from fastapi import APIRouter
 
-from app.api.v1.endpoints import auth, scans, users, reports, notifications, projects, dashboard, risk
+from app.api.v1.endpoints import (
+    auth,
+    dashboard,
+    projects,
+    scans,
+    users,
+    reports,
+    notifications,
+    risk,
+    governance,
+    threat_intel,
+    trust,
+)
 
 api_router = APIRouter(prefix="/api/v1")
 
@@ -14,4 +26,6 @@ api_router.include_router(notifications.router)
 api_router.include_router(projects.router)
 api_router.include_router(dashboard.router)
 api_router.include_router(risk.router)
-
+api_router.include_router(governance.router)
+api_router.include_router(threat_intel.router)
+api_router.include_router(trust.router)

@@ -4,6 +4,7 @@ import uuid
 from datetime import datetime, timezone
 
 from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, JSON, String, Text
+from sqlalchemy.dialects.postgresql import JSONB
 
 from app.db.database import Base
 
@@ -28,6 +29,9 @@ class Scan(Base):
     cvss_max_score = Column(Float, nullable=True)                   # Highest CVSS v3.1 score in this scan
     finding_count = Column(Integer, default=0, nullable=False)
     duration_ms = Column(Integer, nullable=True)
+
+    trust_score = Column(Integer, nullable=True) # 0-1000 AI Trust Score
+    compliance_frameworks = Column(JSONB, nullable=True) # E.g. {"SOC2": "pass"}
 
     is_archived = Column(Boolean, default=False, nullable=False)
 
