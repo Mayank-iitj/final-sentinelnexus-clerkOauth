@@ -8,7 +8,6 @@ from typing import Any, Dict
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
 from fastapi_limiter import FastAPILimiter
 from loguru import logger
@@ -91,7 +90,6 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    app.add_middleware(TrustedHostMiddleware, allowed_hosts=settings.ALLOWED_HOSTS)
     app.add_middleware(SecurityHeadersMiddleware)
     app.add_middleware(RequestLoggingMiddleware)
 
@@ -113,7 +111,8 @@ def create_app() -> FastAPI:
             Base.metadata.create_all(bind=engine)
             logger.info("Database tables initialized")
         except Exception as e:
-            logger.error(f"Failed to initialize database tables: {e}")
+            if "already exists" not in str(e):
+                logger.error(f"Failed to initialize database tables: {e}")
         
         try:
             # Redis (shared)
@@ -126,7 +125,7 @@ def create_app() -> FastAPI:
             mark_limiter_ready()
             logger.info("Connected to Redis successfully — rate limiter active")
         except Exception as e:
-            logger.warning(f"Failed to connect to Redis. Rate limiting/cache disabled. {e}")
+            logger.warning(f"Failed to connect to Redis. Rate limiting/cache disabled. {str(e).splitlines()[0]}")
             app.state.redis = None
 
         # DB connectivity sanity check early
@@ -140,6 +139,10 @@ def create_app() -> FastAPI:
         redis: Redis | None = getattr(app.state, "redis", None)
         if redis is not None:
             await redis.aclose()
+
+    @app.get("/", include_in_schema=False)
+    async def root() -> Dict[str, str]:
+        return {"status": "ok", "app": settings.APP_NAME}
 
     @app.get("/health", include_in_schema=False)
     async def health() -> Dict[str, Any]:
