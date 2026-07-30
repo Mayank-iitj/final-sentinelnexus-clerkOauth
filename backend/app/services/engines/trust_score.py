@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from sqlalchemy.orm import Session
 from app.models.scan import Scan
 from app.models.governance import Vendor
-from app.models.threat import ThreatIntel  # Assuming this exists or we can mock it more robustly
+from app.models.threat import ThreatPrediction
 
 class TrustScoreEngine:
     """
@@ -66,10 +66,10 @@ class TrustScoreEngine:
             
         # 4. Threat Intel (Query real threat intel if exists, else apply baseline)
         try:
-            threats = db.query(ThreatIntel).filter(ThreatIntel.user_id == user_id, ThreatIntel.status == 'active').all()
-            threat_penalty = min(THR_MAX, sum(t.severity_score for t in threats) * 10)
+            threats = db.query(ThreatPrediction).filter(ThreatPrediction.user_id == user_id, ThreatPrediction.is_active == True).all()
+            threat_penalty = min(THR_MAX, sum(t.confidence_score for t in threats) * 10)
         except Exception:
-            # Fallback if ThreatIntel model isn't fully scaffolded
+            # Fallback if model isn't fully scaffolded
             threat_penalty = 0
             
         # 5. Compliance (Placeholder for policy violations)
