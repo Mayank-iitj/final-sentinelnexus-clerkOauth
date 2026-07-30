@@ -1,10 +1,15 @@
-import Image from "next/image";
-import Link from "next/link";
+import { AppShell } from "../../components/AppShell";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Changelog", description: "SentinelNexus platform release history and updates." };
 
 const releases = [
+  { version: "2.2.0", date: "2026-07-30", title: "Enterprise Identity via Clerk", type: "major", changes: [
+    { tag: "added", text: "Integrated Clerk for robust identity management and authentication" },
+    { tag: "security", text: "Implemented secure Clerk webhook listener for automated user synchronization" },
+    { tag: "improved", text: "Enhanced JWT verification and RS256 signature validation" },
+    { tag: "fixed", text: "Resolved deployment issues with CORS and allowed origins" },
+  ]},
   { version: "2.1.0", date: "2026-05-01", title: "Google-Only OAuth & Backend Hardening", type: "major", changes: [
     { tag: "breaking", text: "Removed GitHub and Microsoft OAuth providers — Google only" },
     { tag: "added", text: "Resilient rate limiter with Redis fallback (no-crash on Redis down)" },
@@ -43,16 +48,9 @@ const tagColors: Record<string, string> = {
 
 export default function ChangelogPage() {
   return (
-    <main className="mesh-background min-h-screen text-white">
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-black/35 backdrop-blur-xl">
-        <div className="section-shell flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-3"><Image src="/favicon.png" alt="SentinelNexus" width={36} height={36} className="rounded-xl object-cover" /><span className="font-display text-lg font-semibold">SentinelNexus</span></Link>
-          <Link href="/login" className="rounded-full border border-white/20 px-4 py-2 text-sm text-gray-200 hover:border-violet-400 hover:text-white transition">Sign In</Link>
-        </div>
-      </header>
-
-      <div className="section-shell py-12 max-w-3xl">
-        <h1 className="font-display text-4xl font-extrabold mb-2">Changelog</h1>
+    <AppShell>
+      <div className="max-w-3xl pb-20">
+        <h1 className="font-display text-4xl font-extrabold mb-2 text-white">Changelog</h1>
         <p className="text-gray-400 mb-10">Track every update, improvement, and fix across SentinelNexus releases.</p>
 
         <div className="relative">
@@ -61,7 +59,7 @@ export default function ChangelogPage() {
             {releases.map((r) => (
               <div key={r.version} className="relative pl-10">
                 <div className="absolute left-2.5 top-1.5 w-3 h-3 rounded-full bg-violet-500 border-2 border-slate-950" />
-                <div className="glass-card rounded-2xl p-5">
+                <div className="glass-card rounded-2xl p-5 border border-white/[0.06] bg-black/40">
                   <div className="flex items-center gap-3 mb-3 flex-wrap">
                     <span className="text-sm font-bold text-white">v{r.version}</span>
                     <span className="text-xs text-gray-500">{r.date}</span>
@@ -82,6 +80,6 @@ export default function ChangelogPage() {
           </div>
         </div>
       </div>
-    </main>
+    </AppShell>
   );
 }

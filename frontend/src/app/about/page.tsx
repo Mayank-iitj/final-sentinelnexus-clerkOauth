@@ -60,7 +60,7 @@ export default function AboutPage() {
         <section className="glass-card space-y-3 rounded-2xl p-5 text-sm text-gray-200">
           <h2 className="text-base font-semibold text-white">Why Teams Choose Us</h2>
           <ul className="list-disc space-y-1 pl-5">
-            <li>Google OAuth-first identity flow with secure callback orchestration.</li>
+            <li>Enterprise-grade Authentication via Clerk with seamless integration and session management.</li>
             <li>Production-aware controls and strict environment validation.</li>
             <li>Production-grade scanning with immediate scan results and PDF reporting.</li>
             <li>Clear remediation guidance instead of raw noisy alerts.</li>

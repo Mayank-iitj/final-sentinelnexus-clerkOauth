@@ -2,17 +2,18 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { AppShell } from "../../components/AppShell";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://sentinelnexus-backend.onrender.com/api/v1";
 
 const endpoints = [
   {
-    category: "Authentication",
+    category: "Authentication & Identity",
     items: [
       {
         method: "WEBHOOK",
         path: "/auth/clerk/webhook",
-        desc: "Clerk User Sync Webhook. Hardened with Svix signature verification.",
+        desc: "Clerk User Sync Webhook. Hardened with Svix signature verification. Automatically synchronizes user creation, updates, and deletion events from Clerk to the SentinelNexus database.",
         auth: "Public (Svix Header Required)",
       },
       {
@@ -88,19 +89,11 @@ export default function ApiDocsPage() {
   };
 
   return (
-    <main className="mesh-background min-h-screen text-white pt-24 pb-20">
-      <div className="section-shell max-w-5xl">
-        {/* Header Link Back */}
-        <Link href="/" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-white transition-colors mb-8">
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          Back to Home
-        </Link>
-
+    <AppShell>
+      <div className="max-w-4xl pb-20">
         {/* Hero Section */}
         <div className="mb-12">
-          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-extrabold tracking-tight text-white">
             API Reference
           </h1>
           <p className="mt-4 text-gray-400 text-lg max-w-2xl">
@@ -212,7 +205,7 @@ export default function ApiDocsPage() {
             Our engineering team can help you build custom security scanners for proprietary codebases or specific compliance requirements.
           </p>
           <Link 
-            href="/contact"
+            href="/support"
             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-violet-600 text-white text-sm font-semibold hover:bg-violet-500 transition-all shadow-[0_0_20px_rgba(124,58,237,0.3)]"
           >
             Contact Integration Team
@@ -222,6 +215,6 @@ export default function ApiDocsPage() {
           </Link>
         </div>
       </div>
-    </main>
+    </AppShell>
   );
 }
