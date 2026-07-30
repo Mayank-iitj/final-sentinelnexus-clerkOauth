@@ -1,11 +1,11 @@
-﻿"use client";
+"use client";
 
 import React, { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import FadingVideo from "../components/FadingVideo/FadingVideo";
 import BlurText from "../components/BlurText/BlurText";
-import { Shield, ChevronDown, Menu, X } from "lucide-react";
+
 import { useUser } from "@clerk/nextjs";
 import { ScrollStack, ScrollStackItem, LogoLoop, BorderGlow, ScrollVelocity } from "../components";
 import { Reveal, staggerContainer, slideLeft, slideRight, tapShrink, springSmooth, springBouncy, scaleIn, tapBounce } from "../lib/animations";
@@ -60,7 +60,6 @@ export default function HomePage() {
   const { isSignedIn } = useUser();
   const getStartedHref = isSignedIn ? "/dashboard" : "/signup";
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <main className="min-h-screen bg-black relative selection:bg-white/20">
@@ -324,54 +323,7 @@ export default function HomePage() {
           src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260511_230229_7c9bc431-46cf-489a-948d-e8144d8eb5d4.mp4"
           className="absolute inset-0 w-full h-full object-cover z-0"
         />
-        {/* Navbar */}
-        <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-5 sm:px-8 py-5">
-          <div className="flex items-center gap-2 text-white font-medium text-base">
-            <Shield size={22} strokeWidth={1.5} />
-            <span>SentinelNexus</span>
-          </div>
-          <div className="hidden md:flex liquid-glass items-center gap-1 rounded-xl px-2 py-2">
-            {[
-              { label: 'Platform', active: true },
-              { label: 'Solutions', dropdown: true },
-              { label: 'Resources' },
-              { label: 'Company' }
-            ].map((link) => (
-              <button key={link.label} className={`flex items-center gap-0.5 px-3 py-1.5 rounded-md text-sm transition-colors ${link.active ? 'bg-white/15 text-white' : 'text-white/70 hover:text-white'}`}>
-                {link.label}
-                {link.dropdown && <ChevronDown size={13} className="mt-px" />}
-              </button>
-            ))}
-          </div>
-          <div className="hidden md:flex items-center gap-3">
-            <button className="liquid-glass text-white text-sm font-medium px-4 py-2.5 rounded-full hover:bg-white/5 transition-colors">Log in</button>
-            <button className="bg-white text-black text-sm font-medium px-4 py-2.5 rounded-full hover:bg-white/90 transition-colors">Begin Now</button>
-          </div>
-          <button className="md:hidden liquid-glass text-white p-2 rounded-lg" onClick={() => setMenuOpen(!menuOpen)}>
-            {menuOpen ? <X size={18} /> : <Menu size={18} />}
-          </button>
-        </div>
 
-        {/* Mobile Menu */}
-        {menuOpen && (
-          <div className="absolute top-[72px] left-4 right-4 z-30 md:hidden liquid-glass rounded-2xl p-4 flex flex-col gap-1">
-            {[
-              { label: 'Platform', active: true },
-              { label: 'Solutions', dropdown: true },
-              { label: 'Resources' },
-              { label: 'Company' }
-            ].map((link) => (
-              <button key={link.label} className="flex items-center justify-between w-full px-4 py-3 rounded-lg text-sm text-white/70 hover:text-white">
-                {link.label}
-                {link.dropdown && <ChevronDown size={13} />}
-              </button>
-            ))}
-            <div className="flex gap-2 mt-2 pt-3 border-t border-white/10">
-              <button className="flex-1 liquid-glass text-white text-sm font-medium px-4 py-2.5 rounded-full hover:bg-white/5 transition-colors">Log in</button>
-              <button className="flex-1 bg-white text-black text-sm font-medium px-4 py-2.5 rounded-full hover:bg-white/90 transition-colors">Begin Now</button>
-            </div>
-          </div>
-        )}
 
         {/* Hero content (bottom-left) */}
         <div className="absolute bottom-0 left-0 z-20 px-6 sm:px-12 pb-10 sm:pb-16 max-w-2xl">
