@@ -11,6 +11,7 @@ import {
 } from "@clerk/nextjs";
 import { Providers } from "../components/Providers";
 import { SplashScreen } from "../components/SplashScreen";
+import { TargetCursor } from "../components";
 import { SOCIAL_LINKS } from "../lib/social-links";
 import { Instrument_Serif, Barlow } from "next/font/google";
 
@@ -139,6 +140,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${instrumentSerif.variable} ${barlow.variable}`}>
       <body className="antialiased font-body bg-black text-white">
+        <TargetCursor cursorColor="#7c3aed" cursorColorOnTarget="#a78bfa" />
         <Script
           src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs"
           type="module"

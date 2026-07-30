@@ -135,6 +135,7 @@ export { MagicBento } from './MagicBento';
  */
 export { default as GlassSurface } from './GlassSurface/GlassSurface';
 export { Plasma } from './Plasma';
+export { TargetCursor } from './TargetCursor';
 
 // ============================================================================
 // WRAPPER COMPONENTS (Pre-configured)

@@ -19,90 +19,100 @@ export default function SignupPage() {
   }, [isSignedIn, isLoaded, router]);
 
   return (
-    <main className="nubien-bg min-h-screen bg-black flex items-center justify-center p-4 relative">
-      {/* Violet glow */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[350px] bg-violet-600/8 rounded-full blur-[100px] pointer-events-none" />
-
-      <motion.div
-        initial={{ opacity: 0, y: 20, scale: 0.98 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="w-full max-w-md space-y-8 relative"
-      >
-        {/* Logo */}
+    <main className="min-h-screen grid lg:grid-cols-2 bg-black text-white font-body relative">
+      {/* Left Side - Branding/Summary */}
+      <div className="hidden lg:flex flex-col justify-center px-12 xl:px-20 relative overflow-hidden border-r border-white/10">
+        <div className="absolute top-1/4 -left-20 w-[400px] h-[400px] bg-violet-600/20 rounded-full blur-[100px] pointer-events-none" />
+        
         <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.15 }}
-          className="text-center space-y-3"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+          className="relative z-10 max-w-lg space-y-12"
         >
-          <Link href="/" className="inline-flex items-center justify-center h-12 w-12 rounded-2xl bg-violet-500/5 border border-violet-400/20 shadow-[0_0_40px_rgba(124,58,237,.1)] overflow-hidden transition-all duration-300 hover:border-violet-400/40 hover:shadow-[0_0_50px_rgba(124,58,237,.2)]">
-            <Image src="/favicon.png" alt="SentinelNexus" width={48} height={48} className="object-cover" />
-          </Link>
-          <div>
-            <h1 className="text-2xl font-bold text-white">Create account</h1>
-            <p className="text-sm text-gray-500 mt-1">Join SentinelNexus today</p>
+          <div className="flex items-center gap-4">
+            <Link href="/" className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-violet-500/10 border border-violet-400/20">
+              <Image src="/favicon.png" alt="SentinelNexus" width={32} height={32} className="object-cover" />
+            </Link>
+            <span className="text-xl font-bold tracking-tight">SentinelNexus</span>
+          </div>
+
+          <div className="space-y-6">
+            <h1 className="text-4xl font-heading italic tracking-tight">Join SentinelNexus today</h1>
+            <p className="text-gray-400 leading-relaxed text-lg">
+              Create an account to begin automating your AI compliance and deploying real-time guardrails for your LLMs.
+            </p>
+          </div>
+
+          <div className="space-y-4 pt-8 border-t border-white/10">
+            <div className="flex items-center gap-4 text-sm text-gray-300">
+              <span className="text-violet-400">✓</span> Connect in seconds
+            </div>
+            <div className="flex items-center gap-4 text-sm text-gray-300">
+              <span className="text-violet-400">✓</span> Interactive Live Scans
+            </div>
+            <div className="flex items-center gap-4 text-sm text-gray-300">
+              <span className="text-violet-400">✓</span> Automated PDF Reports
+            </div>
           </div>
         </motion.div>
+      </div>
 
-        {/* Clerk SignUp component */}
+      {/* Right Side - Form Container */}
+      <div className="bg-white text-black flex items-center justify-center p-6 lg:p-12 relative h-screen overflow-y-auto">
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.25 }}
-          className="flex justify-center"
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="w-full max-w-[400px] space-y-8 my-auto"
         >
-          <SignUp
-            appearance={{
-              elements: {
-                rootBox: "w-full",
-                card: "bg-transparent shadow-none border-0 w-full",
-                headerTitle: "text-white",
-                headerSubtitle: "text-gray-400",
-                socialButtonsBlockButton:
-                  "bg-white/[0.03] border border-white/[0.08] text-white hover:bg-white/[0.06] hover:border-violet-400/30 transition-all duration-200",
-                socialButtonsBlockButtonText: "text-white font-medium",
-                formFieldLabel: "text-gray-400",
-                formFieldInput:
-                  "bg-white/[0.03] border-white/[0.08] text-white placeholder:text-gray-600 focus:border-violet-400/50 focus:ring-violet-500/20",
-                footerActionLink: "text-violet-400 hover:text-violet-300",
-                formButtonPrimary:
-                  "bg-violet-600 hover:bg-violet-700 text-white transition-colors",
-                dividerLine: "bg-white/10",
-                dividerText: "text-gray-600",
-                identityPreview: "bg-white/[0.03] border-white/[0.08]",
-                identityPreviewText: "text-white",
-                identityPreviewEditButton: "text-violet-400",
-                formFieldAction: "text-violet-400",
-                otpCodeFieldInput: "border-white/[0.08] text-white",
-                alert: "bg-red-900/20 border-red-500/30 text-red-300",
-                alertText: "text-red-300",
-              },
-              layout: {
-                socialButtonsPlacement: "top",
-                socialButtonsVariant: "blockButton",
-              },
-            }}
-            routing="path"
-            path="/signup"
-            signInUrl="/login"
-            forceRedirectUrl="/dashboard"
-          />
-        </motion.div>
+          <div className="lg:hidden flex items-center gap-3 mb-8">
+            <Image src="/favicon.png" alt="SentinelNexus" width={32} height={32} />
+            <span className="font-bold text-xl">SentinelNexus</span>
+          </div>
 
-        {/* Footer */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="text-center text-xs text-gray-600"
-        >
-          By signing up, you agree to our{" "}
-          <Link href="/legal/terms" className="text-violet-400 hover:underline">Terms</Link>
-          {" "}and{" "}
-          <Link href="/legal/privacy" className="text-violet-400 hover:underline">Privacy Policy</Link>
-        </motion.p>
-      </motion.div>
+          <div className="flex justify-center w-full">
+            <SignUp
+              appearance={{
+                elements: {
+                  rootBox: "w-full",
+                  card: "bg-transparent shadow-none border-0 w-full p-0",
+                  headerTitle: "text-gray-900 text-2xl font-bold mb-1",
+                  headerSubtitle: "text-gray-500",
+                  socialButtonsBlockButton: "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm",
+                  socialButtonsBlockButtonText: "text-gray-700 font-medium",
+                  formFieldLabel: "text-gray-700 font-medium",
+                  formFieldInput: "bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-violet-500 focus:ring-violet-500/20 shadow-sm",
+                  footerActionLink: "text-violet-600 hover:text-violet-700 font-medium",
+                  formButtonPrimary: "bg-violet-600 hover:bg-violet-700 text-white shadow-sm transition-colors",
+                  dividerLine: "bg-gray-200",
+                  dividerText: "text-gray-500 bg-white px-3",
+                  formFieldAction: "text-violet-600 font-medium",
+                  otpCodeFieldInput: "border-gray-200 text-gray-900 focus:border-violet-500 focus:ring-violet-500/20",
+                  alert: "bg-red-50 border-red-200 text-red-600",
+                  alertText: "text-red-600",
+                  footer: "hidden", 
+                },
+                layout: {
+                  socialButtonsPlacement: "top",
+                  socialButtonsVariant: "blockButton",
+                },
+              }}
+              routing="path"
+              path="/signup"
+              signInUrl="/login"
+              forceRedirectUrl="/dashboard"
+            />
+          </div>
+
+          <p className="text-center text-xs text-gray-500 pt-6">
+            By signing up, you agree to our{" "}
+            <Link href="/legal/terms" className="text-violet-600 hover:underline">Terms</Link>
+            {" "}and{" "}
+            <Link href="/legal/privacy" className="text-violet-600 hover:underline">Privacy Policy</Link>
+          </p>
+        </motion.div>
+      </div>
     </main>
   );
 }
