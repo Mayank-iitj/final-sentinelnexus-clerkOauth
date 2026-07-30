@@ -36,6 +36,8 @@ const navItems = [
   }
 ];
 
+import Strands from "../components/Strands/Strands";
+
 /* ── Data ─────────────────────────────────────────────────────────────────── */
 const features = [
   { title: "Code Security Scanning", desc: "120+ SAST rules for secrets, injections, and IaC misconfigurations with CVSS v3.1 scoring.", icon: "</>" },
@@ -112,10 +114,27 @@ export default function HomePage() {
       </div>
 
       {/* ── Hero (parallax + scroll + spring) ──────────────────────────── */}
-      <section ref={heroRef} className="relative section-shell pt-24 pb-20 text-center">
-        <motion.div animate={{ floatY }} className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-violet-600/10 blur-[120px] pointer-events-none" />
+      <section ref={heroRef} className="relative section-shell pt-24 pb-20 text-center min-h-[90vh]">
+        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-50">
+          <Strands
+            colors={["#F97316", "#7C3AED", "#06B6D4"]}
+            count={3}
+            speed={0.5}
+            amplitude={1.2}
+            waviness={1.2}
+            thickness={0.8}
+            glow={2.6}
+            taper={3}
+            spread={1}
+            intensity={0.6}
+            saturation={1.5}
+            opacity={1}
+            scale={1.5}
+          />
+        </div>
+        <motion.div animate={{ floatY }} className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-violet-600/10 blur-[120px] pointer-events-none z-0" />
 
-        <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative z-10 mx-auto max-w-4xl space-y-8">
+        <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative z-10 mx-auto max-w-4xl space-y-8 pt-10">
           <Reveal>
             <motion.div whileHover={{ hoverScale }} className="section-pill mx-auto cursor-default">
               <span>🛡️</span><span>AI Security V2.0 is now live</span>
