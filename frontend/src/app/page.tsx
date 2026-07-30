@@ -113,11 +113,11 @@ export default function HomePage() {
 
       {/* ── Hero (parallax + scroll + spring) ──────────────────────────── */}
       <section ref={heroRef} className="relative section-shell pt-24 pb-20 text-center">
-        <motion.div animate={floatY} className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-violet-600/10 blur-[120px] pointer-events-none" />
+        <motion.div animate={{ floatY }} className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-violet-600/10 blur-[120px] pointer-events-none" />
 
         <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative z-10 mx-auto max-w-4xl space-y-8">
           <Reveal>
-            <motion.div whileHover={hoverScale} className="section-pill mx-auto cursor-default">
+            <motion.div whileHover={{ hoverScale }} className="section-pill mx-auto cursor-default">
               <span>🛡️</span><span>AI Security V2.0 is now live</span>
             </motion.div>
           </Reveal>
@@ -137,7 +137,7 @@ export default function HomePage() {
 
           <Reveal delay={0.3}>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <motion.div whileHover={{ scale: 1.05, boxShadow: "0 0 50px rgba(124,58,237,0.35)" }} whileTap={tapBounce} transition={springBouncy}>
+              <motion.div whileHover={{ scale: 1.05, boxShadow: "0 0 50px rgba(124,58,237,0.35)" }} whileTap={{ tapBounce }} transition={{ springBouncy }}>
                 <StarBorder
                   as="div"
                   color="rgba(124,58,237,0.8)"
@@ -150,7 +150,7 @@ export default function HomePage() {
                   </Link>
                 </StarBorder>
               </motion.div>
-              <motion.div whileHover={{ scale: 1.03, borderColor: "rgba(124,58,237,0.5)" }} whileTap={tapShrink}>
+              <motion.div whileHover={{ scale: 1.03, borderColor: "rgba(124,58,237,0.5)" }} whileTap={{ tapShrink }}>
                 <a href="#workflow" className="btn-ghost text-base !px-8 !py-3.5">See How It Works</a>
               </motion.div>
             </div>
@@ -190,7 +190,7 @@ export default function HomePage() {
             <motion.div
               key={f.title}
               variants={i % 2 === 0 ? slideLeft : slideRight}
-              whileTap={tapShrink}
+              whileTap={{ tapShrink }}
               className="h-full"
             >
               <BorderGlow
@@ -302,7 +302,7 @@ export default function HomePage() {
               variants={scaleIn}
               layout
               whileHover={{ y: -12, transition: { type: "spring", stiffness: 400, damping: 15 } }}
-              whileTap={tapShrink}
+              whileTap={{ tapShrink }}
               className={`nub-card glare-hover relative rounded-2xl p-8 h-full flex flex-col cursor-default ${plan.popular ? "violet-glow" : ""}`}
             >
               <span className="section-pill !text-[10px] mb-4 self-start">{plan.tag}</span>
@@ -312,7 +312,7 @@ export default function HomePage() {
                   initial={{ opacity: 0, scale: 0.5 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={springBouncy}
+                  transition={{ springBouncy }}
                   className="text-4xl font-bold"
                 >{plan.price}</motion.span>
                 <span className="text-sm text-gray-500 ml-1">{plan.period}</span>
@@ -324,7 +324,7 @@ export default function HomePage() {
                   </motion.li>
                 ))}
               </ul>
-              <motion.div whileHover={{ scale: 1.03 }} whileTap={tapBounce}>
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ tapBounce }}>
                 <Link href={getStartedHref} className={`mt-7 ${plan.popular ? "btn-primary" : "btn-ghost"} w-full justify-center`}>{isSignedIn ? "Go to Dashboard" : plan.cta}</Link>
               </motion.div>
             </motion.div>
@@ -343,17 +343,17 @@ export default function HomePage() {
             <motion.div
               key={i}
               layout
-              transition={springSmooth}
+              transition={{ springSmooth }}
               className="nub-card rounded-2xl overflow-hidden"
             >
               <motion.button
                 onClick={() => setOpenFaq(openFaq === i ? null : i)}
                 whileHover={{ backgroundColor: "rgba(255,255,255,0.02)" }}
-                whileTap={tapShrink}
+                whileTap={{ tapShrink }}
                 className="w-full flex items-center justify-between p-5 text-left text-sm font-medium text-white"
               >
                 <span>{faq.q}</span>
-                <motion.span animate={{ rotate: openFaq === i ? 45 : 0 }} transition={springBouncy} className="text-violet-400 text-lg">+</motion.span>
+                <motion.span animate={{ rotate: openFaq === i ? 45 : 0 }} transition={{ springBouncy }} className="text-violet-400 text-lg">+</motion.span>
               </motion.button>
               <AnimatePresence>
                 {openFaq === i && (
@@ -410,7 +410,7 @@ export default function HomePage() {
                   { href: SOCIAL_LINKS.github, label: "GitHub" },
                   { href: SOCIAL_LINKS.instagram, label: "Instagram" },
                 ].map((s) => (
-                  <motion.div key={s.label} whileHover={{ x: 6, borderColor: "rgba(124,58,237,0.35)", color: "#fff" }} whileTap={tapShrink} transition={springSmooth}>
+                  <motion.div key={s.label} whileHover={{ x: 6, borderColor: "rgba(124,58,237,0.35)", color: "#fff" }} whileTap={{ tapShrink }} transition={{ springSmooth }}>
                     <Link href={s.href} target="_blank" rel="noopener noreferrer" className="glare-hover flex items-center gap-2.5 rounded-xl border border-white/[0.06] bg-white/[0.02] px-3 py-2">{s.label}</Link>
                   </motion.div>
                 ))}

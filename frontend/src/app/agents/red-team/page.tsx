@@ -1,5 +1,5 @@
 "use client";
-import { AppShell } from "../../components/AppShell";
+import { AppShell } from "../../../components/AppShell";
 import { motion } from "framer-motion";
 
 export default function AgentsRedTeamPage() {
@@ -7,9 +7,9 @@ export default function AgentsRedTeamPage() {
     <AppShell>
       <div className="space-y-6 pb-8">
         <motion.div
-          initial={ opacity: 0, y: -10 }
-          animate={ opacity: 1, y: 0 }
-          transition={ duration: 0.5 }
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
           className="flex items-center justify-between"
         >
           <div>
@@ -17,8 +17,8 @@ export default function AgentsRedTeamPage() {
             <p className="text-sm text-gray-500 mt-1">Continuous adversary simulation</p>
           </div>
           <motion.button 
-            whileHover={ scale: 1.02 } 
-            whileTap={ scale: 0.98 }
+            whileHover={{ scale: 1.02 }} 
+            whileTap={{ scale: 0.98 }}
             className="btn-primary !py-2 !px-4 text-sm"
           >
             Configure
@@ -26,9 +26,9 @@ export default function AgentsRedTeamPage() {
         </motion.div>
 
         <motion.div
-          initial={ opacity: 0, y: 20 }
-          animate={ opacity: 1, y: 0 }
-          transition={ duration: 0.5, delay: 0.1 }
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
           className="grid grid-cols-1 md:grid-cols-3 gap-4"
         >
           {[1, 2, 3].map((i) => (
@@ -43,9 +43,9 @@ export default function AgentsRedTeamPage() {
         </motion.div>
 
         <motion.div
-          initial={ opacity: 0, y: 20 }
-          animate={ opacity: 1, y: 0 }
-          transition={ duration: 0.5, delay: 0.2 }
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
           className="nub-card rounded-2xl p-8 border border-white/[0.04] bg-white/[0.01] min-h-[400px] flex items-center justify-center flex-col text-center"
         >
           <div className="text-4xl mb-4 opacity-50">🚧</div>

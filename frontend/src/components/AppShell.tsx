@@ -78,7 +78,7 @@ export function AppShell({ children }: PropsWithChildren) {
       {/* Nav */}
       <nav className="flex-1 px-3 py-4 space-y-0.5 text-sm overflow-y-auto">
         {navItems.map((item) => {
-          const active = pathname === item.href || (item.href !== "/dashboard" && pathname?.startsWith(item.href + "/") ?? false);
+          const active = pathname === item.href || (item.href !== "/dashboard" && (pathname?.startsWith(item.href + "/") ?? false));
           const isNotifications = item.href === "/notifications";
           return (
             <Link
