@@ -12,6 +12,20 @@ import {
 import { Providers } from "../components/Providers";
 import { SplashScreen } from "../components/SplashScreen";
 import { SOCIAL_LINKS } from "../lib/social-links";
+import { Instrument_Serif, Barlow } from "next/font/google";
+
+const instrumentSerif = Instrument_Serif({ 
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-instrument",
+  style: ["italic", "normal"]
+});
+
+const barlow = Barlow({
+  weight: ["300", "400", "500", "600"],
+  subsets: ["latin"],
+  variable: "--font-barlow",
+});
 
 export const dynamic = "force-dynamic";
 
@@ -123,8 +137,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="antialiased" style={{ fontFamily: "Inter, system-ui, sans-serif" }}>
+    <html lang="en" className={`${instrumentSerif.variable} ${barlow.variable}`}>
+      <body className="antialiased font-body bg-black text-white">
         <Script
           src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs"
           type="module"
