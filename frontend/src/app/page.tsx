@@ -7,9 +7,14 @@ import FadingVideo from "../components/FadingVideo/FadingVideo";
 import BlurText from "../components/BlurText/BlurText";
 
 import { useUser } from "@clerk/nextjs";
-import { ScrollStack, ScrollStackItem, LogoLoop, BorderGlow, ScrollVelocity, Plasma } from "../components";
+import { ScrollStack, ScrollStackItem, LogoLoop, BorderGlow, ScrollVelocity, Plasma, PlasmaWave, StaggeredMenu } from "../components";
 import { Reveal, staggerContainer, slideLeft, slideRight, tapShrink, springSmooth, springBouncy, scaleIn, tapBounce } from "../lib/animations";
 import { SOCIAL_LINKS } from "../lib/social-links";
+import {
+  AnimatedSpan,
+  Terminal,
+  TypingAnimation,
+} from "../registry/magicui/terminal";
 
 const features = [
   { title: "Code Security Scanning", desc: "120+ SAST rules for secrets, injections, and IaC misconfigurations with CVSS v3.1 scoring.", icon: "</>" },
@@ -63,38 +68,46 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-black relative selection:bg-white/20">
-      {/* â”€â”€ Section 1: Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Section 1: Hero ─────────────────────────────────── */}
       <section className="relative min-h-screen w-full flex flex-col overflow-hidden bg-black z-0">
-        <FadingVideo
-          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260418_080021_d598092b-c4c2-4e53-8e46-94cf9064cd50.mp4"
-          className="absolute left-1/2 top-0 -translate-x-1/2 object-cover object-top z-0"
-          style={{ width: "120%", height: "120%" }}
-        />
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <Plasma 
+            color="#7c3aed"
+            speed={0.6}
+            direction="forward"
+            scale={1.1}
+            opacity={0.8}
+            mouseInteractive={true}
+          />
+        </div>
 
         {/* Navbar */}
-        <nav className="fixed top-4 left-0 right-0 z-50 px-8 lg:px-16 flex items-center justify-between">
-          <div className="liquid-glass w-12 h-12 rounded-full flex items-center justify-center text-white font-heading italic text-2xl lowercase">
-            S
-          </div>
-          <div className="hidden md:flex liquid-glass rounded-full p-1.5 items-center gap-1">
-            {[
-              { label: "Product", href: "/features" },
-              { label: "Pricing", href: "/pricing" },
-              { label: "Resources", href: "/blog" },
-              { label: "Docs", href: "/docs" },
-              { label: "Changelog", href: "/changelog" }
-            ].map((link) => (
-              <Link key={link.label} href={link.href} className="px-3 py-2 text-sm font-medium text-white/90 font-body hover:text-white transition-colors">
-                {link.label}
-              </Link>
-            ))}
-            <div className="flex items-center gap-2 ml-2">
-              <Link href="/login" className="liquid-glass text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-white/5 transition-colors">Log in</Link>
-              <Link href={getStartedHref} className="bg-white text-black text-sm font-medium px-4 py-2 rounded-full hover:bg-white/90 transition-colors">Begin Now</Link>
-            </div>
-          </div>
-          <div className="w-12 h-12 invisible" />
-        </nav>
+        <StaggeredMenu
+          isFixed={true}
+          position="right"
+          logoUrl="/logo.png"
+          items={[
+            { label: "Product", ariaLabel: "Product Features", link: "/features" },
+            { label: "Pricing", ariaLabel: "Pricing Plans", link: "/pricing" },
+            { label: "Resources", ariaLabel: "Blog & Resources", link: "/blog" },
+            { label: "Docs", ariaLabel: "Documentation", link: "/docs" },
+            { label: "Changelog", ariaLabel: "Changelog", link: "/changelog" },
+            { label: "Login", ariaLabel: "Log in", link: "/login" },
+            { label: "Begin Now", ariaLabel: "Get Started", link: getStartedHref }
+          ]}
+          socialItems={[
+            { label: 'Twitter', link: 'https://twitter.com' },
+            { label: 'GitHub', link: 'https://github.com' },
+            { label: 'LinkedIn', link: 'https://linkedin.com' }
+          ]}
+          displaySocials={true}
+          displayItemNumbering={true}
+          menuButtonColor="#fff"
+          openMenuButtonColor="#fff"
+          changeMenuColorOnOpen={true}
+          colors={['#B497CF', '#5227FF']}
+          accentColor="#5227FF"
+        />
 
         {/* Hero Content */}
         <div className="relative z-10 flex-1 flex flex-col items-center justify-center pt-24 px-4 text-center">
@@ -169,22 +182,41 @@ export default function HomePage() {
           <div className="liquid-glass rounded-full px-4 py-1.5 text-xs font-medium text-white">
             Trusted by leading AI innovators globally
           </div>
-          <div className="flex flex-wrap justify-center gap-12 md:gap-16 mt-2 font-heading italic text-white text-2xl md:text-3xl tracking-tight opacity-80">
-            <span>OpenAI</span>
-            <span>Anthropic</span>
-            <span>HuggingFace</span>
-            <span>Google</span>
-            <span>Meta</span>
+          <div className="w-full max-w-4xl mx-auto mt-4 font-heading italic text-white text-2xl md:text-3xl tracking-tight opacity-80">
+            <LogoLoop
+              logos={[
+                { node: <span className="px-8">OpenAI</span> },
+                { node: <span className="px-8">Anthropic</span> },
+                { node: <span className="px-8">HuggingFace</span> },
+                { node: <span className="px-8">Google</span> },
+                { node: <span className="px-8">Meta</span> },
+                { node: <span className="px-8">Microsoft</span> },
+                { node: <span className="px-8">Mistral AI</span> },
+                { node: <span className="px-8">Cohere</span> },
+              ]}
+              speed={50}
+              direction="left"
+              gap={0}
+              pauseOnHover={true}
+              fadeOut={true}
+              fadeOutColor="transparent"
+            />
           </div>
         </motion.div>
       </section>
 
-      {/* â”€â”€ Section 2: Capabilities â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Section 2: Capabilities ───────────────────────────────── */}
       <section className="relative min-h-screen w-full bg-black z-0">
-        <FadingVideo
-          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260418_094631_d30ab262-45ee-4b7d-99f3-5d5848c8ef13.mp4"
-          className="absolute inset-0 w-full h-full object-cover z-0"
-        />
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <Plasma 
+            color="#7c3aed"
+            speed={0.6}
+            direction="forward"
+            scale={1.1}
+            opacity={0.8}
+            mouseInteractive={true}
+          />
+        </div>
 
         <div className="relative z-10 px-8 md:px-16 lg:px-20 pt-24 pb-10 flex flex-col min-h-screen">
           <div className="mb-auto">
@@ -267,8 +299,31 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* â”€â”€ Marquee (LogoLoop) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Marquee (LogoLoop) ─────────────────────────────────────────── */}
       <section className="py-8 bg-black">
+        <div className="flex justify-center mb-12 relative z-10 px-4">
+          <div className="w-full max-w-2xl">
+            <Terminal>
+              <TypingAnimation delay={0}>$ sentinel scan --target production-cluster</TypingAnimation>
+              <AnimatedSpan delay={1200} className="text-blue-400">
+                [*] Initializing SentinelNexus Autonomous Red Team Agent...
+              </AnimatedSpan>
+              <AnimatedSpan delay={2200} className="text-yellow-400">
+                [!] Analyzing 120+ SAST rules & evaluating CVSS v3.1 metrics...
+              </AnimatedSpan>
+              <AnimatedSpan delay={3200} className="text-yellow-400">
+                [!] Detecting prompt injections and PII exfiltration risks...
+              </AnimatedSpan>
+              <TypingAnimation delay={4600}>$ sentinel status --live</TypingAnimation>
+              <AnimatedSpan delay={6000} className="text-green-400">
+                [+] Scan Complete: 0 High, 2 Medium, 1 Low
+              </AnimatedSpan>
+              <AnimatedSpan delay={6500} className="text-green-400">
+                [+] Trust Score updated to 94. AI Security Posture: SECURE
+              </AnimatedSpan>
+            </Terminal>
+          </div>
+        </div>
         <div className="px-6 py-8 flex flex-col gap-6 overflow-hidden relative">
           <LogoLoop
             logos={marqueeItems.map(item => ({
@@ -305,12 +360,18 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* â”€â”€ Section: Wellness Hero override in Features â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Section: Wellness Hero override in Features ────────── */}
       <section className="relative w-full h-screen overflow-hidden font-geist">
-        <FadingVideo
-          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260511_230229_7c9bc431-46cf-489a-948d-e8144d8eb5d4.mp4"
-          className="absolute inset-0 w-full h-full object-cover z-0"
-        />
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <Plasma 
+            color="#7c3aed"
+            speed={0.6}
+            direction="forward"
+            scale={1.1}
+            opacity={0.8}
+            mouseInteractive={true}
+          />
+        </div>
 
 
         {/* Hero content (bottom-left) */}

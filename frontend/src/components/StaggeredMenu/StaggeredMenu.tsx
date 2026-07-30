@@ -1,40 +1,10 @@
+// @ts-nocheck
 "use client";
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import './StaggeredMenu.css';
-import Image from 'next/image';
 
-interface StaggeredMenuItem {
-  label: string;
-  ariaLabel: string;
-  link: string;
-}
-
-interface StaggeredMenuSocialItem {
-  label: string;
-  link: string;
-}
-
-interface StaggeredMenuProps {
-  position?: 'left' | 'right';
-  colors?: string[];
-  items?: StaggeredMenuItem[];
-  socialItems?: StaggeredMenuSocialItem[];
-  displaySocials?: boolean;
-  displayItemNumbering?: boolean;
-  className?: string;
-  logoUrl?: string;
-  menuButtonColor?: string;
-  openMenuButtonColor?: string;
-  accentColor?: string;
-  changeMenuColorOnOpen?: boolean;
-  isFixed?: boolean;
-  closeOnClickAway?: boolean;
-  onMenuOpen?: () => void;
-  onMenuClose?: () => void;
-}
-
-export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
+export const StaggeredMenu = ({
   position = 'right',
   colors = ['#B497CF', '#5227FF'],
   items = [],
@@ -42,7 +12,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
   displaySocials = true,
   displayItemNumbering = true,
   className,
-  logoUrl = '/favicon.png',
+  logoUrl = '/src/assets/logos/reactbits-gh-white.svg',
   menuButtonColor = '#fff',
   openMenuButtonColor = '#fff',
   accentColor = '#5227FF',
@@ -54,24 +24,24 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
   const openRef = useRef(false);
-  const panelRef = useRef<HTMLElement>(null);
-  const preLayersRef = useRef<HTMLDivElement>(null);
-  const preLayerElsRef = useRef<Element[]>([]);
-  const plusHRef = useRef<HTMLSpanElement>(null);
-  const plusVRef = useRef<HTMLSpanElement>(null);
-  const iconRef = useRef<HTMLSpanElement>(null);
-  const textInnerRef = useRef<HTMLSpanElement>(null);
-  const textWrapRef = useRef<HTMLSpanElement>(null);
+  const panelRef = useRef(null);
+  const preLayersRef = useRef(null);
+  const preLayerElsRef = useRef([]);
+  const plusHRef = useRef(null);
+  const plusVRef = useRef(null);
+  const iconRef = useRef(null);
+  const textInnerRef = useRef(null);
+  const textWrapRef = useRef(null);
   const [textLines, setTextLines] = useState(['Menu', 'Close']);
 
-  const openTlRef = useRef<gsap.core.Timeline | null>(null);
-  const closeTweenRef = useRef<gsap.core.Tween | null>(null);
-  const spinTweenRef = useRef<gsap.core.Tween | null>(null);
-  const textCycleAnimRef = useRef<gsap.core.Tween | null>(null);
-  const colorTweenRef = useRef<gsap.core.Tween | null>(null);
-  const toggleBtnRef = useRef<HTMLButtonElement>(null);
+  const openTlRef = useRef(null);
+  const closeTweenRef = useRef(null);
+  const spinTweenRef = useRef(null);
+  const textCycleAnimRef = useRef(null);
+  const colorTweenRef = useRef(null);
+  const toggleBtnRef = useRef(null);
   const busyRef = useRef(false);
-  const itemEntranceTweenRef = useRef<gsap.core.Tween | null>(null);
+  const itemEntranceTweenRef = useRef(null);
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -83,7 +53,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
       const textInner = textInnerRef.current;
       if (!panel || !plusH || !plusV || !icon || !textInner) return;
 
-      let preLayers: Element[] = [];
+      let preLayers = [];
       if (preContainer) {
         preLayers = Array.from(preContainer.querySelectorAll('.sm-prelayer'));
       }
@@ -128,7 +98,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
       gsap.set(itemEls, { yPercent: 140, rotate: 10 });
     }
     if (numberEls.length) {
-      gsap.set(numberEls, { '--sm-num-opacity': 0 } as any);
+      gsap.set(numberEls, { '--sm-num-opacity': 0 });
     }
     if (socialTitle) {
       gsap.set(socialTitle, { opacity: 0 });
@@ -174,7 +144,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
             ease: 'power2.out',
             '--sm-num-opacity': 1,
             stagger: { each: 0.08, from: 'start' }
-          } as any,
+          },
           itemsStart + 0.1
         );
       }
@@ -213,7 +183,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 
     openTlRef.current = tl;
     return tl;
-  }, [position]);
+  }, []);
 
   const playOpen = useCallback(() => {
     if (busyRef.current) return;
@@ -253,7 +223,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
         }
         const numberEls = Array.from(panel.querySelectorAll('.sm-panel-list[data-numbering] .sm-panel-item'));
         if (numberEls.length) {
-          gsap.set(numberEls, { '--sm-num-opacity': 0 } as any);
+          gsap.set(numberEls, { '--sm-num-opacity': 0 });
         }
         const socialTitle = panel.querySelector('.sm-socials-title');
         const socialLinks = Array.from(panel.querySelectorAll('.sm-socials-link'));
@@ -264,7 +234,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
     });
   }, [position]);
 
-  const animateIcon = useCallback((opening: boolean) => {
+  const animateIcon = useCallback(opening => {
     const icon = iconRef.current;
     if (!icon) return;
     spinTweenRef.current?.kill();
@@ -276,7 +246,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
   }, []);
 
   const animateColor = useCallback(
-    (opening: boolean) => {
+    opening => {
       const btn = toggleBtnRef.current;
       if (!btn) return;
       colorTweenRef.current?.kill();
@@ -306,7 +276,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
     }
   }, [changeMenuColorOnOpen, menuButtonColor, openMenuButtonColor]);
 
-  const animateText = useCallback((opening: boolean) => {
+  const animateText = useCallback(opening => {
     const inner = textInnerRef.current;
     if (!inner) return;
     textCycleAnimRef.current?.kill();
@@ -365,12 +335,12 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
   React.useEffect(() => {
     if (!closeOnClickAway || !open) return;
 
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = event => {
       if (
         panelRef.current &&
-        !panelRef.current.contains(event.target as Node) &&
+        !panelRef.current.contains(event.target) &&
         toggleBtnRef.current &&
-        !toggleBtnRef.current.contains(event.target as Node)
+        !toggleBtnRef.current.contains(event.target)
       ) {
         closeMenu();
       }
@@ -385,7 +355,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
   return (
     <div
       className={(className ? className + ' ' : '') + 'staggered-menu-wrapper' + (isFixed ? ' fixed-wrapper' : '')}
-      style={accentColor ? { ['--sm-accent' as any]: accentColor } : undefined}
+      style={accentColor ? { ['--sm-accent']: accentColor } : undefined}
       data-position={position}
       data-open={open || undefined}
     >
@@ -402,8 +372,8 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
       </div>
       <header className="staggered-menu-header" aria-label="Main navigation header">
         <div className="sm-logo" aria-label="Logo">
-          <Image
-            src={logoUrl || '/favicon.png'}
+          <img
+            src={logoUrl || '/src/assets/logos/reactbits-gh-white.svg'}
             alt="Logo"
             className="sm-logo-img"
             draggable={false}

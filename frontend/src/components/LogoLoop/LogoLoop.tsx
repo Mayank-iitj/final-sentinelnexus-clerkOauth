@@ -1,12 +1,13 @@
+// @ts-nocheck
 "use client";
 import { useCallback, useEffect, useMemo, useRef, useState, memo } from 'react';
 import './LogoLoop.css';
 
 const ANIMATION_CONFIG = { SMOOTH_TAU: 0.25, MIN_COPIES: 2, COPY_HEADROOM: 2 };
 
-const toCssLength = (value: any) => (typeof value === 'number' ? `${value}px` : (value ?? undefined));
+const toCssLength = value => (typeof value === 'number' ? `${value}px` : (value ?? undefined));
 
-const useResizeObserver = (callback: any, elements: any[], dependencies: any[]) => {
+const useResizeObserver = (callback, elements, dependencies) => {
   useEffect(() => {
     if (!window.ResizeObserver) {
       const handleResize = () => callback();
@@ -27,7 +28,7 @@ const useResizeObserver = (callback: any, elements: any[], dependencies: any[]) 
   }, [callback, elements, dependencies]);
 };
 
-const useImageLoader = (seqRef: any, onLoad: any, dependencies: any[]) => {
+const useImageLoader = (seqRef, onLoad, dependencies) => {
   useEffect(() => {
     const images = seqRef.current?.querySelectorAll('img') ?? [];
     if (images.length === 0) {
@@ -39,7 +40,7 @@ const useImageLoader = (seqRef: any, onLoad: any, dependencies: any[]) => {
       remainingImages -= 1;
       if (remainingImages === 0) onLoad();
     };
-    images.forEach((img: any) => {
+    images.forEach(img => {
       const htmlImg = img;
       if (htmlImg.complete) {
         handleImageLoad();
@@ -49,7 +50,7 @@ const useImageLoader = (seqRef: any, onLoad: any, dependencies: any[]) => {
       }
     });
     return () => {
-      images.forEach((img: any) => {
+      images.forEach(img => {
         img.removeEventListener('load', handleImageLoad);
         img.removeEventListener('error', handleImageLoad);
       });
@@ -57,9 +58,9 @@ const useImageLoader = (seqRef: any, onLoad: any, dependencies: any[]) => {
   }, [onLoad, seqRef, dependencies]);
 };
 
-const useAnimationLoop = (trackRef: any, targetVelocity: any, seqWidth: any, seqHeight: any, isHovered: any, hoverSpeed: any, isVertical: any) => {
-  const rafRef = useRef<number | null>(null);
-  const lastTimestampRef = useRef<number | null>(null);
+const useAnimationLoop = (trackRef, targetVelocity, seqWidth, seqHeight, isHovered, hoverSpeed, isVertical) => {
+  const rafRef = useRef(null);
+  const lastTimestampRef = useRef(null);
   const offsetRef = useRef(0);
   const velocityRef = useRef(0);
 
@@ -77,7 +78,7 @@ const useAnimationLoop = (trackRef: any, targetVelocity: any, seqWidth: any, seq
       track.style.transform = transformValue;
     }
 
-    const animate = (timestamp: number) => {
+    const animate = timestamp => {
       if (lastTimestampRef.current === null) {
         lastTimestampRef.current = timestamp;
       }
@@ -133,10 +134,10 @@ export const LogoLoop = memo(
     ariaLabel = 'Partner logos',
     className,
     style
-  }: any) => {
-    const containerRef = useRef<HTMLDivElement>(null);
-    const trackRef = useRef<HTMLDivElement>(null);
-    const seqRef = useRef<HTMLUListElement>(null);
+  }) => {
+    const containerRef = useRef(null);
+    const trackRef = useRef(null);
+    const seqRef = useRef(null);
 
     const [seqWidth, setSeqWidth] = useState(0);
     const [seqHeight, setSeqHeight] = useState(0);
@@ -226,7 +227,7 @@ export const LogoLoop = memo(
     }, [effectiveHoverSpeed]);
 
     const renderLogoItem = useCallback(
-      (item: any, key: any) => {
+      (item, key) => {
         if (renderItem) {
           return (
             <li className="logoloop__item" key={key} role="listitem">
@@ -286,7 +287,7 @@ export const LogoLoop = memo(
             aria-hidden={copyIndex > 0}
             ref={copyIndex === 0 ? seqRef : undefined}
           >
-            {logos.map((item: any, itemIndex: any) => renderLogoItem(item, `${copyIndex}-${itemIndex}`))}
+            {logos.map((item, itemIndex) => renderLogoItem(item, `${copyIndex}-${itemIndex}`))}
           </ul>
         )),
       [copyCount, logos, renderLogoItem]
@@ -306,7 +307,7 @@ export const LogoLoop = memo(
     );
 
     return (
-      <div ref={containerRef} className={rootClassName} style={containerStyle as any} role="region" aria-label={ariaLabel}>
+      <div ref={containerRef} className={rootClassName} style={containerStyle} role="region" aria-label={ariaLabel}>
         <div className="logoloop__track" ref={trackRef} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
           {logoLists}
         </div>

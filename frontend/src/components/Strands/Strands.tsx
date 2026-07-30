@@ -1,3 +1,5 @@
+// @ts-nocheck
+"use client";
 import { Renderer, Program, Mesh, Color, Triangle, RenderTarget } from 'ogl';
 import { useEffect, useRef } from 'react';
 
@@ -171,7 +173,7 @@ void main() {
 }
 `;
 
-const buildPalette = (colors) => {
+const buildPalette = colors => {
   const filled = colors && colors.length ? colors : ['#ffffff'];
   const padded = [];
   for (let i = 0; i < MAX_COLORS; i++) {

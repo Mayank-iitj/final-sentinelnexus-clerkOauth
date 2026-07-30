@@ -1,9 +1,10 @@
+// @ts-nocheck
 "use client";
 import { useEffect, useRef } from 'react';
 import { Renderer, Program, Mesh, Triangle } from 'ogl';
 import './Plasma.css';
 
-const hexToRgb = (hex: string) => {
+const hexToRgb = hex => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   if (!result) return [1, 0.5, 0.2];
   return [parseInt(result[1], 16) / 255, parseInt(result[2], 16) / 255, parseInt(result[3], 16) / 255];
@@ -22,7 +23,7 @@ void main() {
 
 const ORIGINAL_QUALITY = 60;
 
-const buildFragment = (iterations: number) => {
+const buildFragment = (iterations) => {
   return `#version 300 es
 precision highp float;
 uniform vec2 iResolution;
@@ -88,19 +89,6 @@ void main() {
 }`;
 };
 
-export interface PlasmaProps {
-  color?: string;
-  speed?: number;
-  direction?: 'forward' | 'reverse' | 'pingpong';
-  scale?: number;
-  opacity?: number;
-  mouseInteractive?: boolean;
-  renderScale?: number;
-  maxDpr?: number;
-  targetFps?: number;
-  iterations?: number;
-}
-
 export const Plasma = ({
   color = '#ffffff',
   speed = 1,
@@ -112,10 +100,10 @@ export const Plasma = ({
   maxDpr = 1.5,
   targetFps = 60,
   iterations = 60,
-}: PlasmaProps) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+}) => {
+  const containerRef = useRef(null);
   const mousePos = useRef({ x: 0, y: 0 });
-  const pendingMouse = useRef<{ x: number, y: number } | null>(null);
+  const pendingMouse = useRef(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -130,7 +118,7 @@ export const Plasma = ({
 
     const directionMultiplier = direction === 'reverse' ? -1.0 : 1.0;
 
-    let renderer: Renderer;
+    let renderer;
     try {
       renderer = new Renderer({
         webgl: 2,
@@ -147,6 +135,7 @@ export const Plasma = ({
     canvas.style.display = 'block';
     canvas.style.width = '100%';
     canvas.style.height = '100%';
+    // Rendering at renderScale internally, CSS stretches it back up.
     containerEl.appendChild(canvas);
 
     const geometry = new Triangle(gl);
@@ -172,9 +161,10 @@ export const Plasma = ({
 
     const mesh = new Mesh(gl, { geometry, program });
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const handleMouseMove = e => {
       if (!mouseInteractive) return;
       const rect = containerEl.getBoundingClientRect();
+      // Store the latest position but don't touch GL state here, the rAF loop picks it up once per rendered frame instead of once per mouse event.
       pendingMouse.current = {
         x: e.clientX - rect.left,
         y: e.clientY - rect.top,
@@ -192,6 +182,7 @@ export const Plasma = ({
       const height = Math.max(1, Math.floor(rect.height * renderScale));
       renderer.setSize(width, height);
 
+      // renderer.setSize also sets canvas.style.width/height to match the (scaled-down) drawing buffer - override that so the canvas still stretches to fill its container via CSS while the buffer stays small.
       canvas.style.width = '100%';
       canvas.style.height = '100%';
 
@@ -201,6 +192,7 @@ export const Plasma = ({
     };
 
     const ro = new ResizeObserver(() => {
+      // Batch rapid resize events (ex. during a window drag) into one setSize per frame.
       if (resizePending) return;
       resizePending = true;
       requestAnimationFrame(() => {
@@ -224,7 +216,7 @@ export const Plasma = ({
       renderer.render({ scene: mesh });
     };
 
-    const loop = (t: number) => {
+    const loop = t => {
       if (contextLost || !isVisible || !tabVisible) return;
 
       if (t - lastFrameTime < frameInterval) {
@@ -258,7 +250,7 @@ export const Plasma = ({
       raf = requestAnimationFrame(loop);
     };
 
-    const handleContextLost = (e: Event) => {
+    const handleContextLost = (e) => {
       e.preventDefault();
       contextLost = true;
       cancelAnimationFrame(raf);
@@ -295,6 +287,7 @@ export const Plasma = ({
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
+    // Respect prefers-reduced-motion: paint one frame and stop, rather than running a perpetual animation loop for users who've asked not to see motion.
     if (prefersReducedMotion) {
       renderStaticFrame();
     } else {

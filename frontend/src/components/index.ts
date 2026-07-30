@@ -148,6 +148,10 @@ export { MagicBento } from './MagicBento';
 export { default as GlassSurface } from './GlassSurface/GlassSurface';
 export { Plasma } from './Plasma';
 export { TargetCursor } from './TargetCursor';
+export { default as Orb } from './Orb/Orb';
+export { default as Strands } from './Strands/Strands';
+export { default as PlasmaWave } from './PlasmaWave/PlasmaWave';
+export { default as CircularText } from './CircularText/CircularText';
 
 // ============================================================================
 // WRAPPER COMPONENTS (Pre-configured)
