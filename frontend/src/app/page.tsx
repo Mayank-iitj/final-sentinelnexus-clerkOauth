@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import FadingVideo from "../components/FadingVideo/FadingVideo";
 import BlurText from "../components/BlurText/BlurText";
-import { Infinity as InfinityIcon, ChevronDown, Menu, X } from "lucide-react";
+import { Shield, ChevronDown, Menu, X } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import { ScrollStack, ScrollStackItem, LogoLoop, BorderGlow, ScrollVelocity } from "../components";
 import { Reveal, staggerContainer, slideLeft, slideRight, tapShrink, springSmooth, springBouncy, scaleIn, tapBounce } from "../lib/animations";
@@ -327,15 +327,15 @@ export default function HomePage() {
         {/* Navbar */}
         <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-5 sm:px-8 py-5">
           <div className="flex items-center gap-2 text-white font-medium text-base">
-            <InfinityIcon size={22} strokeWidth={1.5} />
-            <span>Equilibrium</span>
+            <Shield size={22} strokeWidth={1.5} />
+            <span>SentinelNexus</span>
           </div>
           <div className="hidden md:flex liquid-glass items-center gap-1 rounded-xl px-2 py-2">
             {[
-              { label: 'Home', active: true },
-              { label: 'Wellness', dropdown: true },
-              { label: 'Routine' },
-              { label: 'Our Team' }
+              { label: 'Platform', active: true },
+              { label: 'Solutions', dropdown: true },
+              { label: 'Resources' },
+              { label: 'Company' }
             ].map((link) => (
               <button key={link.label} className={`flex items-center gap-0.5 px-3 py-1.5 rounded-md text-sm transition-colors ${link.active ? 'bg-white/15 text-white' : 'text-white/70 hover:text-white'}`}>
                 {link.label}
@@ -356,10 +356,10 @@ export default function HomePage() {
         {menuOpen && (
           <div className="absolute top-[72px] left-4 right-4 z-30 md:hidden liquid-glass rounded-2xl p-4 flex flex-col gap-1">
             {[
-              { label: 'Home', active: true },
-              { label: 'Wellness', dropdown: true },
-              { label: 'Routine' },
-              { label: 'Our Team' }
+              { label: 'Platform', active: true },
+              { label: 'Solutions', dropdown: true },
+              { label: 'Resources' },
+              { label: 'Company' }
             ].map((link) => (
               <button key={link.label} className="flex items-center justify-between w-full px-4 py-3 rounded-lg text-sm text-white/70 hover:text-white">
                 {link.label}
@@ -376,14 +376,21 @@ export default function HomePage() {
         {/* Hero content (bottom-left) */}
         <div className="absolute bottom-0 left-0 z-20 px-6 sm:px-12 pb-10 sm:pb-16 max-w-2xl">
           <h1 className="text-white text-4xl sm:text-5xl lg:text-6xl font-medium leading-tight tracking-tight mb-4">
-            Live Better, Feel Whole Every Day
+            Autonomous AI Security & Trust
           </h1>
           <p className="text-white/60 text-sm leading-relaxed mb-7 max-w-md">
-            Take charge of how you feel with a companion built for your journey—build routines, follow your growth, and unlock tailored insights for a steadier, more vibrant life each day.
+            Protect your AI infrastructure against prompt injections, data exfiltration, and supply chain vulnerabilities. Automate compliance and maintain total governance.
           </p>
           <div className="flex flex-wrap items-center gap-3">
-            <button className="bg-white text-black text-sm sm:text-base font-medium px-6 sm:px-7 py-3 rounded-full hover:bg-white/90 transition-colors">Start Today</button>
-            <button className="liquid-glass text-white text-sm sm:text-base font-medium px-6 sm:px-7 py-3 rounded-full hover:bg-white/5 transition-colors">Discover How</button>
+            <button className="bg-white text-black text-sm sm:text-base font-medium px-6 sm:px-7 py-3 rounded-full hover:bg-white/90 transition-colors">Start Scanning</button>
+            <button className="liquid-glass text-white text-sm sm:text-base font-medium px-6 sm:px-7 py-3 rounded-full hover:bg-white/5 transition-colors">View Platform</button>
+          </div>
+        </div>
+
+        {/* Author Pill (bottom-right) */}
+        <div className="absolute bottom-6 right-6 sm:bottom-10 sm:right-12 z-20">
+          <div className="liquid-glass border border-white/10 rounded-full px-4 py-2 text-xs font-medium text-white/70">
+            Founded by Mayank Sharma
           </div>
         </div>
       </section>
