@@ -88,12 +88,10 @@ export default function HomePage() {
                 {link.label}
               </Link>
             ))}
-            <Link href={getStartedHref} className="ml-2 bg-white text-black px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap flex items-center gap-1 hover:bg-white/90 transition-colors">
-              Get Started Free
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1">
-                <path d="M7 17L17 7" /><path d="M7 7h10v10" />
-              </svg>
-            </Link>
+            <div className="flex items-center gap-2 ml-2">
+              <Link href="/login" className="liquid-glass text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-white/5 transition-colors">Log in</Link>
+              <Link href={getStartedHref} className="bg-white text-black text-sm font-medium px-4 py-2 rounded-full hover:bg-white/90 transition-colors">Begin Now</Link>
+            </div>
           </div>
           <div className="w-12 h-12 invisible" />
         </nav>
@@ -130,18 +128,8 @@ export default function HomePage() {
             transition={{ delay: 1.1, duration: 0.8, ease: "easeOut" }}
             className="flex items-center gap-6 mt-8"
           >
-            <Link href={getStartedHref} className="liquid-glass-strong rounded-full px-6 py-3 text-sm font-medium text-white flex items-center gap-2 hover:bg-white/10 transition-colors">
-              Start Scanning
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M7 17L17 7" /><path d="M7 7h10v10" />
-              </svg>
-            </Link>
-            <button className="flex items-center gap-2 text-sm font-medium text-white hover:text-white/80 transition-colors">
-              See How It Works
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <polygon points="6 4 20 12 6 20 6 4" />
-              </svg>
-            </button>
+            <Link href="/login" className="liquid-glass text-white text-sm sm:text-base font-medium px-6 sm:px-7 py-3 rounded-full hover:bg-white/5 transition-colors">Log in</Link>
+            <Link href={getStartedHref} className="bg-white text-black text-sm sm:text-base font-medium px-6 sm:px-7 py-3 rounded-full hover:bg-white/90 transition-colors">Begin Now</Link>
           </motion.div>
 
           <motion.div
@@ -334,8 +322,8 @@ export default function HomePage() {
             Protect your AI infrastructure against prompt injections, data exfiltration, and supply chain vulnerabilities. Automate compliance and maintain total governance.
           </p>
           <div className="flex flex-wrap items-center gap-3">
-            <button className="bg-white text-black text-sm sm:text-base font-medium px-6 sm:px-7 py-3 rounded-full hover:bg-white/90 transition-colors">Start Scanning</button>
-            <button className="liquid-glass text-white text-sm sm:text-base font-medium px-6 sm:px-7 py-3 rounded-full hover:bg-white/5 transition-colors">View Platform</button>
+            <Link href="/login" className="liquid-glass text-white text-sm sm:text-base font-medium px-6 sm:px-7 py-3 rounded-full hover:bg-white/5 transition-colors">Log in</Link>
+            <Link href={getStartedHref} className="bg-white text-black text-sm sm:text-base font-medium px-6 sm:px-7 py-3 rounded-full hover:bg-white/90 transition-colors">Begin Now</Link>
           </div>
         </div>
 
@@ -416,8 +404,8 @@ export default function HomePage() {
                 ))}
               </ul>
               <motion.div whileHover={{ scale: 1.03 }} whileTap={tapBounce} className="mt-7">
-                <Link href={getStartedHref} className={`block w-full text-center px-4 py-3 rounded-full text-sm font-semibold transition-colors ${plan.popular ? "bg-violet-600 text-white hover:bg-violet-700" : "bg-white/10 text-white hover:bg-white/20"}`}>
-                  {isSignedIn ? "Go to Dashboard" : plan.cta}
+                <Link href={getStartedHref} className={`block w-full text-center px-4 py-3 rounded-full text-sm font-medium transition-colors ${plan.popular ? "bg-white text-black hover:bg-white/90" : "liquid-glass text-white hover:bg-white/5"}`}>
+                  {isSignedIn ? "Go to Dashboard" : "Begin Now"}
                 </Link>
               </motion.div>
             </motion.div>
