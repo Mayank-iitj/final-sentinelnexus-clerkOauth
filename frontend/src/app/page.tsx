@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState } from "react";
 import Link from "next/link";
@@ -14,13 +14,13 @@ import { SOCIAL_LINKS } from "../lib/social-links";
 const features = [
   { title: "Code Security Scanning", desc: "120+ SAST rules for secrets, injections, and IaC misconfigurations with CVSS v3.1 scoring.", icon: "</>" },
   { title: "Prompt Injection Defense", desc: "Detect jailbreaks, system prompt leakage, and PII exfiltration across LLM conversations.", icon: "!>" },
-  { title: "PII & Data Protection", desc: "Credit cards (Luhn), SSNs, IBANs, emails — automated compliance evidence trails.", icon: "⊗" },
-  { title: "Universal AI Trust Score™", desc: "Real-time, dynamic risk quantification engine combining vulnerabilities, supply chain risk, and brand trust.", icon: "★" },
-  { title: "Real-Time Digital Twin", desc: "Interactive live attack graphs and zero-day threat prediction for your entire AI infrastructure.", icon: "⚙" },
-  { title: "Autonomous Red/Blue Agents", desc: "Continuous automated attack simulation and infrastructure-as-code patch generation.", icon: "⚔" },
+  { title: "PII & Data Protection", desc: "Credit cards (Luhn), SSNs, IBANs, emails â€” automated compliance evidence trails.", icon: "âŠ—" },
+  { title: "Universal AI Trust Scoreâ„¢", desc: "Real-time, dynamic risk quantification engine combining vulnerabilities, supply chain risk, and brand trust.", icon: "â˜…" },
+  { title: "Real-Time Digital Twin", desc: "Interactive live attack graphs and zero-day threat prediction for your entire AI infrastructure.", icon: "âš™" },
+  { title: "Autonomous Red/Blue Agents", desc: "Continuous automated attack simulation and infrastructure-as-code patch generation.", icon: "âš”" },
   { title: "AI Risk Scoring", desc: "IEEE-precise CVSS v3.1 base scores with 8-metric vector strings and CWE mappings.", icon: "R+" },
-  { title: "Global Regulation Engine", desc: "One-click multi-framework compliance automation with automated evidence collection.", icon: "⚖" },
-  { title: "PDF Report Generation", desc: "HackerOne-style PDF security reports with executive summaries and full evidence.", icon: "📄" },
+  { title: "Global Regulation Engine", desc: "One-click multi-framework compliance automation with automated evidence collection.", icon: "âš–" },
+  { title: "PDF Report Generation", desc: "HackerOne-style PDF security reports with executive summaries and full evidence.", icon: "ðŸ“„" },
 ];
 
 const plans = [
@@ -30,7 +30,7 @@ const plans = [
 ];
 
 const marqueeItems = [
-  "Universal AI Trust Score™", "Real-Time Organizational Digital Twin", "AI Attack Simulator", 
+  "Universal AI Trust Scoreâ„¢", "Real-Time Organizational Digital Twin", "AI Attack Simulator", 
   "Autonomous AI Red Team Agent", "Autonomous AI Blue Team Agent", "One-Click Compliance Automation", 
   "Automated Evidence Collection", "Embeddable Trust Certificate", "Continuous Supply Chain Intelligence", 
   "AI Executive Copilot", "Interactive Live Attack Graph", "Deepfake & AI Fraud Detection", 
@@ -52,7 +52,7 @@ const processSteps = [
 
 const faqItems = [
   { q: "What types of scans does SentinelNexus support?", a: "Code security (SAST with 120+ rules), prompt injection detection, and PII/secrets scanning with Luhn/IBAN checksums." },
-  { q: "Is there a free tier?", a: "Yes — the Starter plan includes 5 scans/month with full access to all scan engines, completely free forever." },
+  { q: "Is there a free tier?", a: "Yes â€” the Starter plan includes 5 scans/month with full access to all scan engines, completely free forever." },
   { q: "How does the scoring work?", a: "We use IEEE-standard CVSS v3.1 with 8-metric vector strings, CWE mappings, and weighted risk aggregation." },
 ];
 
@@ -64,7 +64,7 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-black relative selection:bg-white/20">
-      {/* ── Section 1: Hero ────────────────────────────────────────── */}
+      {/* â”€â”€ Section 1: Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="relative min-h-screen w-full flex flex-col overflow-hidden bg-black z-0">
         <FadingVideo
           src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260418_080021_d598092b-c4c2-4e53-8e46-94cf9064cd50.mp4"
@@ -192,7 +192,7 @@ export default function HomePage() {
         </motion.div>
       </section>
 
-      {/* ── Section 2: Capabilities ────────────────────────────────────── */}
+      {/* â”€â”€ Section 2: Capabilities â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="relative min-h-screen w-full bg-black z-0">
         <FadingVideo
           src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260418_094631_d30ab262-45ee-4b7d-99f3-5d5848c8ef13.mp4"
@@ -270,7 +270,7 @@ export default function HomePage() {
               </div>
               <div className="flex-1"></div>
               <div className="mt-6">
-                <h3 className="font-heading italic text-white text-3xl md:text-4xl tracking-[-1px] leading-none">Universal Trust Score™</h3>
+                <h3 className="font-heading italic text-white text-3xl md:text-4xl tracking-[-1px] leading-none">Universal Trust Scoreâ„¢</h3>
                 <p className="mt-3 text-sm text-white/90 font-body font-light leading-snug max-w-[32ch]">
                   Quantify your organizational risk with a dynamic engine combining deep supply chain intelligence, model governance, and active vulnerability metrics.
                 </p>
@@ -280,7 +280,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Marquee (LogoLoop) ──────────────────────────────────────────────── */}
+      {/* â”€â”€ Marquee (LogoLoop) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="py-8 bg-black">
         <div className="px-6 py-8 flex flex-col gap-6 overflow-hidden relative">
           <LogoLoop
@@ -318,7 +318,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Section: Wellness Hero override in Features ────────── */}
+      {/* â”€â”€ Section: Wellness Hero override in Features â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="relative w-full h-screen overflow-hidden font-geist">
         <FadingVideo
           src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260511_230229_7c9bc431-46cf-489a-948d-e8144d8eb5d4.mp4"
@@ -395,7 +395,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── How it Works (ScrollStack) ──────────────────────────────────────── */}
+      {/* â”€â”€ How it Works (ScrollStack) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section id="workflow" className="w-full bg-black">
         <Reveal className="mb-8 pt-24 text-center">
           <div className="liquid-glass rounded-full px-4 py-1.5 text-xs font-medium text-white inline-block mb-4">Our Process</div>
@@ -427,7 +427,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Pricing ──────────────────────────────────────────────────────────── */}
+      {/* â”€â”€ Pricing â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section id="pricing" className="py-24 px-8 md:px-16 lg:px-20 bg-black">
         <Reveal className="mb-14 text-center">
           <div className="liquid-glass rounded-full px-4 py-1.5 text-xs font-medium text-white inline-block mb-4">Pricing</div>
@@ -441,7 +441,7 @@ export default function HomePage() {
               variants={scaleIn}
               layout
               whileHover={{ y: -12, transition: { type: "spring", stiffness: 400, damping: 15 } }}
-              whileTap={{ tapShrink }}
+              whileTap={tapShrink}
               className={`liquid-glass relative rounded-[1.25rem] p-8 h-full flex flex-col cursor-default ${plan.popular ? "border border-violet-500/50 shadow-[0_0_30px_rgba(124,58,237,0.2)]" : ""}`}
             >
               <span className="liquid-glass-strong rounded-full px-3 py-1 text-[10px] text-white/90 font-body mb-4 self-start">{plan.tag}</span>
@@ -451,7 +451,7 @@ export default function HomePage() {
                   initial={{ opacity: 0, scale: 0.5 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ springBouncy }}
+                  transition={springBouncy}
                   className="font-heading italic text-5xl"
                 >{plan.price}</motion.span>
                 <span className="text-sm font-body text-white/60 ml-1">{plan.period}</span>
@@ -459,11 +459,11 @@ export default function HomePage() {
               <ul className="mt-6 space-y-3 text-sm font-body text-white/70 flex-1">
                 {plan.items.map((d) => (
                   <motion.li key={d} className="flex items-center gap-2.5" whileHover={{ x: 4, color: "#fff" }} transition={{ type: "spring", stiffness: 500 }}>
-                    <span className="text-violet-400 text-xs">✓</span><span>{d}</span>
+                    <span className="text-violet-400 text-xs">âœ“</span><span>{d}</span>
                   </motion.li>
                 ))}
               </ul>
-              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ tapBounce }} className="mt-7">
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={tapBounce} className="mt-7">
                 <Link href={getStartedHref} className={`block w-full text-center px-4 py-3 rounded-full text-sm font-semibold transition-colors ${plan.popular ? "bg-violet-600 text-white hover:bg-violet-700" : "bg-white/10 text-white hover:bg-white/20"}`}>
                   {isSignedIn ? "Go to Dashboard" : plan.cta}
                 </Link>
@@ -473,7 +473,7 @@ export default function HomePage() {
         </motion.div>
       </section>
 
-      {/* ── FAQ ──────────────────────────────────────────────────────────────── */}
+      {/* â”€â”€ FAQ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section id="faq" className="py-24 px-8 md:px-16 lg:px-20 bg-black">
         <Reveal className="mb-14 text-center">
           <div className="liquid-glass rounded-full px-4 py-1.5 text-xs font-medium text-white inline-block mb-4">FAQ</div>
@@ -484,17 +484,17 @@ export default function HomePage() {
             <motion.div
               key={i}
               layout
-              transition={{ springSmooth }}
+              transition={springSmooth}
               className="liquid-glass rounded-2xl overflow-hidden"
             >
               <motion.button
                 onClick={() => setOpenFaq(openFaq === i ? null : i)}
                 whileHover={{ backgroundColor: "rgba(255,255,255,0.05)" }}
-                whileTap={{ tapShrink }}
+                whileTap={tapShrink}
                 className="w-full flex items-center justify-between p-5 text-left text-sm font-medium text-white font-body"
               >
                 <span>{faq.q}</span>
-                <motion.span animate={{ rotate: openFaq === i ? 45 : 0 }} transition={{ springBouncy }} className="text-violet-400 text-lg font-heading italic">+</motion.span>
+                <motion.span animate={{ rotate: openFaq === i ? 45 : 0 }} transition={springBouncy} className="text-violet-400 text-lg font-heading italic">+</motion.span>
               </motion.button>
               <AnimatePresence>
                 {openFaq === i && (
@@ -514,7 +514,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── ScrollVelocity Transition ────────────────────────────────────────── */}
+      {/* â”€â”€ ScrollVelocity Transition â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="py-24 overflow-hidden border-t border-white/[0.06] bg-black">
         <ScrollVelocity
           texts={['SentinelNexus', 'Enterprise AI Security']} 
@@ -523,7 +523,7 @@ export default function HomePage() {
         />
       </section>
 
-      {/* ── Footer ────────────────────────────────────────────────────────────── */}
+      {/* â”€â”€ Footer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <Reveal>
         <footer className="pt-16 pb-2 bg-black border-t border-white/[0.06] px-8 md:px-16 lg:px-20">
           <div className="max-w-7xl mx-auto grid gap-10 md:grid-cols-4">
@@ -551,7 +551,7 @@ export default function HomePage() {
                   { href: SOCIAL_LINKS.github, label: "GitHub" },
                   { href: SOCIAL_LINKS.instagram, label: "Instagram" },
                 ].map((s) => (
-                  <motion.div key={s.label} whileHover={{ x: 6, borderColor: "rgba(124,58,237,0.35)", color: "#fff" }} whileTap={{ tapShrink }} transition={{ springSmooth }}>
+                  <motion.div key={s.label} whileHover={{ x: 6, borderColor: "rgba(124,58,237,0.35)", color: "#fff" }} whileTap={tapShrink} transition={springSmooth}>
                     <Link href={s.href} target="_blank" rel="noopener noreferrer" className="liquid-glass flex items-center gap-2.5 rounded-xl px-3 py-2">{s.label}</Link>
                   </motion.div>
                 ))}
@@ -559,8 +559,8 @@ export default function HomePage() {
             </div>
           </div>
           <div className="max-w-7xl mx-auto mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.06] pt-6 text-sm font-body text-white/50 relative z-10">
-            <span>© {new Date().getFullYear()} SentinelNexus. All rights reserved.</span>
-            <span>Made with 🤍 for AI Safety</span>
+            <span>Â© {new Date().getFullYear()} SentinelNexus. All rights reserved.</span>
+            <span>Made with ðŸ¤ for AI Safety</span>
           </div>
 
           {/* Huge Background Text Watermark */}
