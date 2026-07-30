@@ -27,10 +27,16 @@ export default function HomePage() {
             S
           </div>
           <div className="hidden md:flex liquid-glass rounded-full p-1.5 items-center gap-1">
-            {["Product", "Platform", "Resources", "Pricing", "Documentation"].map((link) => (
-              <a key={link} href="#" className="px-3 py-2 text-sm font-medium text-white/90 font-body hover:text-white transition-colors">
-                {link}
-              </a>
+            {[
+              { label: "Product", href: "/features" },
+              { label: "Pricing", href: "/pricing" },
+              { label: "Resources", href: "/blog" },
+              { label: "Docs", href: "/docs" },
+              { label: "Changelog", href: "/changelog" }
+            ].map((link) => (
+              <Link key={link.label} href={link.href} className="px-3 py-2 text-sm font-medium text-white/90 font-body hover:text-white transition-colors">
+                {link.label}
+              </Link>
             ))}
             <Link href={getStartedHref} className="ml-2 bg-white text-black px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap flex items-center gap-1 hover:bg-white/90 transition-colors">
               Get Started Free
