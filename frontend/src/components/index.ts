@@ -83,6 +83,18 @@ export { default as ScrollStack, ScrollStackItem } from './ScrollStack/ScrollSta
 export { default as LogoLoop } from './LogoLoop/LogoLoop';
 
 /**
+ * RotatingText
+ *
+ * Rotating text animation using framer-motion.
+ *
+ * Import: import RotatingText from '@/components/RotatingText/RotatingText';
+ * Location: frontend/src/components/RotatingText/
+ *
+ * Dependencies: framer-motion
+ */
+export { default as RotatingText } from './RotatingText/RotatingText';
+
+/**
  * BorderGlow
  *
  * Interactive border glow effect that responds to cursor proximity.
