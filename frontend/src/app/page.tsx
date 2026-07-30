@@ -327,12 +327,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Author Pill (bottom-right) */}
-        <div className="absolute bottom-6 right-6 sm:bottom-10 sm:right-12 z-20">
-          <div className="liquid-glass border border-white/10 rounded-full px-4 py-2 text-xs font-medium text-white/70">
-            Founded by Mayank Sharma
-          </div>
-        </div>
+
       </section>
 
       {/* â”€â”€ How it Works (ScrollStack) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
