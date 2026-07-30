@@ -1,15 +1,64 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import FadingVideo from "../components/FadingVideo/FadingVideo";
 import BlurText from "../components/BlurText/BlurText";
-import { useUser, SignInButton } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
+import { ScrollStack, ScrollStackItem, LogoLoop, BorderGlow, ScrollVelocity } from "../components";
+import { Reveal, staggerContainer, slideLeft, slideRight, tapShrink, springSmooth, springBouncy, scaleIn, tapBounce } from "../lib/animations";
+import { SOCIAL_LINKS } from "../lib/social-links";
+
+const features = [
+  { title: "Code Security Scanning", desc: "120+ SAST rules for secrets, injections, and IaC misconfigurations with CVSS v3.1 scoring.", icon: "</>" },
+  { title: "Prompt Injection Defense", desc: "Detect jailbreaks, system prompt leakage, and PII exfiltration across LLM conversations.", icon: "!>" },
+  { title: "PII & Data Protection", desc: "Credit cards (Luhn), SSNs, IBANs, emails — automated compliance evidence trails.", icon: "⊗" },
+  { title: "Universal AI Trust Score™", desc: "Real-time, dynamic risk quantification engine combining vulnerabilities, supply chain risk, and brand trust.", icon: "★" },
+  { title: "Real-Time Digital Twin", desc: "Interactive live attack graphs and zero-day threat prediction for your entire AI infrastructure.", icon: "⚙" },
+  { title: "Autonomous Red/Blue Agents", desc: "Continuous automated attack simulation and infrastructure-as-code patch generation.", icon: "⚔" },
+  { title: "AI Risk Scoring", desc: "IEEE-precise CVSS v3.1 base scores with 8-metric vector strings and CWE mappings.", icon: "R+" },
+  { title: "Global Regulation Engine", desc: "One-click multi-framework compliance automation with automated evidence collection.", icon: "⚖" },
+  { title: "PDF Report Generation", desc: "HackerOne-style PDF security reports with executive summaries and full evidence.", icon: "📄" },
+];
+
+const plans = [
+  { tier: "Starter", price: "$0", period: "forever", items: ["5 scans/month", "All scan engines", "Basic CVSS scoring", "Email support", "1 project"], cta: "Start Free", tag: "Most Pick" },
+  { tier: "Professional", price: "$299", period: "/month", items: ["100 scans/month", "All scan engines", "Custom rules", "PDF reports", "10 projects", "Slack alerts", "Priority support"], cta: "Upgrade to Pro", tag: "Recommended", popular: true },
+  { tier: "Enterprise", price: "$999", period: "/month", items: ["Unlimited scans", "SOC 2 exports", "SSO / SAML", "Unlimited projects", "Dedicated CSM", "SLA < 30 min", "Custom integrations"], cta: "Talk to Sales", tag: "Advanced" },
+];
+
+const marqueeItems = [
+  "Universal AI Trust Score™", "Real-Time Organizational Digital Twin", "AI Attack Simulator", 
+  "Autonomous AI Red Team Agent", "Autonomous AI Blue Team Agent", "One-Click Compliance Automation", 
+  "Automated Evidence Collection", "Embeddable Trust Certificate", "Continuous Supply Chain Intelligence", 
+  "AI Executive Copilot", "Interactive Live Attack Graph", "Deepfake & AI Fraud Detection", 
+  "Brand Trust & Dark Web Monitoring", "AI Vendor Risk Rating", "Zero-Day Threat Prediction", 
+  "Security Time Machine", "Business Risk Quantification", "AI Compliance Chat Assistant", 
+  "Autonomous Patch Generator", "Cyber Insurance Readiness", "Global Regulation Intelligence", 
+  "AI Explainability Dashboard", "Security Agent Marketplace", "Public Trust API", 
+  "Global Cyber Risk Heatmap", "AI Boardroom Dashboard", "AI Asset Inventory", 
+  "Model Governance", "Runtime Policy Enforcement", "Audit Trail Management",
+  "Prompt Injection", "PII Detection", "SOC2 Evidence", "AI Act Mapping",
+  "CVSS Scoring", "PDF Reports", "CWE Mapping", "SHA-256 Dedup",
+];
+
+const processSteps = [
+  { num: "01", title: "Connect", desc: "Sign in with Google SSO. Integrate your repositories and AI applications in seconds." },
+  { num: "02", title: "Scan", desc: "Our engines analyze code, prompts, and text for vulnerabilities, secrets, and compliance drifts." },
+  { num: "03", title: "Protect", desc: "Get CVSS-scored findings, remediation guidance, and auto-generated PDF security reports." },
+];
+
+const faqItems = [
+  { q: "What types of scans does SentinelNexus support?", a: "Code security (SAST with 120+ rules), prompt injection detection, and PII/secrets scanning with Luhn/IBAN checksums." },
+  { q: "Is there a free tier?", a: "Yes — the Starter plan includes 5 scans/month with full access to all scan engines, completely free forever." },
+  { q: "How does the scoring work?", a: "We use IEEE-standard CVSS v3.1 with 8-metric vector strings, CWE mappings, and weighted risk aggregation." },
+];
 
 export default function HomePage() {
   const { isSignedIn } = useUser();
   const getStartedHref = isSignedIn ? "/dashboard" : "/signup";
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   return (
     <main className="min-h-screen bg-black relative selection:bg-white/20">
@@ -219,7 +268,7 @@ export default function HomePage() {
               </div>
               <div className="flex-1"></div>
               <div className="mt-6">
-                <h3 className="font-heading italic text-white text-3xl md:text-4xl tracking-[-1px] leading-none">Universal Trust Score&trade;</h3>
+                <h3 className="font-heading italic text-white text-3xl md:text-4xl tracking-[-1px] leading-none">Universal Trust Score™</h3>
                 <p className="mt-3 text-sm text-white/90 font-body font-light leading-snug max-w-[32ch]">
                   Quantify your organizational risk with a dynamic engine combining deep supply chain intelligence, model governance, and active vulnerability metrics.
                 </p>
@@ -228,6 +277,261 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── Marquee (LogoLoop) ──────────────────────────────────────────────── */}
+      <section className="py-8 bg-black">
+        <div className="px-6 py-8 flex flex-col gap-6 overflow-hidden relative">
+          <LogoLoop
+            logos={marqueeItems.map(item => ({
+              node: (
+                <span className="whitespace-nowrap rounded-full border border-violet-400/20 bg-violet-500/10 px-5 py-2.5 text-sm font-medium text-violet-300/90 cursor-default shadow-[0_0_15px_rgba(124,58,237,0.1)]">
+                  {item}
+                </span>
+              )
+            }))}
+            speed={40}
+            direction="left"
+            logoHeight={40}
+            gap={24}
+            hoverSpeed={10}
+            fadeOut={true}
+            fadeOutColor="transparent"
+          />
+          <LogoLoop
+            logos={marqueeItems.slice().reverse().map(item => ({
+              node: (
+                <span className="whitespace-nowrap rounded-full border border-violet-400/20 bg-violet-500/10 px-5 py-2.5 text-sm font-medium text-violet-300/90 cursor-default shadow-[0_0_15px_rgba(124,58,237,0.1)]">
+                  {item}
+                </span>
+              )
+            }))}
+            speed={40}
+            direction="right"
+            logoHeight={40}
+            gap={24}
+            hoverSpeed={10}
+            fadeOut={true}
+            fadeOutColor="transparent"
+          />
+        </div>
+      </section>
+
+      {/* ── Features ────────────────────────────────────────────────────────── */}
+      <section id="features" className="py-24 px-8 md:px-16 lg:px-20 bg-black">
+        <Reveal className="mb-14 text-center">
+          <div className="liquid-glass rounded-full px-4 py-1.5 text-xs font-medium text-white inline-block mb-4">Features</div>
+          <h2 className="font-heading italic text-5xl sm:text-6xl text-white tracking-tight">Everything you need to secure AI</h2>
+          <p className="mt-4 text-white/70 font-body max-w-xl mx-auto">Packed with cutting-edge features designed to elevate your security posture.</p>
+        </Reveal>
+        <motion.div variants={staggerContainer} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} className="grid gap-5 md:grid-cols-2 xl:grid-cols-3 max-w-7xl mx-auto">
+          {features.map((f, i) => (
+            <motion.div
+              key={f.title}
+              variants={i % 2 === 0 ? slideLeft : slideRight}
+              whileTap={{ tapShrink }}
+              className="h-full"
+            >
+              <BorderGlow
+                className="h-full w-full"
+                backgroundColor="#0a0a0a"
+                glowColor="268 100 76"
+                edgeSensitivity={40}
+                glowRadius={50}
+                animated={true}
+              >
+                <div className="h-full rounded-2xl p-7 cursor-default group border border-white/[0.04]">
+                  <motion.div
+                    whileHover={{ rotate: [0, -10, 10, 0], scale: 1.1 }}
+                    transition={{ duration: 0.5 }}
+                    className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.03] text-sm font-bold text-violet-300 transition-all duration-300 group-hover:bg-violet-500/10 group-hover:border-violet-400/30"
+                  >
+                    {f.icon}
+                  </motion.div>
+                  <h3 className="mb-2 text-lg font-heading italic text-white">{f.title}</h3>
+                  <p className="text-sm text-gray-400 font-body leading-relaxed">{f.desc}</p>
+                </div>
+              </BorderGlow>
+            </motion.div>
+          ))}
+        </motion.div>
+      </section>
+
+      {/* ── How it Works (ScrollStack) ──────────────────────────────────────── */}
+      <section id="workflow" className="w-full bg-black">
+        <Reveal className="mb-8 pt-24 text-center">
+          <div className="liquid-glass rounded-full px-4 py-1.5 text-xs font-medium text-white inline-block mb-4">Our Process</div>
+          <h2 className="font-heading italic text-5xl sm:text-6xl text-white tracking-tight">for AI-Driven Security</h2>
+          <p className="mt-4 text-white/70 font-body max-w-xl mx-auto">Three steps to production-grade AI protection.</p>
+        </Reveal>
+
+        <div className="h-[120vh] w-full relative -mt-10 max-w-7xl mx-auto">
+          <ScrollStack
+            itemDistance={120}
+            itemScale={0.05}
+            itemStackDistance={40}
+            useWindowScroll={true}
+          >
+            {processSteps.map((step) => (
+              <ScrollStackItem key={step.num} itemClassName="max-w-3xl mx-auto">
+                <div className="liquid-glass-strong flex items-start gap-8 rounded-[40px] p-10 backdrop-blur-3xl shadow-[0_0_50px_rgba(124,58,237,0.05)]">
+                  <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-[24px] border border-violet-400/30 bg-violet-500/10 text-2xl font-heading italic text-violet-400">
+                    {step.num}
+                  </div>
+                  <div className="pt-2">
+                    <h3 className="text-3xl font-heading italic mb-3 text-white tracking-tight">{step.title}</h3>
+                    <p className="text-lg text-white/80 font-body leading-relaxed max-w-xl">{step.desc}</p>
+                  </div>
+                </div>
+              </ScrollStackItem>
+            ))}
+          </ScrollStack>
+        </div>
+      </section>
+
+      {/* ── Pricing ──────────────────────────────────────────────────────────── */}
+      <section id="pricing" className="py-24 px-8 md:px-16 lg:px-20 bg-black">
+        <Reveal className="mb-14 text-center">
+          <div className="liquid-glass rounded-full px-4 py-1.5 text-xs font-medium text-white inline-block mb-4">Pricing</div>
+          <h2 className="font-heading italic text-5xl sm:text-6xl text-white tracking-tight">Perfect for Agencies & Startups</h2>
+          <p className="mt-4 text-white/70 font-body max-w-xl mx-auto">Flexible plans designed to suit a variety of needs and budgets.</p>
+        </Reveal>
+        <motion.div variants={staggerContainer} initial="hidden" whileInView="show" viewport={{ once: true }} className="grid gap-6 lg:grid-cols-3 max-w-5xl mx-auto">
+          {plans.map((plan) => (
+            <motion.div
+              key={plan.tier}
+              variants={scaleIn}
+              layout
+              whileHover={{ y: -12, transition: { type: "spring", stiffness: 400, damping: 15 } }}
+              whileTap={{ tapShrink }}
+              className={`liquid-glass relative rounded-[1.25rem] p-8 h-full flex flex-col cursor-default ${plan.popular ? "border border-violet-500/50 shadow-[0_0_30px_rgba(124,58,237,0.2)]" : ""}`}
+            >
+              <span className="liquid-glass-strong rounded-full px-3 py-1 text-[10px] text-white/90 font-body mb-4 self-start">{plan.tag}</span>
+              <h3 className="font-heading italic text-2xl text-white">{plan.tier}</h3>
+              <div className="mt-3 text-white">
+                <motion.span
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ springBouncy }}
+                  className="font-heading italic text-5xl"
+                >{plan.price}</motion.span>
+                <span className="text-sm font-body text-white/60 ml-1">{plan.period}</span>
+              </div>
+              <ul className="mt-6 space-y-3 text-sm font-body text-white/70 flex-1">
+                {plan.items.map((d) => (
+                  <motion.li key={d} className="flex items-center gap-2.5" whileHover={{ x: 4, color: "#fff" }} transition={{ type: "spring", stiffness: 500 }}>
+                    <span className="text-violet-400 text-xs">✓</span><span>{d}</span>
+                  </motion.li>
+                ))}
+              </ul>
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ tapBounce }} className="mt-7">
+                <Link href={getStartedHref} className={`block w-full text-center px-4 py-3 rounded-full text-sm font-semibold transition-colors ${plan.popular ? "bg-violet-600 text-white hover:bg-violet-700" : "bg-white/10 text-white hover:bg-white/20"}`}>
+                  {isSignedIn ? "Go to Dashboard" : plan.cta}
+                </Link>
+              </motion.div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </section>
+
+      {/* ── FAQ ──────────────────────────────────────────────────────────────── */}
+      <section id="faq" className="py-24 px-8 md:px-16 lg:px-20 bg-black">
+        <Reveal className="mb-14 text-center">
+          <div className="liquid-glass rounded-full px-4 py-1.5 text-xs font-medium text-white inline-block mb-4">FAQ</div>
+          <h2 className="font-heading italic text-5xl sm:text-6xl text-white tracking-tight">Common Questions</h2>
+        </Reveal>
+        <div className="mx-auto max-w-2xl space-y-3">
+          {faqItems.map((faq, i) => (
+            <motion.div
+              key={i}
+              layout
+              transition={{ springSmooth }}
+              className="liquid-glass rounded-2xl overflow-hidden"
+            >
+              <motion.button
+                onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                whileHover={{ backgroundColor: "rgba(255,255,255,0.05)" }}
+                whileTap={{ tapShrink }}
+                className="w-full flex items-center justify-between p-5 text-left text-sm font-medium text-white font-body"
+              >
+                <span>{faq.q}</span>
+                <motion.span animate={{ rotate: openFaq === i ? 45 : 0 }} transition={{ springBouncy }} className="text-violet-400 text-lg font-heading italic">+</motion.span>
+              </motion.button>
+              <AnimatePresence>
+                {openFaq === i && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <p className="px-5 pb-5 text-sm font-body text-white/60 leading-relaxed">{faq.a}</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── ScrollVelocity Transition ────────────────────────────────────────── */}
+      <section className="py-24 overflow-hidden border-t border-white/[0.06] bg-black">
+        <ScrollVelocity
+          texts={['SentinelNexus', 'Enterprise AI Security']} 
+          velocity={50} 
+          className="text-white hover:text-white/80 font-heading italic transition-colors duration-500 cursor-default"
+        />
+      </section>
+
+      {/* ── Footer ────────────────────────────────────────────────────────────── */}
+      <Reveal>
+        <footer className="pt-16 pb-2 bg-black border-t border-white/[0.06] px-8 md:px-16 lg:px-20">
+          <div className="max-w-7xl mx-auto grid gap-10 md:grid-cols-4">
+            {[
+              { title: "Product", links: [{ href: "/features", label: "Features" }, { href: "#pricing", label: "Pricing" }, { href: "/docs", label: "Documentation" }] },
+              { title: "Resources", links: [{ href: "/docs", label: "Docs" }, { href: "/blog", label: "Blog" }, { href: "/changelog", label: "Changelog" }, { href: "/status", label: "Status" }] },
+              { title: "Company", links: [{ href: "/about", label: "About" }, { href: "/contact", label: "Contact" }, { href: SOCIAL_LINKS.portfolio, label: "mayyanks.app" }, { href: SOCIAL_LINKS.website, label: "mayankiitj.in" }] },
+            ].map((col) => (
+              <div key={col.title}>
+                <h4 className="mb-4 text-sm font-body font-semibold text-white">{col.title}</h4>
+                <div className="flex flex-col space-y-2.5 text-sm font-body text-white/60">
+                  {col.links.map((l) => (
+                    <motion.div key={l.label} whileHover={{ x: 4, color: "#fff" }} transition={{ type: "spring", stiffness: 500 }}>
+                      <Link href={l.href} target={l.href.startsWith("http") ? "_blank" : undefined} rel={l.href.startsWith("http") ? "noopener noreferrer" : undefined}>{l.label}</Link>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            ))}
+            <div>
+              <h4 className="mb-4 text-sm font-body font-semibold text-white">Connect</h4>
+              <div className="space-y-2.5 text-sm font-body text-white/60">
+                {[
+                  { href: SOCIAL_LINKS.linkedin, label: "LinkedIn" },
+                  { href: SOCIAL_LINKS.github, label: "GitHub" },
+                  { href: SOCIAL_LINKS.instagram, label: "Instagram" },
+                ].map((s) => (
+                  <motion.div key={s.label} whileHover={{ x: 6, borderColor: "rgba(124,58,237,0.35)", color: "#fff" }} whileTap={{ tapShrink }} transition={{ springSmooth }}>
+                    <Link href={s.href} target="_blank" rel="noopener noreferrer" className="liquid-glass flex items-center gap-2.5 rounded-xl px-3 py-2">{s.label}</Link>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="max-w-7xl mx-auto mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.06] pt-6 text-sm font-body text-white/50 relative z-10">
+            <span>© {new Date().getFullYear()} SentinelNexus. All rights reserved.</span>
+            <span>Made with 🤍 for AI Safety</span>
+          </div>
+
+          {/* Huge Background Text Watermark */}
+          <div className="pointer-events-none relative flex w-full items-center justify-center overflow-hidden pt-12 pb-2">
+            <span className="text-[15vw] font-heading italic font-black leading-none tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white/[0.07] to-transparent select-none">
+              SENTINELNEXUS
+            </span>
+          </div>
+        </footer>
+      </Reveal>
     </main>
   );
 }
