@@ -7,7 +7,7 @@ import FadingVideo from "../components/FadingVideo/FadingVideo";
 import BlurText from "../components/BlurText/BlurText";
 
 import { useUser } from "@clerk/nextjs";
-import { ScrollStack, ScrollStackItem, LogoLoop, BorderGlow, ScrollVelocity } from "../components";
+import { ScrollStack, ScrollStackItem, LogoLoop, BorderGlow, ScrollVelocity, Plasma } from "../components";
 import { Reveal, staggerContainer, slideLeft, slideRight, tapShrink, springSmooth, springBouncy, scaleIn, tapBounce } from "../lib/animations";
 import { SOCIAL_LINKS } from "../lib/social-links";
 
@@ -330,15 +330,18 @@ export default function HomePage() {
 
       </section>
 
-      {/* â”€â”€ How it Works (ScrollStack) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
-      <section id="workflow" className="w-full bg-black">
-        <Reveal className="mb-8 pt-24 text-center">
+      {/* ── How it Works (ScrollStack) ─────────────────────────────────── */}
+      <section id="workflow" className="relative w-full bg-black overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <Plasma color="#7c3aed" opacity={0.6} mouseInteractive={false} />
+        </div>
+        <Reveal className="relative z-10 mb-8 pt-24 text-center">
           <div className="liquid-glass rounded-full px-4 py-1.5 text-xs font-medium text-white inline-block mb-4">Our Process</div>
           <h2 className="font-heading italic text-5xl sm:text-6xl text-white tracking-tight">for AI-Driven Security</h2>
           <p className="mt-4 text-white/70 font-body max-w-xl mx-auto">Three steps to production-grade AI protection.</p>
         </Reveal>
 
-        <div className="h-[120vh] w-full relative -mt-10 max-w-7xl mx-auto">
+        <div className="h-[120vh] w-full relative z-10 -mt-10 max-w-7xl mx-auto">
           <ScrollStack
             itemDistance={120}
             itemScale={0.05}

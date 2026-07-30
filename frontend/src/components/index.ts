@@ -134,6 +134,7 @@ export { MagicBento } from './MagicBento';
  * Location: frontend/src/components/GlassSurface/
  */
 export { default as GlassSurface } from './GlassSurface/GlassSurface';
+export { Plasma } from './Plasma';
 
 // ============================================================================
 // WRAPPER COMPONENTS (Pre-configured)
