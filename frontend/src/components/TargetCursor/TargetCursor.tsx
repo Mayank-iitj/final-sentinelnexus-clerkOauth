@@ -93,6 +93,7 @@ const TargetCursor = ({
   }, []);
 
   useEffect(() => {
+    const activeStrength = activeStrengthRef.current;
     if (isMobile || !cursorRef.current) return;
 
     const originalCursor = document.body.style.cursor;
@@ -385,7 +386,7 @@ const TargetCursor = ({
 
       isActiveRef.current = false;
       targetCornerPositionsRef.current = null;
-      activeStrengthRef.current.current = 0;
+      activeStrength.current = 0;
     };
   }, [
     targetSelector,

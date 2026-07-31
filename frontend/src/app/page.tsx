@@ -358,7 +358,7 @@ export default function HomePage() {
                 [*] Cross-referencing AI Asset Inventory...
               </AnimatedSpan>
               <AnimatedSpan delay={3800} className="text-yellow-400">
-                [!] Warning: Model 'phi-3-mini' missing usage constraints.
+                [!] Warning: Model &apos;phi-3-mini&apos; missing usage constraints.
               </AnimatedSpan>
               <TypingAnimation delay={5000}>$ sentinel patch --auto --apply</TypingAnimation>
               <AnimatedSpan delay={6400} className="text-green-400">
