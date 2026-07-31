@@ -1,5 +1,5 @@
 "use client";
-import { AppShell } from "../../components/AppShell";
+import { AppShell } from "../../../components/AppShell";
 import { motion } from "framer-motion";
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } };
