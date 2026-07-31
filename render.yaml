@@ -47,6 +47,36 @@ services:
       - key: CLERK_WEBHOOK_SECRET
         value: {{CLERK_WEBHOOK_SECRET}}
 
+      # ── Security Middleware (Production Engine) ─────────────────────────────
+      # AUTOMATED BLOCKING ENABLED — per explicit user instruction.
+      # Requests scoring ≥ SECURITY_BLOCK_SCORE_THRESHOLD are blocked (HTTP 400).
+      - key: SECURITY_SHADOW_MODE
+        value: "false"
+      # Fail-open: middleware errors pass through rather than 500 the request.
+      - key: SECURITY_FAIL_OPEN
+        value: "true"
+      # Max body bytes inspected (remainder forwarded uninspected, never dropped)
+      - key: SECURITY_MAX_BODY_BYTES
+        value: "65536"
+      # Paths that bypass middleware entirely
+      - key: SECURITY_SKIP_PATHS
+        value: "/health,/metrics,/"
+      # Score (0-100) at which the request is blocked
+      - key: SECURITY_BLOCK_SCORE_THRESHOLD
+        value: "80"
+      # Score at which a warning is logged (no block)
+      - key: SECURITY_WARN_SCORE_THRESHOLD
+        value: "50"
+      # Attacks before an IP is auto-banned
+      - key: SECURITY_AUTO_BAN_THRESHOLD
+        value: "3"
+      # Sliding window for attack counting (seconds)
+      - key: SECURITY_BAN_WINDOW_SECONDS
+        value: "3600"
+      # Duration of IP ban (seconds)
+      - key: SECURITY_BAN_TTL_SECONDS
+        value: "3600"
+
   # ── Frontend (Next.js) ──────────────────────────────────────────────────
   - type: web
     name: sentinelnexus-frontend

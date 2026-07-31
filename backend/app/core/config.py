@@ -46,6 +46,27 @@ class Settings(BaseSettings):
     RATE_LIMIT_REQUESTS: int = 100
     RATE_LIMIT_WINDOW_SECONDS: int = 60
 
+    # ── Security Middleware (Production Engine) ─────────────────────────────────
+    # Shadow mode default=True here (fail-safe for new deployments).
+    # render.yaml sets False for production (per explicit user instruction).
+    SECURITY_SHADOW_MODE: bool = True
+    # Fail-open: pass through on middleware internal error
+    SECURITY_FAIL_OPEN: bool = True
+    # Max body bytes inspected (remainder forwarded uninspected, never dropped)
+    SECURITY_MAX_BODY_BYTES: int = 65_536
+    # Comma-separated paths that bypass middleware entirely
+    SECURITY_SKIP_PATHS: str = "/health,/metrics,/"
+    # Score threshold to block the request (0–100)
+    SECURITY_BLOCK_SCORE_THRESHOLD: float = 80.0
+    # Score threshold to emit a warning log without blocking
+    SECURITY_WARN_SCORE_THRESHOLD: float = 50.0
+    # Number of detected attacks before IP is auto-banned
+    SECURITY_AUTO_BAN_THRESHOLD: int = 3
+    # Sliding window for attack counting (seconds)
+    SECURITY_BAN_WINDOW_SECONDS: int = 3600
+    # How long a ban lasts (seconds)
+    SECURITY_BAN_TTL_SECONDS: int = 3600
+
     # Frontend redirect targets (used by OAuth callbacks)
     FRONTEND_BASE_URL: str = "http://localhost:3000"
     BACKEND_BASE_URL: str = "http://localhost:8000"

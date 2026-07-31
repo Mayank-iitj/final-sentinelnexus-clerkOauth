@@ -14,6 +14,7 @@ from app.api.v1.endpoints import (
     governance,
     threat_intel,
     trust,
+    security,
 )
 
 api_router = APIRouter(prefix="/api/v1")
@@ -29,3 +30,4 @@ api_router.include_router(risk.router)
 api_router.include_router(governance.router)
 api_router.include_router(threat_intel.router)
 api_router.include_router(trust.router)
+api_router.include_router(security.router)

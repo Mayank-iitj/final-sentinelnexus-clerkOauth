@@ -19,6 +19,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api.v1.api import api_router
+from app.middleware.security_middleware import SecurityMiddleware
 from app.core.config import get_settings
 from app.core.rate_limit import mark_limiter_ready
 from app.db.database import engine
@@ -91,6 +92,24 @@ def create_app() -> FastAPI:
     )
 
     app.add_middleware(SecurityHeadersMiddleware)
+
+    # ── SecurityMiddleware ────────────────────────────────────────────────────
+    # Ordering rationale (Starlette reverses add_middleware order; last = outermost):
+    #   RequestLoggingMiddleware  ← outermost (runs first on request)
+    #   SecurityMiddleware        ← 2nd outermost (inside logging, before CORS/auth)
+    #   SecurityHeadersMiddleware
+    #   CORSMiddleware
+    #   SessionMiddleware         ← innermost
+    #
+    # Placing SecurityMiddleware here means it:
+    #   • Runs AFTER RequestLoggingMiddleware wraps the request (request-id available)
+    #   • Runs BEFORE CORS, auth, and route handlers (catches unauthenticated abuse)
+    #   • Uses pure-ASGI class (not BaseHTTPMiddleware) for explicit body reconstruction
+    #     — prevents double-consumption conflict with the Clerk webhook handler.
+    #
+    # SECURITY_SHADOW_MODE=true in ALL environments until explicitly changed.
+    app.add_middleware(SecurityMiddleware)
+
     app.add_middleware(RequestLoggingMiddleware)
 
     app.include_router(api_router)

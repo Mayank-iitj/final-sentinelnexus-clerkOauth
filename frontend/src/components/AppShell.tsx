@@ -20,6 +20,7 @@ const navItems = [
   { href: "/governance", label: "AI Governance", icon: "⬡" },
   { href: "/compliance", label: "Compliance Auto", icon: "✓" },
   { href: "/compliance/copilot", label: "Compliance Chat", icon: "💬" },
+  { href: "/security-telemetry", label: "Security Telemetry", icon: "🛡️" },
   { href: "/regulations", label: "Global Regs", icon: "⚖" },
   { href: "/explainability", label: "Explainability", icon: "👁" },
   { href: "/threats/zero-day", label: "Zero-Day Engine", icon: "⚡" },

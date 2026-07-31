@@ -2,7 +2,10 @@
 import { AppShell } from "../../components/AppShell";
 import { motion } from "framer-motion";
 
-export default function CopilotPage() {
+const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } };
+const fadeUp = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.45 } } };
+
+export default function CopilotPage() {{
   return (
     <AppShell>
       <div className="space-y-6 pb-8">
@@ -13,49 +16,47 @@ export default function CopilotPage() {
           className="flex items-center justify-between"
         >
           <div>
-            <h1 className="text-2xl font-bold">AI Executive Copilot</h1>
-            <p className="text-sm text-gray-500 mt-1">Ask questions about your risk posture</p>
+            <h1 className="text-2xl font-bold flex items-center gap-2">
+              <span className="text-violet-500">🤖</span> Executive Copilot
+            </h1>
+            <p className="text-sm text-gray-500 mt-1">Chat with SentinelNexus AI to query your security posture using natural language.</p>
           </div>
           <motion.button 
             whileHover={{ scale: 1.02 }} 
             whileTap={{ scale: 0.98 }}
             className="btn-primary !py-2 !px-4 text-sm"
           >
-            Configure
+            Clear Chat
           </motion.button>
         </motion.div>
+        
+        
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4"
-        >
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="nub-card rounded-2xl p-5 border border-white/[0.04] bg-white/[0.01] flex flex-col gap-2">
-              <div className="w-8 h-8 rounded-full bg-violet-500/10 mb-2 flex items-center justify-center text-violet-400">
-                ✧
-              </div>
-              <div className="h-4 w-1/2 bg-white/[0.05] rounded animate-pulse" />
-              <div className="h-3 w-3/4 bg-white/[0.03] rounded animate-pulse" />
-            </div>
-          ))}
-        </motion.div>
-
+        
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="nub-card rounded-2xl p-8 border border-white/[0.04] bg-white/[0.01] min-h-[400px] flex items-center justify-center flex-col text-center"
+          className="nub-card rounded-2xl p-6 border border-white/[0.04] bg-white/[0.01] mt-6 min-h-[500px] flex flex-col"
         >
-          <div className="text-4xl mb-4 opacity-50">🚧</div>
-          <h2 className="text-lg font-medium text-white mb-2">Module under construction</h2>
-          <p className="text-sm text-gray-500 max-w-md">
-            The <strong>AI Executive Copilot</strong> is currently being scaffolded. 
-            Connect your data sources to enable full functionality.
-          </p>
+          <div className="flex-1 flex flex-col gap-4 overflow-y-auto">
+            <div className="flex gap-3">
+              <div className="w-8 h-8 rounded bg-violet-500/20 text-violet-400 flex items-center justify-center shrink-0">🤖</div>
+              <div className="bg-white/[0.04] p-3 rounded-xl rounded-tl-none text-sm text-gray-200">
+                Hello! I am your AI assistant for this module. How can I help you analyze your data today?
+              </div>
+            </div>
+          </div>
+          <div className="mt-4 relative">
+            <input type="text" placeholder="Ask a question..." className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-violet-500 pr-12" />
+            <button className="absolute right-2 top-2 w-8 h-8 rounded-lg bg-violet-500 flex items-center justify-center text-white hover:bg-violet-400 transition-colors">
+               ↑ 
+            </button>
+          </div>
         </motion.div>
+
+
       </div>
     </AppShell>
   );
-}
+}}
