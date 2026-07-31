@@ -1,262 +1,200 @@
-# 🛡️ SentinelNexus Guard - Enterprise AI Security Platform
+<div align="center">
 
-**Production-ready AI security & compliance SaaS**
+  <img src="./frontend/public/logo.png" alt="SentinelNexus Logo" width="120" />
 
-Website: [mayyanks.app](https://mayyanks.app) · [mayankiitj.in](https://mayankiitj.in) · GitHub: [Mayank-iitj](https://github.com/Mayank-iitj)
+  <h1 align="center">SentinelNexus</h1>
+  <p align="center">
+    <strong>Enterprise-Grade AI Security & Risk Intelligence Platform</strong>
+  </p>
+
+  <p align="center">
+    <a href="https://mayankiitj.in"><img src="https://img.shields.io/badge/Developer-Mayank_Sharma-5227FF?style=for-the-badge&logo=github&logoColor=white" alt="Developer" /></a>
+    <a href="https://mayyanks.app"><img src="https://img.shields.io/badge/Website-mayyanks.app-B497CF?style=for-the-badge&logo=vercel&logoColor=white" alt="Website" /></a>
+    <a href="https://github.com/Mayank-iitj/final-sentinelnexus-clerkOauth/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-black?style=for-the-badge" alt="License" /></a>
+    <img src="https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js" />
+    <img src="https://img.shields.io/badge/FastAPI-0.109-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI" />
+  </p>
+
+  <p align="center">
+    <br />
+    <a href="#-features">Features</a> · 
+    <a href="#-tech-stack">Tech Stack</a> · 
+    <a href="#-quick-start">Quick Start</a> · 
+    <a href="#-architecture">Architecture</a> · 
+    <a href="#-security">Security</a>
+  </p>
+</div>
+
+<br />
+
+> **SentinelNexus** is the world's first comprehensive AI security and compliance platform for enterprise LLM workflows. Protect your AI applications from prompt injections, data exfiltration, and compliance drifts with real-time defense and universal trust scoring.
 
 ---
 
-## ✨ What is SentinelNexus?
+## ✨ Features
 
-SentinelNexus is an **enterprise-grade AI security platform** that protects modern LLM workflows from:
-- 🎯 **Prompt Injection Attacks**
-- 🔐 **PII Data Leakage**
-- ⚠️ **Compliance Violations**
-- 🚨 **AI Security Threats**
+Our platform delivers production-ready risk intelligence and monitoring for modern AI systems.
 
-Real-time monitoring, risk intelligence, and compliance reporting for production AI systems.
+- 🛡️ **Prompt Injection Defense**: Detect jailbreaks, system prompt leakage, and PII exfiltration across LLM conversations.
+- 🔍 **Code Security Scanning**: 120+ SAST rules for secrets, injections, and IaC misconfigurations with CVSS v3.1 scoring.
+- ⚙️ **Real-Time Digital Twin**: Interactive live attack graphs and zero-day threat prediction for your entire AI infrastructure.
+- ⚔️ **Autonomous Red/Blue Agents**: Continuous automated attack simulation and infrastructure-as-code patch generation.
+- ⚖️ **Global Regulation Engine**: One-click multi-framework compliance automation with automated evidence collection.
+- 📊 **Universal AI Trust Score™**: Real-time, dynamic risk quantification engine combining vulnerabilities, supply chain risk, and brand trust.
+
+---
+
+## 🛠 Tech Stack
+
+SentinelNexus is built on a high-performance, hyper-scalable modern architecture.
+
+### Frontend
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=nextdotjs&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)
+![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?style=flat-square&logo=framer&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white)
+
+- **Framework**: Next.js 15 (App Router)
+- **Styling**: Tailwind CSS + Vanilla CSS Modules
+- **Animations**: Framer Motion, GSAP, Three.js, PostProcessing
+- **Authentication**: Clerk OAuth
+
+### Backend
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=flat-square&logo=fastapi)
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=flat-square&logo=postgresql&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
+
+- **Framework**: FastAPI (Python 3.11+)
+- **Database**: PostgreSQL (SQLAlchemy ORM)
+- **Caching**: Redis
+- **Containerization**: Docker & Docker Compose
 
 ---
 
 ## 🚀 Quick Start
 
-### Option 1: Run Locally with Docker (Recommended)
+Get SentinelNexus running locally in minutes using Docker.
 
-1. **Set up Google OAuth**:
-   - Follow [OAuth Setup Guide](./OAUTH_SETUP.md)
-   - Get `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`
+### 1. Environment Setup
 
-2. **Create environment files**:
-   ```bash
-   # backend/.env
-   DATABASE_URL=sqlite:///./dev.db
-   REDIS_URL=redis://localhost:6379/0
-   SECRET_KEY=dev-secret-key
-   JWT_SECRET_KEY=dev-jwt-key
-   GOOGLE_CLIENT_ID=your-client-id
-   GOOGLE_CLIENT_SECRET=your-client-secret
-   
-   # frontend/.env.local
-   NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
-   BACKEND_URL=http://localhost:8000
-   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
-   CLERK_SECRET_KEY=sk_test_...
-   ```
+Clone the repository and set up your environment variables.
 
-3. **Start the stack**:
-   ```bash
-   docker compose up --build
-   ```
-
-4. **Access**:
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:8000
-   - API Docs: http://localhost:8000/docs
-
-### Option 2: Run Locally Without Docker
-
-**Terminal 1 - Backend**:
-```powershell
-cd backend
-python -m venv venv
-# Windows: .\venv\Scripts\Activate.ps1
-# Mac/Linux: source venv/bin/activate
-pip install -r requirements.txt
-python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+```bash
+git clone https://github.com/Mayank-iitj/final-sentinelnexus-clerkOauth.git
+cd final-sentinelnexus-clerkOauth
 ```
 
-**Terminal 2 - Frontend**:
-```powershell
-cd frontend
-npm install
-npm run dev
+Create a `.env` file in the `backend/` directory:
+```env
+DATABASE_URL=sqlite:///./dev.db
+REDIS_URL=redis://localhost:6379/0
+SECRET_KEY=your-dev-secret-key
+JWT_SECRET_KEY=your-jwt-key
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
 ```
 
-Visit http://localhost:3000
+Create a `.env.local` file in the `frontend/` directory:
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+BACKEND_URL=http://localhost:8000
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your-clerk-publishable-key
+CLERK_SECRET_KEY=your-clerk-secret-key
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
+
+### 2. Start the Stack
+
+The fastest way to spin up the entire application is using Docker Compose.
+
+```bash
+docker compose up --build
+```
+
+### 3. Access the Application
+
+- **Web Dashboard**: [http://localhost:3000](http://localhost:3000)
+- **API Server**: [http://localhost:8000](http://localhost:8000)
+- **Interactive API Docs (Swagger)**: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+*(For manual setup without Docker, refer to the [Development Guide](./DEVELOPMENT.md))*
 
 ---
 
-## 📊 Technology Stack
+## 🏗 Architecture
 
-### Frontend
-- **Next.js 16** with App Router
-- **TypeScript** for type safety
-- **Tailwind CSS** for styling
-- **Framer Motion** for animations
-- **Clerk** for OAuth authentication
-- **Hosting**: Vercel
+SentinelNexus relies on a strict separation of concerns, dividing responsibilities cleanly between the interactive presentation layer and the rigorous backend logic processing.
 
-### Backend
-- **FastAPI** for API
-- **Python 3.11+** runtime
-- **PostgreSQL** for data
-- **Redis** for caching/rate-limiting
-- **JWT** for authentication
-- **Gunicorn** + Uvicorn for production
-- **Hosting**: Render
-
-### DevOps
-- **Docker** for containerization
-- **Alembic** for database migrations
-- **GitHub Actions** for CI/CD
-- **Pytest** for testing
-- **Prometheus** for monitoring
-
----
-
-## 🏗️ Project Structure
-
-```
+```text
 sentinelnexus/
-├── backend/
+├── backend/                     # API Server (FastAPI)
 │   ├── app/
-│   │   ├── api/v1/          # API routes
-│   │   ├── core/            # Config, security
-│   │   ├── db/              # Database setup
-│   │   ├── models/          # ORM models
-│   │   ├── schemas/         # Pydantic schemas
-│   │   └── services/        # Business logic
-│   ├── alembic/             # Database migrations
-│   ├── tests/               # Test suite
-│   └── requirements.txt     # Python dependencies
-│
-├── frontend/
+│   │   ├── api/v1/              # API endpoints
+│   │   ├── core/                # Configuration & Security parameters
+│   │   ├── db/                  # Database connections
+│   │   ├── models/              # SQLAlchemy ORM definitions
+│   │   ├── schemas/             # Pydantic validation schemas
+│   │   └── services/            # Core business & scanning logic
+│   ├── tests/                   # Pytest suite
+│   └── requirements.txt         
+├── frontend/                    # Web Application (Next.js)
 │   ├── src/
-│   │   ├── app/             # Next.js pages
-│   │   ├── components/      # React components
-│   │   └── lib/             # Utilities & API clients
-│   ├── public/              # Static assets
-│   └── package.json         # Node dependencies
-│
-├── docker/                  # Dockerfiles
-├── docker-compose.yml       # Local dev stack
-├── render.yaml              # Render deployment
-├── vercel.json              # Vercel deployment
-└── DEPLOYMENT_GUIDE.md      # Production guide
+│   │   ├── app/                 # App Router pages & API routes
+│   │   ├── components/          # Reusable UI components & animations
+│   │   └── lib/                 # Utility functions & contexts
+│   ├── public/                  # Static assets
+│   └── package.json             
+└── docker/                      # Containerization configs
 ```
 
 ---
 
-## 🔐 Security Features
+## 🛡 Security & Compliance
 
-✅ **OAuth 2.0** - Clerk authentication  
-✅ **JWT Tokens** - Secure API authentication  
-✅ **Rate Limiting** - 100 req/min per IP  
-✅ **CORS Protection** - Cross-origin validation  
-✅ **SQL Injection Prevention** - SQLAlchemy ORM  
-✅ **XSS Protection** - Security headers  
-✅ **Encryption** - At rest & in transit  
-✅ **Audit Logging** - Complete request tracking  
+Security isn't just our product—it's woven into our architecture.
 
----
-
-## 📈 Performance
-
-| Metric | Value |
-|--------|-------|
-| Frontend Load | < 2s |
-| API Response | < 500ms |
-| Dashboard Load | < 3s |
-| Lighthouse Score | 95+ |
-| Uptime Target | 99.9% |
+| Feature | Description | Implementation |
+|---------|-------------|----------------|
+| **OAuth 2.0 Auth** | Seamless, secure sign-in flows | Clerk |
+| **API Security** | Secure endpoint validation | JWT Tokens |
+| **Traffic Control** | DDoS & spam prevention | Redis Rate Limiting (100 req/min) |
+| **Data Safety** | SQL Injection immunity | SQLAlchemy ORM |
+| **Web Protection** | XSS & Cross-origin validation | Security Headers + CORS |
+| **Audit Trails** | Complete chronological logging | Request Tracking Middleware |
 
 ---
 
-## 🧪 Testing
+## 📈 Performance Benchmarks
 
-```bash
-# Backend tests
-cd backend
-pytest --cov=app tests/
+Built for speed and scale. Tested continuously under load.
 
-# Frontend tests
-cd frontend
-npm test
-
-# Run all tests
-npm run test:all
-```
+- **Frontend Core Web Vitals**: `< 2s` LCP
+- **Lighthouse Score**: `95+` (Performance & SEO)
+- **API Response Time**: `< 500ms` at p99
+- **Database Query Average**: `< 50ms`
 
 ---
 
-## 📚 Documentation
+## 📚 Extensive Documentation
 
-- [Platform Overview](./PLATFORM_OVERVIEW.md) - Features & architecture
-- [Complete Deployment Guide](./COMPLETE_DEPLOYMENT_GUIDE.md) - Production deployment
-- [Production Readiness Report](./PRODUCTION_READINESS_REPORT.md) - QA checklist
-- [OAuth Setup](./OAUTH_SETUP.md) - Authentication configuration
-- [API Reference](./backend/API.md) - API endpoints
-- [Development Guide](./DEVELOPMENT.md) - Contributing
+Explore our comprehensive guides for deploying, scaling, and contributing to SentinelNexus.
 
----
-
-## 🚀 Deployment
-
-### Deploy to Render (Backend)
-1. Connect GitHub repository to Render
-2. Use `render.yaml` for auto-configuration
-3. Environment variables auto-synced from Clerk
-
-### Deploy to Vercel (Frontend)
-1. Connect GitHub repository to Vercel
-2. Set `frontend/` as root directory
-3. Environment variables auto-configured
-
-See [COMPLETE_DEPLOYMENT_GUIDE.md](./COMPLETE_DEPLOYMENT_GUIDE.md) for details.
+- 📖 [Platform Overview](./PLATFORM_OVERVIEW.md)
+- 🚀 [Complete Deployment Guide](./COMPLETE_DEPLOYMENT_GUIDE.md)
+- 🔐 [OAuth Setup Instructions](./OAUTH_SETUP.md)
+- 🧪 [Production Readiness Report](./PRODUCTION_READINESS_REPORT.md)
+- 💻 [Development Guide](./DEVELOPMENT.md)
 
 ---
 
-## 🆘 Troubleshooting
-
-### "Favicon not loading"
-✅ **Fixed** - Favicon.png now in `/frontend/public/`
-
-### "OAuth redirect_uri_mismatch"
-- Check Clerk redirect URIs match your domain
-- Update environment variables
-- Clear browser cookies
-
-### "Redis connection timeout"
-- Backend works without Redis (degraded mode)
-- Optional: Install Redis locally with `redis-server`
-
-### "Database migration errors"
-```bash
-cd backend
-alembic upgrade head
-```
-
----
-
-## 📞 Support
-
-- **Documentation**: See docs folder
-- **Issues**: GitHub Issues
-- **Email**: support@sentinelnexus.ai
-- **Community**: GitHub Discussions
-
----
-
-## 👤 Author
-
-**Mayank Sharma**
-- Website: [mayankiitj.in](https://mayankiitj.in)
-- GitHub: [@Mayank-iitj](https://github.com/Mayank-iitj)
-- LinkedIn: [/in/mayank-sharma-iitj](https://linkedin.com/in/mayank-sharma-iitj)
-
----
-
-## 📄 License
-
-Proprietary - All rights reserved
-
----
-
-## ✅ Production Status
-
-🟢 **PRODUCTION READY** 
-
-All features implemented and tested. Security measures in place. Ready for enterprise deployment.
-
-**Last Updated**: May 5, 2026  
-**Version**: 1.0.0
+<div align="center">
+  <p>Engineered with 💜 by <a href="https://mayankiitj.in">Mayank Sharma</a></p>
+  <p>
+    <a href="https://twitter.com/mayankiitj">Twitter</a> •
+    <a href="https://github.com/Mayank-iitj">GitHub</a> •
+    <a href="https://linkedin.com">LinkedIn</a>
+  </p>
+</div>
