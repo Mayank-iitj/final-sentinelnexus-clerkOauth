@@ -57,13 +57,13 @@ export { default as CardSwap, Card } from './CardSwap/CardSwap';
 export { default as CardNav } from './CardNav/CardNav';
 
 /**
- * CircularGallery
+ * PixelCard
  *
- * An interactive circular scrolling image gallery.
+ * An interactive pixel card component.
  *
- * Import: import CircularGallery from '@/components/CircularGallery/CircularGallery';
+ * Import: import PixelCard from '@/components/PixelCard/PixelCard';
  */
-export { default as CircularGallery } from './CircularGallery/CircularGallery';
+export { default as PixelCard } from './PixelCard/PixelCard';
 
 /**
  * OptionWheel

@@ -8,7 +8,7 @@ import BlurText from "../components/BlurText/BlurText";
 
 import { useUser } from "@clerk/nextjs";
 import Hyperspeed from "../components/Hyperspeed/Hyperspeed";
-import { OptionWheel, LogoLoop as LogoLoopOriginal, BorderGlow, ScrollVelocity, Plasma, PlasmaWave, StaggeredMenu as StaggeredMenuOriginal, CircularGallery } from "../components";
+import { OptionWheel, LogoLoop as LogoLoopOriginal, BorderGlow, ScrollVelocity, Plasma, PlasmaWave, StaggeredMenu as StaggeredMenuOriginal, PixelCard } from "../components";
 
 const LogoLoop = LogoLoopOriginal as any;
 const StaggeredMenu = StaggeredMenuOriginal as any;
@@ -498,27 +498,31 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Visual Showcase (CircularGallery) ─────────────────────────────────── */}
-      <section className="relative w-full bg-black py-24 overflow-hidden border-t border-white/[0.06]">
+      {/* ── Visual Showcase (PixelCard) ─────────────────────────────────── */}
+      <section className="relative w-full bg-black py-24 overflow-hidden border-t border-white/[0.06] flex flex-col items-center">
         <Reveal className="mb-14 text-center px-4">
           <div className="liquid-glass rounded-full px-4 py-1.5 text-xs font-medium text-white inline-block mb-4">Threat Landscape</div>
           <h2 className="font-heading italic text-5xl sm:text-6xl text-white tracking-tight">Active Defense Vectors</h2>
         </Reveal>
-        <div className="w-full h-[600px] relative">
-          {/* @ts-ignore */}
-          <CircularGallery
-            bend={3}
-            textColor="#ffffff"
-            borderRadius={0.05}
-            scrollEase={0.02}
-            items={[
-              { image: '/gallery/1.png', text: 'Dashboard Overview' },
-              { image: '/gallery/2.png', text: 'Vulnerability Analysis' },
-              { image: '/gallery/3.png', text: 'Threat Heatmap' },
-              { image: '/gallery/4.png', text: 'Compliance Tracking' },
-              { image: '/gallery/5.png', text: 'Actionable Insights' },
-            ]}
-          />
+        <div className="flex justify-center gap-8 flex-wrap w-full max-w-5xl">
+          <PixelCard variant="blue">
+            <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 pointer-events-none">
+              <h3 className="text-2xl font-bold text-white mb-2">Threat Detection</h3>
+              <p className="text-sm text-gray-300">Identify anomalies in real-time.</p>
+            </div>
+          </PixelCard>
+          <PixelCard variant="pink">
+            <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 pointer-events-none">
+              <h3 className="text-2xl font-bold text-white mb-2">Vulnerability Scan</h3>
+              <p className="text-sm text-gray-300">Automated endpoint scanning.</p>
+            </div>
+          </PixelCard>
+          <PixelCard variant="yellow">
+            <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 pointer-events-none">
+              <h3 className="text-2xl font-bold text-white mb-2">Compliance</h3>
+              <p className="text-sm text-gray-300">Track and enforce standards.</p>
+            </div>
+          </PixelCard>
         </div>
       </section>
 
