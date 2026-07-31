@@ -57,17 +57,22 @@ export { default as CardSwap, Card } from './CardSwap/CardSwap';
 export { default as CardNav } from './CardNav/CardNav';
 
 /**
- * ScrollStack
+ * CircularGallery
  *
- * Scroll-driven card stacking with pinning, scaling, rotation, and blur.
- * Uses Lenis for smooth scrolling. Cards stack as the user scrolls down.
+ * An interactive circular scrolling image gallery.
  *
- * Import: import ScrollStack, { ScrollStackItem } from '@/components/ScrollStack/ScrollStack';
- * Location: frontend/src/components/ScrollStack/
- *
- * Dependencies: Lenis
+ * Import: import CircularGallery from '@/components/CircularGallery/CircularGallery';
  */
-export { default as ScrollStack, ScrollStackItem } from './ScrollStack/ScrollStack';
+export { default as CircularGallery } from './CircularGallery/CircularGallery';
+
+/**
+ * OptionWheel
+ *
+ * An interactive curved scrolling menu selection wheel.
+ *
+ * Import: import OptionWheel from '@/components/OptionWheel/OptionWheel';
+ */
+export { default as OptionWheel } from './OptionWheel/OptionWheel';
 
 /**
  * LogoLoop

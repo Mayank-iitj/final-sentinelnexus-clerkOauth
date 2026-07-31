@@ -7,7 +7,11 @@ import FadingVideo from "../components/FadingVideo/FadingVideo";
 import BlurText from "../components/BlurText/BlurText";
 
 import { useUser } from "@clerk/nextjs";
-import { ScrollStack, ScrollStackItem, LogoLoop, BorderGlow, ScrollVelocity, Plasma, PlasmaWave, StaggeredMenu } from "../components";
+import { OptionWheel, LogoLoop as LogoLoopOriginal, BorderGlow, ScrollVelocity, Plasma, PlasmaWave, StaggeredMenu as StaggeredMenuOriginal, CircularGallery } from "../components";
+
+const LogoLoop = LogoLoopOriginal as any;
+const StaggeredMenu = StaggeredMenuOriginal as any;
+
 import { Reveal, staggerContainer, slideLeft, slideRight, tapShrink, springSmooth, springBouncy, scaleIn, tapBounce } from "../lib/animations";
 import { SOCIAL_LINKS } from "../lib/social-links";
 import {
@@ -19,13 +23,13 @@ import {
 const features = [
   { title: "Code Security Scanning", desc: "120+ SAST rules for secrets, injections, and IaC misconfigurations with CVSS v3.1 scoring.", icon: "</>" },
   { title: "Prompt Injection Defense", desc: "Detect jailbreaks, system prompt leakage, and PII exfiltration across LLM conversations.", icon: "!>" },
-  { title: "PII & Data Protection", desc: "Credit cards (Luhn), SSNs, IBANs, emails â€” automated compliance evidence trails.", icon: "âŠ—" },
-  { title: "Universal AI Trust Scoreâ„¢", desc: "Real-time, dynamic risk quantification engine combining vulnerabilities, supply chain risk, and brand trust.", icon: "â˜…" },
-  { title: "Real-Time Digital Twin", desc: "Interactive live attack graphs and zero-day threat prediction for your entire AI infrastructure.", icon: "âš™" },
-  { title: "Autonomous Red/Blue Agents", desc: "Continuous automated attack simulation and infrastructure-as-code patch generation.", icon: "âš”" },
+  { title: "PII & Data Protection", desc: "Credit cards (Luhn), SSNs, IBANs, emails — automated compliance evidence trails.", icon: "⊗" },
+  { title: "Universal AI Trust Score™", desc: "Real-time, dynamic risk quantification engine combining vulnerabilities, supply chain risk, and brand trust.", icon: "★" },
+  { title: "Real-Time Digital Twin", desc: "Interactive live attack graphs and zero-day threat prediction for your entire AI infrastructure.", icon: "⚙" },
+  { title: "Autonomous Red/Blue Agents", desc: "Continuous automated attack simulation and infrastructure-as-code patch generation.", icon: "⚔" },
   { title: "AI Risk Scoring", desc: "IEEE-precise CVSS v3.1 base scores with 8-metric vector strings and CWE mappings.", icon: "R+" },
-  { title: "Global Regulation Engine", desc: "One-click multi-framework compliance automation with automated evidence collection.", icon: "âš–" },
-  { title: "PDF Report Generation", desc: "HackerOne-style PDF security reports with executive summaries and full evidence.", icon: "ðŸ“„" },
+  { title: "Global Regulation Engine", desc: "One-click multi-framework compliance automation with automated evidence collection.", icon: "⚖" },
+  { title: "PDF Report Generation", desc: "HackerOne-style PDF security reports with executive summaries and full evidence.", icon: "📄" },
 ];
 
 const plans = [
@@ -35,7 +39,7 @@ const plans = [
 ];
 
 const marqueeItems = [
-  "Universal AI Trust Scoreâ„¢", "Real-Time Organizational Digital Twin", "AI Attack Simulator", 
+  "Universal AI Trust Score™", "Real-Time Organizational Digital Twin", "AI Attack Simulator", 
   "Autonomous AI Red Team Agent", "Autonomous AI Blue Team Agent", "One-Click Compliance Automation", 
   "Automated Evidence Collection", "Embeddable Trust Certificate", "Continuous Supply Chain Intelligence", 
   "AI Executive Copilot", "Interactive Live Attack Graph", "Deepfake & AI Fraud Detection", 
@@ -57,7 +61,7 @@ const processSteps = [
 
 const faqItems = [
   { q: "What types of scans does SentinelNexus support?", a: "Code security (SAST with 120+ rules), prompt injection detection, and PII/secrets scanning with Luhn/IBAN checksums." },
-  { q: "Is there a free tier?", a: "Yes â€” the Starter plan includes 5 scans/month with full access to all scan engines, completely free forever." },
+  { q: "Is there a free tier?", a: "Yes — the Starter plan includes 5 scans/month with full access to all scan engines, completely free forever." },
   { q: "How does the scoring work?", a: "We use IEEE-standard CVSS v3.1 with 8-metric vector strings, CWE mappings, and weighted risk aggregation." },
 ];
 
@@ -65,7 +69,7 @@ export default function HomePage() {
   const { isSignedIn } = useUser();
   const getStartedHref = isSignedIn ? "/dashboard" : "/signup";
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-
+  const [activeStep, setActiveStep] = useState(0);
   return (
     <main className="min-h-screen bg-black relative selection:bg-white/20">
       {/* ── Section 1: Hero ─────────────────────────────────── */}
@@ -289,7 +293,7 @@ export default function HomePage() {
               </div>
               <div className="flex-1"></div>
               <div className="mt-6">
-                <h3 className="font-heading italic text-white text-3xl md:text-4xl tracking-[-1px] leading-none">Universal Trust Scoreâ„¢</h3>
+                <h3 className="font-heading italic text-white text-3xl md:text-4xl tracking-[-1px] leading-none">Universal Trust Score™</h3>
                 <p className="mt-3 text-sm text-white/90 font-body font-light leading-snug max-w-[32ch]">
                   Quantify your organizational risk with a dynamic engine combining deep supply chain intelligence, model governance, and active vulnerability metrics.
                 </p>
@@ -301,8 +305,8 @@ export default function HomePage() {
 
       {/* ── Marquee (LogoLoop) ─────────────────────────────────────────── */}
       <section className="py-8 bg-black">
-        <div className="flex justify-center mb-12 relative z-10 px-4">
-          <div className="w-full max-w-2xl">
+        <div className="flex flex-col lg:flex-row justify-center gap-6 mb-12 relative z-10 px-4 max-w-7xl mx-auto">
+          <div className="w-full lg:w-1/3">
             <Terminal>
               <TypingAnimation delay={0}>$ sentinel scan --target production-cluster</TypingAnimation>
               <AnimatedSpan delay={1200} className="text-blue-400">
@@ -320,6 +324,48 @@ export default function HomePage() {
               </AnimatedSpan>
               <AnimatedSpan delay={6500} className="text-green-400">
                 [+] Trust Score updated to 94. AI Security Posture: SECURE
+              </AnimatedSpan>
+            </Terminal>
+          </div>
+          <div className="w-full lg:w-1/3">
+            <Terminal>
+              <TypingAnimation delay={500}>$ sentinel monitor --stream ai-gateway</TypingAnimation>
+              <AnimatedSpan delay={1500} className="text-blue-400">
+                [*] Hooking into LLM API Gateway stream...
+              </AnimatedSpan>
+              <AnimatedSpan delay={2500} className="text-yellow-400">
+                [!] Intercepted anomalous prompt structure.
+              </AnimatedSpan>
+              <AnimatedSpan delay={3500} className="text-red-400">
+                [x] Alert: Potential Jailbreak attempt detected (DAN variation).
+              </AnimatedSpan>
+              <TypingAnimation delay={4800}>$ sentinel block --session id-924x</TypingAnimation>
+              <AnimatedSpan delay={6200} className="text-green-400">
+                [+] Session terminated successfully.
+              </AnimatedSpan>
+              <AnimatedSpan delay={6800} className="text-green-400">
+                [+] Governance log updated. No data exfiltrated.
+              </AnimatedSpan>
+            </Terminal>
+          </div>
+          <div className="w-full lg:w-1/3">
+            <Terminal>
+              <TypingAnimation delay={800}>$ sentinel audit --framework soc2,eu-ai-act</TypingAnimation>
+              <AnimatedSpan delay={1800} className="text-blue-400">
+                [*] Generating automated compliance artifacts...
+              </AnimatedSpan>
+              <AnimatedSpan delay={2800} className="text-blue-400">
+                [*] Cross-referencing AI Asset Inventory...
+              </AnimatedSpan>
+              <AnimatedSpan delay={3800} className="text-yellow-400">
+                [!] Warning: Model 'phi-3-mini' missing usage constraints.
+              </AnimatedSpan>
+              <TypingAnimation delay={5000}>$ sentinel patch --auto --apply</TypingAnimation>
+              <AnimatedSpan delay={6400} className="text-green-400">
+                [+] Synthesized boundary constraints and applied.
+              </AnimatedSpan>
+              <AnimatedSpan delay={7000} className="text-green-400">
+                [+] Audit passed. HackerOne-style PDF report generated.
               </AnimatedSpan>
             </Terminal>
           </div>
@@ -402,27 +448,77 @@ export default function HomePage() {
           <p className="mt-4 text-white/70 font-body max-w-xl mx-auto">Three steps to production-grade AI protection.</p>
         </Reveal>
 
-        <div className="h-[120vh] w-full relative z-10 -mt-10 max-w-7xl mx-auto">
-          <ScrollStack
-            itemDistance={120}
-            itemScale={0.05}
-            itemStackDistance={40}
-            useWindowScroll={true}
-          >
-            {processSteps.map((step) => (
-              <ScrollStackItem key={step.num} itemClassName="max-w-3xl mx-auto">
-                <div className="liquid-glass-strong flex items-start gap-8 rounded-[40px] p-10 backdrop-blur-3xl shadow-[0_0_50px_rgba(124,58,237,0.05)]">
-                  <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-[24px] border border-violet-400/30 bg-violet-500/10 text-2xl font-heading italic text-violet-400">
-                    {step.num}
+        <div className="h-[600px] w-full relative z-10 mt-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center">
+          <div className="w-full md:w-1/2 h-full flex justify-center">
+            <div className="w-full h-full relative" style={{ maxWidth: '400px' }}>
+              <OptionWheel
+                items={processSteps.map(step => step.title)}
+                defaultSelected={0}
+                textColor="rgba(255,255,255,0.4)"
+                activeColor="#7c3aed"
+                side="left"
+                fontSize={3.5}
+                spacing={1.8}
+                curve={1.2}
+                tilt={10}
+                blur={4}
+                fade={0.3}
+                smoothing={150}
+                inset={40}
+                loop={false}
+                draggable={true}
+                onChange={(index) => setActiveStep(index)}
+              />
+            </div>
+          </div>
+          <div className="w-full md:w-1/2 flex flex-col justify-center px-8">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeStep}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+                className="liquid-glass-strong flex flex-col gap-6 rounded-[40px] p-10 backdrop-blur-3xl shadow-[0_0_50px_rgba(124,58,237,0.05)]"
+              >
+                <div className="flex items-center gap-6">
+                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[20px] border border-violet-400/30 bg-violet-500/10 text-xl font-heading italic text-violet-400">
+                    {processSteps[activeStep].num}
                   </div>
-                  <div className="pt-2">
-                    <h3 className="text-3xl font-heading italic mb-3 text-white tracking-tight">{step.title}</h3>
-                    <p className="text-lg text-white/80 font-body leading-relaxed max-w-xl">{step.desc}</p>
-                  </div>
+                  <h3 className="text-3xl font-heading italic text-white tracking-tight">{processSteps[activeStep].title}</h3>
                 </div>
-              </ScrollStackItem>
-            ))}
-          </ScrollStack>
+                <p className="text-lg text-white/80 font-body leading-relaxed">
+                  {processSteps[activeStep].desc}
+                </p>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Visual Showcase (CircularGallery) ─────────────────────────────────── */}
+      <section className="relative w-full bg-black py-24 overflow-hidden border-t border-white/[0.06]">
+        <Reveal className="mb-14 text-center px-4">
+          <div className="liquid-glass rounded-full px-4 py-1.5 text-xs font-medium text-white inline-block mb-4">Threat Landscape</div>
+          <h2 className="font-heading italic text-5xl sm:text-6xl text-white tracking-tight">Active Defense Vectors</h2>
+        </Reveal>
+        <div className="w-full h-[600px] relative">
+          {/* @ts-ignore */}
+          <CircularGallery
+            bend={3}
+            textColor="#ffffff"
+            borderRadius={0.05}
+            scrollEase={0.02}
+            items={[
+              { image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=800&h=600', text: 'Code Analysis' },
+              { image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800&h=600', text: 'Security Perimeter' },
+              { image: 'https://images.unsplash.com/photo-1563206767-5b18f218e8de?auto=format&fit=crop&q=80&w=800&h=600', text: 'Data Encryption' },
+              { image: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=80&w=800&h=600', text: 'Network Monitoring' },
+              { image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=800&h=600', text: 'Cloud Defense' },
+              { image: 'https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?auto=format&fit=crop&q=80&w=800&h=600', text: 'Threat Intel' },
+              { image: 'https://images.unsplash.com/photo-1510511459019-5bea11516f1c?auto=format&fit=crop&q=80&w=800&h=600', text: 'Vulnerability Scan' },
+            ]}
+          />
         </div>
       </section>
 
@@ -458,7 +554,7 @@ export default function HomePage() {
               <ul className="mt-6 space-y-3 text-sm font-body text-white/70 flex-1">
                 {plan.items.map((d) => (
                   <motion.li key={d} className="flex items-center gap-2.5" whileHover={{ x: 4, color: "#fff" }} transition={{ type: "spring", stiffness: 500 }}>
-                    <span className="text-violet-400 text-xs">âœ“</span><span>{d}</span>
+                    <span className="text-violet-400 text-xs">✓</span><span>{d}</span>
                   </motion.li>
                 ))}
               </ul>
@@ -558,8 +654,7 @@ export default function HomePage() {
             </div>
           </div>
           <div className="max-w-7xl mx-auto mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.06] pt-6 text-sm font-body text-white/50 relative z-10">
-            <span>Â© {new Date().getFullYear()} SentinelNexus. All rights reserved.</span>
-            <span>Made with ðŸ¤ for AI Safety</span>
+            <span>© {new Date().getFullYear()} SentinelNexus. All rights reserved.</span>
           </div>
 
           {/* Huge Background Text Watermark */}

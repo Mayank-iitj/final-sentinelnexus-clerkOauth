@@ -77,6 +77,64 @@ const endpoints = [
       },
     ],
   },
+  {
+    category: "Trust & Digital Twin",
+    items: [
+      {
+        method: "GET",
+        path: "/trust/score",
+        desc: "Calculate and return the dynamic Trust Score for the organization based on active threats and posture.",
+        auth: "Clerk JWT",
+      },
+      {
+        method: "GET",
+        path: "/trust/digital-twin",
+        desc: "Generate the organizational Digital Twin attack graph for real-time risk visualization.",
+        auth: "Clerk JWT",
+      },
+      {
+        method: "GET",
+        path: "/trust/certificate",
+        desc: "Retrieve a verified, shareable Trust Certificate reflecting the current security score.",
+        auth: "Clerk JWT",
+      },
+    ],
+  },
+  {
+    category: "Threat Intelligence & Zero-Day",
+    items: [
+      {
+        method: "GET",
+        path: "/threats/predictions",
+        desc: "Predict and fetch novel zero-day adversarial attacks (e.g., prompt injections) and their mitigation strategies.",
+        auth: "Clerk JWT",
+      },
+      {
+        method: "GET",
+        path: "/threats/dark-web",
+        desc: "Monitor and retrieve organization-specific Dark Web mentions and data leaks.",
+        auth: "Clerk JWT",
+      },
+    ],
+  },
+  {
+    category: "AI Governance & Auditing",
+    items: [
+      {
+        method: "POST",
+        path: "/governance/assets",
+        desc: "Register a new AI asset (e.g., LLM model, dataset) into the centralized governance inventory.",
+        payload: '{ "name": "Prod GPT-4", "asset_type": "LLM", "provider": "OpenAI" }',
+        auth: "Clerk JWT",
+      },
+      {
+        method: "GET",
+        path: "/governance/audit-trail",
+        desc: "Retrieve the immutable audit trail of all actions performed on AI assets.",
+        auth: "Clerk JWT",
+      },
+    ],
+  },
 ];
 
 export default function ApiDocsPage() {

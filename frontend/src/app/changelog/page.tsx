@@ -4,6 +4,13 @@ import type { Metadata } from "next";
 export const metadata: Metadata = { title: "Changelog", description: "SentinelNexus platform release history and updates." };
 
 const releases = [
+  { version: "2.3.0", date: "2026-07-31", title: "Advanced AI Defense Engines & Autonomous Agents", type: "major", changes: [
+    { tag: "added", text: "Trust Score Engine & Digital Twin generation for real-time risk quantification" },
+    { tag: "added", text: "Zero-Day Threat Prediction and Dark Web monitoring capabilities" },
+    { tag: "added", text: "Autonomous Blue Team & Red Team agents for automated patching and attack simulation" },
+    { tag: "added", text: "AI Governance endpoints for centralized asset inventory and immutable audit trails" },
+    { tag: "improved", text: "Enhanced risk scoring engine with dynamic asset criticality mapping" },
+  ]},
   { version: "2.2.0", date: "2026-07-30", title: "Enterprise Identity via Clerk", type: "major", changes: [
     { tag: "added", text: "Integrated Clerk for robust identity management and authentication" },
     { tag: "security", text: "Implemented secure Clerk webhook listener for automated user synchronization" },
