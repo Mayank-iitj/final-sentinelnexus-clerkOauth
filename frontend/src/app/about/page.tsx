@@ -105,6 +105,15 @@ export default function AboutPage() {
             </Link>
           </div>
         </section>
+        <section className="glass-card space-y-3 rounded-2xl p-5 text-sm text-gray-200">
+          <h2 className="text-base font-semibold text-white">Verification Details</h2>
+          <p>
+            <strong>Registered Name:</strong> Mayank Sharma
+          </p>
+          <p>
+            <strong>Registered Address:</strong> Jhabua , MP , India
+          </p>
+        </section>
       </div>
     </AppShell>
   );

@@ -10,7 +10,7 @@ export default function PrivacyPolicyPage() {
         </header>
 
         <p>
-          SentinelNexus processes limited personal data necessary to provide and
+          SentinelNexus (operating as SentinelNexus) processes limited personal data necessary to provide and
           secure the service. We do not sell personal data and we minimize data
           retention to what is required for security, billing and compliance.
         </p>

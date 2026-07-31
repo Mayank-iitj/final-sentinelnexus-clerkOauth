@@ -5,9 +5,9 @@ import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useState } from "react";
 
 const plans = [
-  { tier: "Starter", price: "$0", period: "forever", details: ["5 scans/month", "Code + Prompt + Text scanners", "Basic CVSS scoring", "Email support", "1 project"], cta: "Start Free", popular: false },
-  { tier: "Pro", price: "$299", period: "/month", details: ["100 scans/month", "All scan engines", "Custom scan rules", "PDF report generation", "10 projects", "Slack & webhook alerts", "Priority support"], cta: "Upgrade to Pro", popular: true },
-  { tier: "Enterprise", price: "$999", period: "/month", details: ["Unlimited scans", "SOC 2 evidence exports", "SSO / SAML support", "Unlimited projects", "Dedicated CSM", "SLA < 30 min (critical)", "Custom integrations"], cta: "Talk to Sales", popular: false },
+  { tier: "Starter", price: "$0", period: "forever", details: ["5 scans/month", "Code + Prompt + Text scanners", "Basic CVSS scoring", "Email support", "1 project"], cta: "Start Free", popular: false, checkoutUrl: "#coming-soon" },
+  { tier: "Pro", price: "$299", period: "/month", details: ["100 scans/month", "All scan engines", "Custom scan rules", "PDF report generation", "10 projects", "Slack & webhook alerts", "Priority support"], cta: "Upgrade to Pro", popular: true, checkoutUrl: "#coming-soon" },
+  { tier: "Enterprise", price: "$999", period: "/month", details: ["Unlimited scans", "SOC 2 evidence exports", "SSO / SAML support", "Unlimited projects", "Dedicated CSM", "SLA < 30 min (critical)", "Custom integrations"], cta: "Talk to Sales", popular: false, checkoutUrl: "#coming-soon" },
 ];
 
 function Reveal({ children, className = "" }: { children: React.ReactNode; className?: string }) {
@@ -18,12 +18,6 @@ function Reveal({ children, className = "" }: { children: React.ReactNode; class
 
 export default function PricingPage() {
   const [comingSoon, setComingSoon] = useState(false);
-
-  const handleSubscribeClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setComingSoon(true);
-    setTimeout(() => setComingSoon(false), 3000);
-  };
 
   return (
     <main className="mesh-background min-h-screen text-white relative">
@@ -50,7 +44,7 @@ export default function PricingPage() {
                 <h3 className="text-xl font-semibold">{plan.tier}</h3>
                 <div className="mt-3"><span className="font-display text-4xl font-bold">{plan.price}</span><span className="text-sm text-gray-400 ml-1">{plan.period}</span></div>
                 <ul className="mt-6 space-y-2.5 text-sm text-gray-300 flex-1">{plan.details.map((d) => (<li key={d} className="flex items-center gap-2"><span className="text-violet-300">✓</span><span>{d}</span></li>))}</ul>
-                <button onClick={handleSubscribeClick} className={`w-full mt-6 inline-flex justify-center rounded-full px-5 py-2.5 text-sm font-semibold transition ${plan.popular ? "bg-violet-600 text-white hover:bg-violet-500 hover:shadow-[0_0_30px_rgba(139,92,246,.4)]" : "border border-white/20 text-gray-200 hover:border-violet-400 hover:text-white"}`}>{plan.cta}</button>
+                <Link href={plan.checkoutUrl} className={`w-full mt-6 inline-flex justify-center rounded-full px-5 py-2.5 text-sm font-semibold transition ${plan.popular ? "bg-violet-600 text-white hover:bg-violet-500 hover:shadow-[0_0_30px_rgba(139,92,246,.4)]" : "border border-white/20 text-gray-200 hover:border-violet-400 hover:text-white"}`}>{plan.cta}</Link>
               </div>
             </Reveal>
           ))}

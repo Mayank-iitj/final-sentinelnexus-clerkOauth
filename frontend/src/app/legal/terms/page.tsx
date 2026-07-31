@@ -10,6 +10,9 @@ export default function TermsPage() {
         </header>
 
         <p>
+          This website is operated by SentinelNexus.
+        </p>
+        <p>
           These Terms govern your use of the SentinelNexus platform. By
           accessing or using the service, you agree to be bound by them.
         </p>
