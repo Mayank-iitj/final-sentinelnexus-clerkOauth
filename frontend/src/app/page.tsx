@@ -126,8 +126,9 @@ export default function HomePage() {
             <span className="text-sm text-white/90 font-body pr-1">SentinelNexus Enterprise Security V2.0 is Now Live</span>
           </motion.div>
 
-          <BlurText 
-            text="Secure Your AI Infrastructure Across the Enterprise" 
+          <BlurText
+            as="h1"
+            text="SentinelNexus: Secure Your AI Infrastructure Across the Enterprise" 
             className="text-6xl md:text-7xl lg:text-[5.5rem] font-heading italic text-white leading-[0.8] max-w-2xl tracking-[-4px]" 
           />
 

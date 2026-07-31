@@ -2,11 +2,11 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-export default function BlurText({ text, className }: { text: string; className?: string }) {
+export default function BlurText({ text, className, as: Component = "p" }: { text: string; className?: string; as?: any }) {
   const words = text.split(" ");
   
   return (
-    <p className={className} style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", rowGap: "0.1em" }}>
+    <Component className={className} style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", rowGap: "0.1em" }}>
       {words.map((word, i) => (
         <motion.span
           key={`${word}-${i}`}
@@ -28,6 +28,6 @@ export default function BlurText({ text, className }: { text: string; className?
           {word}
         </motion.span>
       ))}
-    </p>
+    </Component>
   );
 }
