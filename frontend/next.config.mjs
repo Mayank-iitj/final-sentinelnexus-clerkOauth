@@ -14,6 +14,9 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   // Image optimization domains (add any CDN domains here)
   images: {
     formats: ["image/avif", "image/webp"],

@@ -69,7 +69,7 @@ export default function ExplainabilityPage() {{
                 <tr className="hover:bg-white/[0.02] transition-colors">
                   <td className="py-3 border-b border-white/[0.02]">DEC-8991</td>
                   <td className="py-3 border-b border-white/[0.02]">Prompt Injection Classifier</td>
-                  <td className="py-3 border-b border-white/[0.02]">Token: 'disregard'</td>
+                  <td className="py-3 border-b border-white/[0.02]">Token: &apos;disregard&apos;</td>
                   <td className="py-3 border-b border-white/[0.02]">99.8%</td>
                 </tr>
                 <tr className="hover:bg-white/[0.02] transition-colors">
