@@ -511,13 +511,11 @@ export default function HomePage() {
             borderRadius={0.05}
             scrollEase={0.02}
             items={[
-              { image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=800&h=600', text: 'Code Analysis' },
-              { image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800&h=600', text: 'Security Perimeter' },
-              { image: 'https://images.unsplash.com/photo-1563206767-5b18f218e8de?auto=format&fit=crop&q=80&w=800&h=600', text: 'Data Encryption' },
-              { image: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=80&w=800&h=600', text: 'Network Monitoring' },
-              { image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=800&h=600', text: 'Cloud Defense' },
-              { image: 'https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?auto=format&fit=crop&q=80&w=800&h=600', text: 'Threat Intel' },
-              { image: 'https://images.unsplash.com/photo-1510511459019-5bea11516f1c?auto=format&fit=crop&q=80&w=800&h=600', text: 'Vulnerability Scan' },
+              { image: '/gallery/1.png', text: 'Dashboard Overview' },
+              { image: '/gallery/2.png', text: 'Vulnerability Analysis' },
+              { image: '/gallery/3.png', text: 'Threat Heatmap' },
+              { image: '/gallery/4.png', text: 'Compliance Tracking' },
+              { image: '/gallery/5.png', text: 'Actionable Insights' },
             ]}
           />
         </div>
