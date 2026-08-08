@@ -351,6 +351,18 @@ export const getRiskHeatmap = () =>
 export const runSimulation = (payload: { target: string }) =>
   api<any>("/threats/simulate", { method: "POST", body: JSON.stringify(payload) });
 
+// ── Users ───────────────────────────────────────────────────────────────────
+export interface UserProfile {
+  id: string;
+  email: string;
+  username: string;
+  full_name: string | null;
+  subscription_tier: string | null;
+}
+
+export const getCurrentUser = () =>
+  api<UserProfile>("/users/me");
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 export const severityColor = (s: Severity | string): string => {
   switch (s) {

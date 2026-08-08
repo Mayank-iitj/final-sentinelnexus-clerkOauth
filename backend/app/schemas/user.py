@@ -15,4 +15,5 @@ class UserOut(BaseModel):
     email: EmailStr
     username: str
     full_name: str | None = None
+    subscription_tier: str | None = None
 

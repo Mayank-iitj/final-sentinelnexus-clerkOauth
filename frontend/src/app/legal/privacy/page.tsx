@@ -20,6 +20,7 @@ export default function PrivacyPolicyPage() {
           <ul className="list-disc list-inside space-y-1">
             <li>Account information (name, email, organization).</li>
             <li>Authentication data from identity providers (OAuth).</li>
+            <li>Payment and billing information processed securely via PayU.</li>
             <li>
               Security scan inputs and results, stored for audit and
               troubleshooting.

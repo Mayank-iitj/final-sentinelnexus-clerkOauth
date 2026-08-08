@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = { title: "Blog", description: "Insights on AI security, compliance, and threat intelligence." };
 
 const posts = [
+  { title: "Announcing Automated Billing & Subscription Dashboards", date: "2026-08-08", category: "Product", excerpt: "We're excited to launch fully automated subscriptions via PayU. You can now manage your tier, upgrade to Pro, and track your risk engine limits directly from the new Subscription Dashboard.", readTime: "4 min" },
   { title: "How CVSS v3.1 Scoring Works for AI Security Findings", date: "2026-04-28", category: "Engineering", excerpt: "A deep dive into how SentinelNexus implements IEEE-precise CVSS v3.1 base scoring for every finding, including attack vector analysis and scope change calculations.", readTime: "8 min" },
   { title: "Prompt Injection: The #1 AI Security Threat in 2026", date: "2026-04-15", category: "Threat Intel", excerpt: "We analyzed 10,000+ prompt injection attempts across our platform. Here's what we found about DAN-style jailbreaks, system prompt leakage, and multi-turn attack chains.", readTime: "12 min" },
   { title: "Building a Production-Grade OAuth Flow with FastAPI", date: "2026-04-01", category: "Engineering", excerpt: "How we built secure Google OAuth with httpOnly JWT cookies, refresh token rotation via Redis, and a NextAuth session bridge for seamless frontend auth.", readTime: "10 min" },

@@ -4,33 +4,27 @@ export default function RefundPolicyPage() {
       <article className="max-w-3xl mx-auto space-y-6 text-sm">
         <header className="space-y-2">
           <h1 className="text-2xl font-semibold">Refund Policy</h1>
-          <p className="text-gray-500 text-xs">
-            Last updated: 2026‑07‑31
-          </p>
+          <p className="text-gray-500 text-xs">Last updated: 2026‑08‑08</p>
         </header>
 
-        <p>
-          This website is operated by SentinelNexus.
-        </p>
-
         <section className="space-y-2">
-          <h2 className="text-base font-semibold">Duration</h2>
+          <h2 className="text-base font-semibold">1. Subscription Refunds</h2>
           <p>
-            You are eligible for a refund within 7 days of your original purchase date.
+            SentinelNexus offers a 14-day money-back guarantee for all new Pro and Enterprise subscription plans. If you are not satisfied with the service within the first 14 days of your initial purchase, you may request a full refund.
           </p>
         </section>
 
         <section className="space-y-2">
-          <h2 className="text-base font-semibold">Mode of Refund</h2>
+          <h2 className="text-base font-semibold">2. Renewal Refunds</h2>
           <p>
-            Approved refunds will be processed via the original payment method. Please allow up to 7-10 business days for the credit to appear on your statement.
+            We do not provide refunds for automatic subscription renewals. You are responsible for cancelling your subscription prior to the renewal date via your Subscription Dashboard.
           </p>
         </section>
 
         <section className="space-y-2">
-          <h2 className="text-base font-semibold">Exceptions</h2>
+          <h2 className="text-base font-semibold">3. How to Request</h2>
           <p>
-            Custom enterprise plans or heavily discounted promotional plans may be exempt from this standard refund policy. Please refer to your individual contract terms for exceptions.
+            To request a refund, please contact our support team at billing@sentinelnexus.example with your PayU transaction ID.
           </p>
         </section>
       </article>

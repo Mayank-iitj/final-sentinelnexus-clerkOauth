@@ -15,5 +15,6 @@ def me(user=Depends(get_current_active_user)):
         email=user.email,
         username=user.username,
         full_name=user.full_name,
+        subscription_tier=user.subscription_tier,
     )
 

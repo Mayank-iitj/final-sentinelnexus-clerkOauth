@@ -37,6 +37,7 @@ const navItems = [
   { href: "/projects", label: "Projects", icon: "▤" },
   { href: "/reports", label: "Reports", icon: "☰" },
   { href: "/notifications", label: "Notifications", icon: "⚐" },
+  { href: "/subscription", label: "Billing & Plans", icon: "💳" },
   { href: "/settings", label: "Settings", icon: "⚙" },
 ];
 

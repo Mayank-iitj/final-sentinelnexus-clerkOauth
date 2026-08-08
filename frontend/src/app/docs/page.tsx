@@ -135,6 +135,24 @@ const endpoints = [
       },
     ],
   },
+  {
+    category: "Billing & Subscriptions",
+    items: [
+      {
+        method: "GET",
+        path: "/users/me",
+        desc: "Retrieve current authenticated user profile, including their active subscription_tier (e.g., Starter, Pro, Enterprise).",
+        auth: "Clerk JWT",
+      },
+      {
+        method: "POST",
+        path: "/payments/payu/success",
+        desc: "Webhook handler for PayU payment success. Securely verifies the transaction hash and automatically upgrades the user's subscription tier.",
+        payload: "application/x-www-form-urlencoded",
+        auth: "Public (PayU Hash Required)",
+      },
+    ],
+  },
 ];
 
 export default function ApiDocsPage() {

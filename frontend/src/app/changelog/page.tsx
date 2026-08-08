@@ -4,6 +4,12 @@ import type { Metadata } from "next";
 export const metadata: Metadata = { title: "Changelog", description: "SentinelNexus platform release history and updates." };
 
 const releases = [
+  { version: "2.4.0", date: "2026-08-08", title: "PayU Subscriptions & Automated Billing", type: "major", changes: [
+    { tag: "added", text: "Integrated PayU for secure subscription payment processing" },
+    { tag: "added", text: "Dedicated Subscription Dashboard for users to manage active plans" },
+    { tag: "improved", text: "Wired frontend UI directly to PostgreSQL subscription endpoints" },
+    { tag: "security", text: "HackProof Backend enforcement for dynamic limits on scans and projects" },
+  ]},
   { version: "2.3.0", date: "2026-07-31", title: "Advanced AI Defense Engines & Autonomous Agents", type: "major", changes: [
     { tag: "added", text: "Trust Score Engine & Digital Twin generation for real-time risk quantification" },
     { tag: "added", text: "Zero-Day Threat Prediction and Dark Web monitoring capabilities" },
