@@ -1,10 +1,10 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { useUser, useAuth } from "@clerk/nextjs";
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const searchParams = useSearchParams();
   const plan = searchParams.get("plan") || "Pro";
   const { isLoaded, user } = useUser();
@@ -15,6 +15,8 @@ export default function CheckoutPage() {
   const [error, setError] = useState<string | null>(null);
   const [payuData, setPayuData] = useState<any>(null);
 
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://sentinelnexus-backend.onrender.com/api/v1";
+
   useEffect(() => {
     if (!isLoaded || !user) return;
 
@@ -23,7 +25,13 @@ export default function CheckoutPage() {
     const fetchHash = async () => {
       try {
         const token = await getToken();
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/payments/payu/hash?amount=${amount}&productinfo=${plan}`, {
+        if (!token) {
+          setError("Authentication required. Please log in again.");
+          setLoading(false);
+          return;
+        }
+
+        const response = await fetch(`${API_BASE}/payments/payu/hash?amount=${amount}&productinfo=${plan}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -31,12 +39,17 @@ export default function CheckoutPage() {
           }
         });
 
-        if (!response.ok) throw new Error("Failed to generate payment hash");
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("PayU hash error:", response.status, errorText);
+          throw new Error(`Payment initialization failed (${response.status}). Please try again.`);
+        }
 
         const data = await response.json();
         setPayuData(data);
         setLoading(false);
       } catch (err: any) {
+        console.error("Checkout error:", err);
         setError(err.message);
         setLoading(false);
       }
@@ -47,14 +60,20 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     if (payuData && formRef.current) {
-      // Auto submit the form to PayU once data is loaded
       formRef.current.submit();
     }
   }, [payuData]);
 
   if (!isLoaded) return <div className="min-h-screen bg-black text-white flex items-center justify-center">Loading user...</div>;
   if (!user) return <div className="min-h-screen bg-black text-white flex items-center justify-center">Please login first.</div>;
-  if (error) return <div className="min-h-screen bg-black text-white flex items-center justify-center">Error: {error}</div>;
+  if (error) return (
+    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center gap-4">
+      <p className="text-red-400">Error: {error}</p>
+      <button onClick={() => window.location.reload()} className="px-4 py-2 bg-violet-600 rounded-lg hover:bg-violet-700 transition">
+        Retry
+      </button>
+    </div>
+  );
 
   return (
     <main className="min-h-screen bg-black text-white flex flex-col items-center justify-center">
@@ -66,7 +85,7 @@ export default function CheckoutPage() {
         <div className="w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full animate-spin"></div>
 
         {payuData && (
-          <form ref={formRef} action="https://test.payu.in/_payment" method="post" className="hidden">
+          <form ref={formRef} action={payuData.payu_url || "https://test.payu.in/_payment"} method="post" className="hidden">
             <input type="hidden" name="key" value={payuData.key} />
             <input type="hidden" name="txnid" value={payuData.txnid} />
             <input type="hidden" name="amount" value={payuData.amount} />
@@ -80,5 +99,13 @@ export default function CheckoutPage() {
         )}
       </div>
     </main>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-black text-white flex items-center justify-center">Loading...</div>}>
+      <CheckoutContent />
+    </Suspense>
   );
 }
