@@ -27,9 +27,9 @@ services:
       - key: ALLOWED_HOSTS
         value: ".onrender.com,.vercel.app,sentinelnexus.mayyanks.app,www.sentinelnexus.mayyanks.app,*.clerk.accounts.dev"
       - key: ALLOWED_ORIGINS
-        value: '["https://sentinelnexus.vercel.app", "https://www.sentinelnexus.vercel.app", "https://sentinelnexus.mayyanks.app", "https://*.clerk.accounts.dev"]'
+        value: "https://sentinelnexus.vercel.app,https://www.sentinelnexus.vercel.app,https://sentinelnexus.mayyanks.app,https://www.sentinelnexus.mayyanks.app"
       - key: FRONTEND_BASE_URL
-        value: https://sentinelnexus.vercel.app
+        value: https://sentinelnexus.mayyanks.app
       - key: BACKEND_BASE_URL
         value: https://sentinelnexus-backend.onrender.com
       - key: CLERK_SECRET_KEY
@@ -107,7 +107,7 @@ services:
           name: sentinelnexus-backend
           property: url
       - key: NEXT_PUBLIC_SITE_URL
-        value: https://sentinelnexus.vercel.app
+        value: https://sentinelnexus.mayyanks.app
       - key: NODE_ENV
         value: production
       - key: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
