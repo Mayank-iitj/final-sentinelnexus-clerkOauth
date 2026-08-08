@@ -31,26 +31,28 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
-    # CORS / hosts
-    ALLOWED_ORIGINS: List[str] = Field(default_factory=lambda: ["http://localhost:3000"])
-    ALLOWED_HOSTS: List[str] = Field(default_factory=lambda: ["*"])
+    # CORS / hosts (Stored as string to prevent pydantic_settings JSONDecodeError)
+    ALLOWED_ORIGINS: str = Field(default="http://localhost:3000")
+    ALLOWED_HOSTS: str = Field(default="*")
 
-    @field_validator("ALLOWED_ORIGINS", "ALLOWED_HOSTS", mode="before")
-    @classmethod
-    def parse_list_vars(cls, v: str | List[str]) -> List[str]:
-        if isinstance(v, str):
-            import json
-            v = v.strip()
-            # Handle user inputting single quotes instead of double quotes for JSON
-            v = v.replace("'", '"')
-            if v.startswith("[") and v.endswith("]"):
-                try:
-                    return json.loads(v)
-                except Exception:
-                    pass
-            # Fall back to comma separated string if JSON fails or isn't used
-            return [i.strip() for i in v.split(",") if i.strip()]
-        return v
+    @property
+    def parsed_allowed_origins(self) -> List[str]:
+        return self._parse_list_var(self.ALLOWED_ORIGINS)
+
+    @property
+    def parsed_allowed_hosts(self) -> List[str]:
+        return self._parse_list_var(self.ALLOWED_HOSTS)
+
+    def _parse_list_var(self, v: str) -> List[str]:
+        import json
+        v = v.strip()
+        v = v.replace("'", '"')
+        if v.startswith("[") and v.endswith("]"):
+            try:
+                return json.loads(v)
+            except Exception:
+                pass
+        return [i.strip() for i in v.split(",") if i.strip()]
 
     # Clerk Auth
     CLERK_SECRET_KEY: str = ""
