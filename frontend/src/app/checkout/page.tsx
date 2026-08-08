@@ -2,12 +2,13 @@
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
-import { useUser } from "@clerk/nextjs";
+import { useUser, useAuth } from "@clerk/nextjs";
 
 export default function CheckoutPage() {
   const searchParams = useSearchParams();
   const plan = searchParams.get("plan") || "Pro";
   const { isLoaded, user } = useUser();
+  const { getToken } = useAuth();
   const formRef = useRef<HTMLFormElement>(null);
   
   const [loading, setLoading] = useState(true);
@@ -21,11 +22,12 @@ export default function CheckoutPage() {
 
     const fetchHash = async () => {
       try {
+        const token = await getToken();
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/payments/payu/hash?amount=${amount}&productinfo=${plan}`, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
-            // Note: In real app, include Authorization header with Clerk token
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
           }
         });
 
