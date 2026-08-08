@@ -3,7 +3,7 @@ from __future__ import annotations
 from functools import lru_cache
 from typing import List
 
-from pydantic import Field
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -34,6 +34,23 @@ class Settings(BaseSettings):
     # CORS / hosts
     ALLOWED_ORIGINS: List[str] = Field(default_factory=lambda: ["http://localhost:3000"])
     ALLOWED_HOSTS: List[str] = Field(default_factory=lambda: ["*"])
+
+    @field_validator("ALLOWED_ORIGINS", "ALLOWED_HOSTS", mode="before")
+    @classmethod
+    def parse_list_vars(cls, v: str | List[str]) -> List[str]:
+        if isinstance(v, str):
+            import json
+            v = v.strip()
+            # Handle user inputting single quotes instead of double quotes for JSON
+            v = v.replace("'", '"')
+            if v.startswith("[") and v.endswith("]"):
+                try:
+                    return json.loads(v)
+                except Exception:
+                    pass
+            # Fall back to comma separated string if JSON fails or isn't used
+            return [i.strip() for i in v.split(",") if i.strip()]
+        return v
 
     # Clerk Auth
     CLERK_SECRET_KEY: str = ""
