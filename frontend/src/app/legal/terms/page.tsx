@@ -31,7 +31,7 @@ export default function TermsOfServicePage() {
         <section className="space-y-2">
           <h2 className="text-base font-semibold">4. Limitation of Liability</h2>
           <p>
-            SentinelNexus is provided "as is". While our AI models strive for accuracy, we do not guarantee the identification of all vulnerabilities. We shall not be liable for any security breaches, data loss, or damages resulting from the use of our platform.
+            SentinelNexus is provided &quot;as is&quot;. While our AI models strive for accuracy, we do not guarantee the identification of all vulnerabilities. We shall not be liable for any security breaches, data loss, or damages resulting from the use of our platform.
           </p>
         </section>
       </article>

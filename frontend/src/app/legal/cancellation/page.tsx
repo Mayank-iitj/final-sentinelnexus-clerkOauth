@@ -10,7 +10,7 @@ export default function CancellationPolicyPage() {
         <section className="space-y-2">
           <h2 className="text-base font-semibold">1. How to Cancel</h2>
           <p>
-            You may cancel your SentinelNexus subscription at any time by navigating to your Subscription Dashboard and selecting "Cancel Plan". 
+            You may cancel your SentinelNexus subscription at any time by navigating to your Subscription Dashboard and selecting &quot;Cancel Plan&quot;. 
           </p>
         </section>
 
