@@ -54,3 +54,31 @@ def list_audit_trail(
     user = Depends(get_current_active_user)
 ):
     return db.query(AuditTrail).filter(AuditTrail.user_id == user.id).order_by(AuditTrail.created_at.desc()).all()
+
+@router.get("/dashboard")
+def get_governance_dashboard(
+    db: Session = Depends(get_db),
+    user = Depends(get_current_active_user)
+):
+    assets = db.query(AIAsset).filter(AIAsset.user_id == user.id).all()
+    # Provide mock vendors and formatted assets for the dashboard
+    return {
+        "vendors": [
+            { "id": "v1", "name": "OpenAI", "service": "GPT-4 API", "trust_score": 950, "status": "Approved" },
+            { "id": "v2", "name": "Anthropic", "service": "Claude 3 API", "trust_score": 920, "status": "Approved" }
+        ],
+        "assets": [
+            {
+                "id": str(a.id),
+                "name": a.name,
+                "type": a.asset_type,
+                "compliance": "Pass" if a.status == "active" else "Fail",
+                "risk": "Low"
+            } for a in assets
+        ],
+        "metrics": {
+            "total_assets": len(assets),
+            "compliant_assets": len([a for a in assets if a.status == "active"]),
+            "high_risk_vendors": 0
+        }
+    }

@@ -5,9 +5,9 @@ import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useState } from "react";
 
 const plans = [
-  { tier: "Starter", price: "$0", period: "forever", details: ["5 scans/month", "Code + Prompt + Text scanners", "Basic CVSS scoring", "Email support", "1 project"], cta: "Start Free", popular: false, checkoutUrl: "#coming-soon" },
-  { tier: "Pro", price: "$299", period: "/month", details: ["100 scans/month", "All scan engines", "Custom scan rules", "PDF report generation", "10 projects", "Slack & webhook alerts", "Priority support"], cta: "Upgrade to Pro", popular: true, checkoutUrl: "#coming-soon" },
-  { tier: "Enterprise", price: "$999", period: "/month", details: ["Unlimited scans", "SOC 2 evidence exports", "SSO / SAML support", "Unlimited projects", "Dedicated CSM", "SLA < 30 min (critical)", "Custom integrations"], cta: "Talk to Sales", popular: false, checkoutUrl: "#coming-soon" },
+  { tier: "Starter", price: "$0", period: "forever", details: ["5 scans/month", "Code + Prompt + Text scanners", "Basic CVSS scoring", "Email support", "1 project"], cta: "Start Free", popular: false, checkoutUrl: "/checkout?plan=Starter" },
+  { tier: "Pro", price: "$299", period: "/month", details: ["100 scans/month", "All scan engines", "Custom scan rules", "PDF report generation", "10 projects", "Slack & webhook alerts", "Priority support"], cta: "Upgrade to Pro", popular: true, checkoutUrl: "/checkout?plan=Pro" },
+  { tier: "Enterprise", price: "$999", period: "/month", details: ["Unlimited scans", "SOC 2 evidence exports", "SSO / SAML support", "Unlimited projects", "Dedicated CSM", "SLA < 30 min (critical)", "Custom integrations"], cta: "Talk to Sales", popular: false, checkoutUrl: "/checkout?plan=Enterprise" },
 ];
 
 function Reveal({ children, className = "" }: { children: React.ReactNode; className?: string }) {

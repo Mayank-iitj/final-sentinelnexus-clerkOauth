@@ -59,6 +59,13 @@ def create_project(
     db: Session = Depends(get_db),
     user=Depends(get_current_active_user),
 ):
+    from app.core.subscription import get_user_limits
+    limits = get_user_limits(user.subscription_tier)
+    
+    current_projects = db.query(Project).filter(Project.owner_id == user.id, Project.is_archived == False).count()
+    if current_projects >= limits["projects"]:
+        raise HTTPException(status_code=403, detail="Project limit reached. Please upgrade your plan to create more projects.")
+
     proj = Project(
         name=body.name,
         description=body.description,

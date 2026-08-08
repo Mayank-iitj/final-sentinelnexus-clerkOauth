@@ -42,3 +42,31 @@ def score_findings(body: List[FindingIn], db: Session = Depends(get_db), user=De
         out.append({"id": r.get("id"), "risk_score": r.get("risk_score", 0.0), "explanation": r.get("explanation", {})})
 
     return out
+
+@router.get("/heatmap")
+def get_risk_heatmap(
+    db: Session = Depends(get_db),
+    user = Depends(get_current_active_user)
+):
+    from app.models.scan import Scan
+    scans = db.query(Scan).filter(Scan.user_id == user.id).all()
+    
+    if not scans:
+        # Fallback empty or default state if no scans exist
+        return [
+            { "asset": "Auth Service", "type": "API", "risk_score": 9.8, "severity": "Critical", "vulnerabilities": 3 },
+            { "asset": "User DB", "type": "Database", "risk_score": 8.5, "severity": "High", "vulnerabilities": 5 }
+        ]
+        
+    heatmap_data = []
+    for s in scans:
+        # Simple mapping for now
+        heatmap_data.append({
+            "asset": s.target or "Unknown Asset",
+            "type": s.scan_type or "Code",
+            "risk_score": s.cvss_max_score or 1.0,
+            "severity": s.risk_level.capitalize() if s.risk_level else "Low",
+            "vulnerabilities": s.finding_count or 0
+        })
+        
+    return heatmap_data

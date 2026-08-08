@@ -28,6 +28,9 @@ class User(Base):
     oauth_provider2 = Column(String(32), nullable=True)
     oauth_provider_id2 = Column(String(255), nullable=True)
 
+    # Subscription
+    subscription_tier = Column(String(50), nullable=False, default="free")
+
     __table_args__ = (
         Index("uq_user_oauth", "oauth_provider", "oauth_provider_id", unique=True),
     )

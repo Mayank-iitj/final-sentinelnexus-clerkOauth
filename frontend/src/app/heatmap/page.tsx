@@ -3,26 +3,18 @@ import { useState, useEffect } from "react";
 import { AppShell } from "../../components/AppShell";
 import { motion } from "framer-motion";
 
-// Mock fetching the python CVSS Risk Engine response
-const fetchRiskHeatmap = async () => {
-  await new Promise(r => setTimeout(r, 900));
-  return [
-    { asset: "Auth Service", type: "API", risk_score: 9.8, severity: "Critical", vulnerabilities: 3 },
-    { asset: "User DB", type: "Database", risk_score: 8.5, severity: "High", vulnerabilities: 5 },
-    { asset: "Marketing Site", type: "Web", risk_score: 4.2, severity: "Medium", vulnerabilities: 12 },
-    { asset: "Payment Gateway", type: "API", risk_score: 9.1, severity: "Critical", vulnerabilities: 1 },
-    { asset: "Internal Wiki", type: "Web", risk_score: 2.1, severity: "Low", vulnerabilities: 2 },
-    { asset: "S3 Logs Bucket", type: "Storage", risk_score: 7.5, severity: "High", vulnerabilities: 4 },
-  ];
-};
+import { getRiskHeatmap } from "../../lib/api";
 
 export default function HeatmapPage() {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchRiskHeatmap().then(d => {
+    getRiskHeatmap().then(d => {
       setData(d);
+      setLoading(false);
+    }).catch(err => {
+      console.error(err);
       setLoading(false);
     });
   }, []);

@@ -4,25 +4,7 @@ import { AppShell } from "../../components/AppShell";
 import { motion } from "framer-motion";
 import { useUser } from "@clerk/nextjs";
 
-// Mock fetching the python backend response
-const fetchTrustScore = async () => {
-  // Simulating network delay to Python FastAPI backend
-  await new Promise(r => setTimeout(r, 800));
-  return {
-    "trust_score": 785,
-    "status": "Good",
-    "breakdown": {
-        "security_posture": 320,
-        "vendor_risk": 150,
-        "compliance": 180,
-        "threat_intel": 135
-    },
-    "recent_changes": [
-        {"factor": "Code Security", "impact": "-35"},
-        {"factor": "Vendor Risk", "impact": "-20"}
-    ]
-  };
-};
+import { getTrustScore } from "../../lib/api";
 
 export default function TrustScorePage() {
   const { user } = useUser();
@@ -30,8 +12,11 @@ export default function TrustScorePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchTrustScore().then(d => {
+    getTrustScore().then(d => {
       setData(d);
+      setLoading(false);
+    }).catch(err => {
+      console.error(err);
       setLoading(false);
     });
   }, []);

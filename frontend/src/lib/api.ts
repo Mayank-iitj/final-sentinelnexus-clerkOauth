@@ -335,6 +335,22 @@ export const getProjectScans = (projectId: string, params?: { limit?: number; of
   return api<Paginated<ScanListItem>>(`/projects/${projectId}/scans${qs}`);
 };
 
+// ── Trust Score ────────────────────────────────────────────────────────────────
+export const getTrustScore = () =>
+  api<any>("/trust/score");
+
+// ── Governance ───────────────────────────────────────────────────────────────
+export const getGovernanceDashboard = () =>
+  api<any>("/governance/dashboard");
+
+// ── Risk & Heatmap ───────────────────────────────────────────────────────────
+export const getRiskHeatmap = () =>
+  api<any[]>("/risk/heatmap");
+
+// ── Threats & Simulator ──────────────────────────────────────────────────────
+export const runSimulation = (payload: { target: string }) =>
+  api<any>("/threats/simulate", { method: "POST", body: JSON.stringify(payload) });
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 export const severityColor = (s: Severity | string): string => {
   switch (s) {

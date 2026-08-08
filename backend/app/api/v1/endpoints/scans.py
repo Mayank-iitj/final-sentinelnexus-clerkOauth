@@ -92,6 +92,16 @@ def run_scan(
     db: Session = Depends(get_db),
     user=Depends(get_current_active_user),
 ):
+    from app.core.subscription import get_user_limits
+    from datetime import datetime, timedelta, timezone
+
+    limits = get_user_limits(user.subscription_tier)
+    thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
+    recent_scans = db.query(Scan).filter(Scan.user_id == user.id, Scan.created_at >= thirty_days_ago).count()
+    
+    if recent_scans >= limits["scans_month"]:
+        raise HTTPException(status_code=403, detail="Monthly scan limit reached. Please upgrade your plan to run more scans.")
+
     t_start = time.monotonic()
 
     try:

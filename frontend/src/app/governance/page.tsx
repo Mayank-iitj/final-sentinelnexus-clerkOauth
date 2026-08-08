@@ -3,35 +3,18 @@ import { useState, useEffect } from "react";
 import { AppShell } from "../../components/AppShell";
 import { motion } from "framer-motion";
 
-// Mock fetch to backend governance models
-const fetchGovernanceData = async () => {
-  await new Promise(r => setTimeout(r, 900));
-  return {
-    vendors: [
-      { id: "v1", name: "OpenAI", service: "GPT-4 API", trust_score: 950, status: "Approved" },
-      { id: "v2", name: "Anthropic", service: "Claude 3 API", trust_score: 920, status: "Approved" },
-      { id: "v3", name: "Unknown Startup", service: "Custom Vector DB", trust_score: 450, status: "Under Review" }
-    ],
-    assets: [
-      { id: "a1", name: "Customer Support Bot", type: "LLM Agent", compliance: "Pass", risk: "Low" },
-      { id: "a2", name: "Internal Code Copilot", type: "LLM Agent", compliance: "Pass", risk: "Medium" },
-      { id: "a3", name: "HR Resume Screener", type: "Classifier", compliance: "Fail (Bias Detected)", risk: "High" }
-    ],
-    metrics: {
-      total_assets: 124,
-      compliant_assets: 118,
-      high_risk_vendors: 1
-    }
-  };
-};
+import { getGovernanceDashboard } from "../../lib/api";
 
 export default function GovernancePage() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchGovernanceData().then(d => {
+    getGovernanceDashboard().then(d => {
       setData(d);
+      setLoading(false);
+    }).catch(err => {
+      console.error(err);
       setLoading(false);
     });
   }, []);

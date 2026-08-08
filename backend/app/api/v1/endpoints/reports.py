@@ -88,6 +88,11 @@ def generate_report(
     db: Session = Depends(get_db),
     user=Depends(get_current_active_user),
 ):
+    from app.core.subscription import get_user_limits
+    limits = get_user_limits(user.subscription_tier)
+    if not limits.get("pdf", False):
+        raise HTTPException(status_code=403, detail="PDF generation is not available on your current plan. Please upgrade to Pro or Enterprise.")
+
     scan = db.query(Scan).filter(Scan.id == scan_id, Scan.user_id == user.id).first()
     if not scan:
         raise HTTPException(status_code=404, detail="Scan not found")

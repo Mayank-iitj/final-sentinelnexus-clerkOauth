@@ -41,6 +41,11 @@ class Settings(BaseSettings):
     CLERK_ISSUER: str = ""
     CLERK_WEBHOOK_SECRET: str = ""
 
+    # PayU Configuration
+    PAYU_MERCHANT_KEY: str = ""
+    PAYU_MERCHANT_SALT: str = ""
+    PAYU_BASE_URL: str = "https://test.payu.in/_payment"
+
     # Rate limiting
     RATE_LIMIT_ENABLED: bool = True
     RATE_LIMIT_REQUESTS: int = 100
