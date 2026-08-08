@@ -1,91 +1,120 @@
 "use client";
 import { useEffect, useState, useRef, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
-import { useUser, useAuth } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 
 function CheckoutContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const plan = searchParams.get("plan") || "Pro";
   const { isLoaded, user } = useUser();
-  const { getToken } = useAuth();
   const formRef = useRef<HTMLFormElement>(null);
-  
-  const [loading, setLoading] = useState(true);
+
   const [error, setError] = useState<string | null>(null);
   const [payuData, setPayuData] = useState<any>(null);
 
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://sentinelnexus-backend.onrender.com/api/v1";
-
   useEffect(() => {
-    if (!isLoaded || !user) return;
+    if (!isLoaded) return;
+    if (!user) {
+      router.push("/login?redirect=/checkout?plan=" + plan);
+      return;
+    }
 
-    const amount = plan === "Enterprise" ? 999 : 299;
+    const amount = plan === "Enterprise" ? "999" : plan === "Pro" ? "299" : "0";
+
+    const email =
+      user.primaryEmailAddress?.emailAddress ||
+      user.emailAddresses?.[0]?.emailAddress ||
+      "";
+    const firstname =
+      user.firstName ||
+      user.username ||
+      email.split("@")[0] ||
+      "User";
 
     const fetchHash = async () => {
       try {
-        const token = await getToken();
-        if (!token) {
-          setError("Authentication required. Please log in again.");
-          setLoading(false);
-          return;
-        }
-
-        const response = await fetch(`${API_BASE}/payments/payu/hash?amount=${amount}&productinfo=${plan}`, {
+        // Call the local Next.js API route — no CORS, no external backend needed
+        const response = await fetch("/api/payu-hash", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          }
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ amount, productinfo: plan, firstname, email }),
         });
 
         if (!response.ok) {
-          const errorText = await response.text();
-          console.error("PayU hash error:", response.status, errorText);
-          throw new Error(`Payment initialization failed (${response.status}). Please try again.`);
+          const errData = await response.json().catch(() => ({}));
+          throw new Error(errData.error || `Server error (${response.status})`);
         }
 
         const data = await response.json();
         setPayuData(data);
-        setLoading(false);
       } catch (err: any) {
         console.error("Checkout error:", err);
         setError(err.message);
-        setLoading(false);
       }
     };
 
     fetchHash();
   }, [isLoaded, user, plan]);
 
+  // Auto-submit the hidden form once data arrives
   useEffect(() => {
     if (payuData && formRef.current) {
       formRef.current.submit();
     }
   }, [payuData]);
 
-  if (!isLoaded) return <div className="min-h-screen bg-black text-white flex items-center justify-center">Loading user...</div>;
-  if (!user) return <div className="min-h-screen bg-black text-white flex items-center justify-center">Please login first.</div>;
-  if (error) return (
-    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center gap-4">
-      <p className="text-red-400">Error: {error}</p>
-      <button onClick={() => window.location.reload()} className="px-4 py-2 bg-violet-600 rounded-lg hover:bg-violet-700 transition">
-        Retry
-      </button>
-    </div>
-  );
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        Loading…
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center gap-4 px-4">
+        <div className="glass-card p-8 rounded-2xl max-w-md w-full text-center">
+          <p className="text-red-400 mb-4">⚠️ {error}</p>
+          <div className="flex gap-3 justify-center">
+            <button
+              onClick={() => { setError(null); window.location.reload(); }}
+              className="px-5 py-2 bg-violet-600 rounded-lg hover:bg-violet-700 transition text-sm font-medium"
+            >
+              Retry
+            </button>
+            <button
+              onClick={() => router.push("/subscription")}
+              className="px-5 py-2 border border-white/20 rounded-lg hover:bg-white/10 transition text-sm font-medium"
+            >
+              Back to Plans
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-black text-white flex flex-col items-center justify-center">
       <div className="glass-card p-12 rounded-2xl flex flex-col items-center text-center max-w-md w-full">
-        <Image src="/favicon.png" alt="Logo" width={48} height={48} className="rounded-xl mb-6" />
+        <Image src="/favicon.png" alt="SentinelNexus" width={48} height={48} className="rounded-xl mb-6" />
         <h1 className="text-2xl font-bold mb-2">Redirecting to Payment</h1>
-        <p className="text-gray-400 mb-8">Please wait while we redirect you to PayU to complete your purchase for the {plan} plan.</p>
-        
-        <div className="w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-gray-400 mb-8">
+          Securely processing your <span className="text-violet-400 font-semibold">{plan}</span> plan…
+        </p>
+        <div className="w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full animate-spin" />
 
+        {/* Hidden PayU form — auto-submitted when payuData is ready */}
         {payuData && (
-          <form ref={formRef} action={payuData.payu_url || "https://test.payu.in/_payment"} method="post" className="hidden">
+          <form
+            ref={formRef}
+            action={payuData.payu_url || "https://test.payu.in/_payment"}
+            method="post"
+            className="hidden"
+          >
             <input type="hidden" name="key" value={payuData.key} />
             <input type="hidden" name="txnid" value={payuData.txnid} />
             <input type="hidden" name="amount" value={payuData.amount} />
@@ -104,7 +133,13 @@ function CheckoutContent() {
 
 export default function CheckoutPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-black text-white flex items-center justify-center">Loading...</div>}>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-black text-white flex items-center justify-center">
+          Loading…
+        </div>
+      }
+    >
       <CheckoutContent />
     </Suspense>
   );
