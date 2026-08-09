@@ -52,6 +52,11 @@ export default function HeatmapPage() {
           <div className="h-[400px] flex items-center justify-center">
             <div className="animate-spin w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full" />
           </div>
+        ) : !data || data.length === 0 ? (
+          <div className="h-[400px] flex flex-col items-center justify-center text-gray-500">
+            <p>No risk data available.</p>
+            <p className="text-sm mt-2">Unable to connect to the backend API. Please try again later.</p>
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {data.map((item, idx) => (

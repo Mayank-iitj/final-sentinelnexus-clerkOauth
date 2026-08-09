@@ -48,7 +48,11 @@ export default function ReportsPage() {
       setReports(rpt.items);
       setScans(scn.items.filter((s) => s.status === "completed"));
     } catch (e: any) {
-      setError(e.message ?? "Failed to load");
+      if (e.message === "Failed to fetch") {
+        setError("Unable to connect to the backend API. Please try again later.");
+      } else {
+        setError(e.message ?? "Failed to load");
+      }
     } finally {
       setLoading(false);
     }

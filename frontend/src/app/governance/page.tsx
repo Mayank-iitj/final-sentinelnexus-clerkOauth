@@ -54,6 +54,11 @@ export default function GovernancePage() {
           <div className="h-[400px] flex items-center justify-center">
             <div className="animate-spin w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full" />
           </div>
+        ) : !data ? (
+          <div className="h-[400px] flex flex-col items-center justify-center text-red-400">
+            <p>Failed to load governance data.</p>
+            <p className="text-sm text-gray-500 mt-2">Please check your connection or try again later.</p>
+          </div>
         ) : (
           <div className="space-y-6">
             

@@ -347,6 +347,10 @@ export const getGovernanceDashboard = () =>
 export const getRiskHeatmap = () =>
   api<any[]>("/risk/heatmap");
 
+// ── Security Telemetry ──────────────────────────────────────────────────────────
+export const getSecurityTelemetry = () =>
+  api<any>("/security/telemetry");
+
 // ── Threats & Simulator ──────────────────────────────────────────────────────
 export const runSimulation = (payload: { target: string }) =>
   api<any>("/threats/simulate", { method: "POST", body: JSON.stringify(payload) });

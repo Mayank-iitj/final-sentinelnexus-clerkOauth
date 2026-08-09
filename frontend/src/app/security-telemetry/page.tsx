@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { AppShell } from "../../components/AppShell";
 import { motion } from "framer-motion";
+import { getSecurityTelemetry } from "../../lib/api";
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } };
 const fadeUp = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.45 } } };
@@ -60,11 +61,7 @@ export default function SecurityTelemetryPage() {
 
   useEffect(() => {
     if (!isSignedIn) return;
-    fetch("/api/v1/security/telemetry")
-      .then(async (res) => {
-        if (!res.ok) throw new Error(await res.text());
-        return res.json();
-      })
+    getSecurityTelemetry()
       .then(setData)
       .catch((e) => setError(e.message || "Failed to load telemetry"))
       .finally(() => setLoading(false));
