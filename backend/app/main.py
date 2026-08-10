@@ -119,30 +119,27 @@ def create_app() -> FastAPI:
     @app.on_event("startup")
     async def _startup() -> None:
         # Run Alembic migrations to HEAD on every startup.
-        # This is the only reliable way to ensure the production DB schema is
-        # always in sync with the code, regardless of which deployment platform
-        # (Render, Cloud Run, App Runner) is being used.
+        # Entire block is non-fatal — a DB connection failure must NEVER crash workers.
         from alembic.config import Config
         from alembic import command as alembic_command
         import os
 
-        # In Docker the CWD is /app (the backend root), so alembic.ini is at ./alembic.ini
         alembic_cfg = Config("alembic.ini")
         try:
             alembic_command.upgrade(alembic_cfg, "head")
             logger.info("Database migrations applied successfully (alembic upgrade head)")
-        except Exception as e:
-            logger.warning(f"Alembic upgrade skipped or failed (non-fatal): {e}")
-            # Fallback: create any tables that don't exist yet
-            from app.db.database import Base
-            from app.models import governance, threat, scan, project, alert, report  # noqa: F401
-            Base.metadata.create_all(bind=engine)
-            logger.info("Database tables ensured via create_all fallback")
+        except Exception as alembic_err:
+            logger.warning(f"Alembic upgrade skipped or failed (non-fatal): {str(alembic_err).splitlines()[0]}")
+            # Fallback: attempt create_all — also non-fatal
+            try:
+                from app.db.database import Base
+                from app.models import governance, threat, scan, project, alert, report  # noqa: F401
+                Base.metadata.create_all(bind=engine)
+                logger.info("Database tables ensured via create_all fallback")
+            except Exception as create_err:
+                logger.warning(f"create_all fallback also failed (non-fatal): {str(create_err).splitlines()[0]}")
 
 
-
-
-        
         try:
             # Redis (shared)
             redis: Redis = redis_from_url(settings.REDIS_URL, encoding="utf-8", decode_responses=True)
