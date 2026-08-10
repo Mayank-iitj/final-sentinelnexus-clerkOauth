@@ -9,8 +9,8 @@ settings = get_settings()
 class LLMService:
     def __init__(self):
         self.client = Groq(api_key=settings.GROQ_API_KEY)
-        self.default_model = "llama3-70b-8192"
-        self.fast_model = "llama3-8b-8192"
+        self.default_model = "llama-3.3-70b-versatile"
+        self.fast_model = "llama-3.1-8b-instant"
         
         self.system_prompt = (
             "You are SentinelNexus, an elite, highly advanced autonomous CyberSecurity AI. "
