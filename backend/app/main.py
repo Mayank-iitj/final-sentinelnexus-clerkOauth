@@ -14,9 +14,10 @@ from loguru import logger
 from prometheus_fastapi_instrumentator import Instrumentator
 from redis.asyncio import Redis
 from redis.asyncio import from_url as redis_from_url
-from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.datastructures import MutableHeaders
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.exceptions import HTTPException as StarletteHTTPException
+from starlette.types import ASGIApp, Receive, Scope, Send
 
 from app.api.v1.api import api_router
 from app.middleware.security_middleware import SecurityMiddleware
@@ -36,35 +37,70 @@ def _configure_logging() -> None:
     )
 
 
-class SecurityHeadersMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):
-        response = await call_next(request)
-        response.headers["X-Content-Type-Options"] = "nosniff"
-        response.headers["X-Frame-Options"] = "DENY"
-        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-        response.headers["Permissions-Policy"] = "geolocation=(), microphone=()"
-        response.headers[
-            "Content-Security-Policy"
-        ] = "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'"
-        return response
+class SecurityHeadersMiddleware:
+    """
+    Pure ASGI middleware — intercepts http.response.start to inject security
+    headers WITHOUT buffering the response body.
+
+    IMPORTANT: BaseHTTPMiddleware.call_next() buffers streaming responses which
+    breaks SSE/StreamingResponse. This pure ASGI implementation avoids that.
+    """
+
+    def __init__(self, app: ASGIApp) -> None:
+        self.app = app
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+
+        async def send_with_headers(message: dict) -> None:
+            if message["type"] == "http.response.start":
+                headers = MutableHeaders(scope=message)
+                headers["X-Content-Type-Options"] = "nosniff"
+                headers["X-Frame-Options"] = "DENY"
+                headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+                headers["Permissions-Policy"] = "geolocation=(), microphone=()"
+                headers["Content-Security-Policy"] = (
+                    "default-src 'self'; img-src 'self' data:; "
+                    "style-src 'self' 'unsafe-inline'; script-src 'self'"
+                )
+            await send(message)
+
+        await self.app(scope, receive, send_with_headers)
 
 
-class RequestLoggingMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):
-        req_id = request.headers.get("x-request-id") or str(uuid.uuid4())
+class RequestLoggingMiddleware:
+    """
+    Pure ASGI request logging middleware — does NOT buffer streaming responses.
+    Logs method, path, duration and injects X-Request-Id.
+    """
+
+    def __init__(self, app: ASGIApp) -> None:
+        self.app = app
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+
+        req_id = dict(scope.get("headers", [])).get(b"x-request-id", b"").decode() or str(uuid.uuid4())
         start = time.time()
-        try:
-            response = await call_next(request)
-        finally:
-            duration_ms = int((time.time() - start) * 1000)
-            logger.bind(
-                request_id=req_id,
-                method=request.method,
-                path=str(request.url.path),
-                duration_ms=duration_ms,
-            ).info("request")
-        response.headers["X-Request-Id"] = req_id
-        return response
+
+        async def send_with_request_id(message: dict) -> None:
+            if message["type"] == "http.response.start":
+                duration_ms = int((time.time() - start) * 1000)
+                logger.bind(
+                    request_id=req_id,
+                    method=scope.get("method", ""),
+                    path=scope.get("path", ""),
+                    duration_ms=duration_ms,
+                ).info("request")
+                headers = MutableHeaders(scope=message)
+                headers["X-Request-Id"] = req_id
+            await send(message)
+
+        await self.app(scope, receive, send_with_request_id)
 
 
 def create_app() -> FastAPI:
