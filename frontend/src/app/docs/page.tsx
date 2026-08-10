@@ -1,4 +1,5 @@
 "use client";
+import SpecularButton from '../../components/SpecularButton';
 
 import { useState } from "react";
 import Link from "next/link";
@@ -187,7 +188,7 @@ export default function ApiDocsPage() {
           <h2 className="text-sm font-semibold text-violet-300 uppercase tracking-wider mb-2">Production Base URL</h2>
           <div className="flex items-center gap-3">
             <code className="text-lg sm:text-xl font-mono text-white break-all">{BASE_URL}</code>
-            <button 
+            <SpecularButton 
               onClick={() => copyToClipboard(BASE_URL)}
               className="p-2 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white"
             >
@@ -198,7 +199,7 @@ export default function ApiDocsPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                 </svg>
               )}
-            </button>
+            </SpecularButton>
           </div>
         </div>
 
@@ -257,14 +258,14 @@ export default function ApiDocsPage() {
                         <pre className="p-3 rounded-xl bg-black/60 text-[11px] font-mono text-violet-300/80 overflow-x-auto border border-white/[0.03]">
                           {item.payload}
                         </pre>
-                        <button 
+                        <SpecularButton 
                           onClick={() => copyToClipboard(item.payload!)}
                           className="absolute top-2 right-2 p-1.5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/10 rounded-md"
                         >
                           <svg className="w-3.5 h-3.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                           </svg>
-                        </button>
+                        </SpecularButton>
                       </div>
                     )}
                   </div>

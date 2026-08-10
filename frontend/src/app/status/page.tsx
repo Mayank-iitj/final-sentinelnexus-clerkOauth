@@ -1,4 +1,5 @@
 "use client";
+import SpecularButton from '../../components/SpecularButton';
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -164,7 +165,7 @@ export default function StatusPage() {
 
         {/* Refresh Button */}
         <div className="mt-12 text-center">
-          <button 
+          <SpecularButton 
             onClick={checkStatus}
             disabled={loading}
             className="px-6 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-medium hover:bg-white/10 transition-all disabled:opacity-50 flex items-center gap-2 mx-auto"
@@ -180,7 +181,7 @@ export default function StatusPage() {
               </svg>
             )}
             Refresh Status
-          </button>
+          </SpecularButton>
         </div>
       </div>
     </AppShell>

@@ -7,6 +7,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const nextConfig = {
   // Fix file tracing root removed — Vercel handles this natively 
   // when the Project Root is correctly set to 'frontend'.
+  outputFileTracingRoot: __dirname,
   reactStrictMode: true,
   poweredByHeader: false,
   // Skip type checks during production builds to avoid

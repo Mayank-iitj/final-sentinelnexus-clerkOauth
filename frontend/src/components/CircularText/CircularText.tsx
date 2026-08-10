@@ -1,5 +1,5 @@
-// @ts-nocheck
 "use client";
+// @ts-nocheck
 
 import { useEffect } from 'react';
 import { motion, useAnimation, useMotionValue } from 'framer-motion';

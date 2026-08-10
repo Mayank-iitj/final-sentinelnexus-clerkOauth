@@ -1,3 +1,4 @@
+import SpecularButton from '../../components/SpecularButton';
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -32,7 +33,7 @@ export default function BlogPage() {
 
         <div className="flex gap-2 mb-8 flex-wrap">
           {categories.map((c) => (
-            <button key={c} className={`px-3 py-1.5 rounded-full text-xs border transition-colors ${c === "All" ? "bg-violet-500/20 border-violet-400/40 text-violet-200" : "border-white/10 text-gray-400 hover:border-violet-400/30 hover:text-white"}`}>{c}</button>
+            <SpecularButton key={c} className={`px-3 py-1.5 rounded-full text-xs border transition-colors ${c === "All" ? "bg-violet-500/20 border-violet-400/40 text-violet-200" : "border-white/10 text-gray-400 hover:border-violet-400/30 hover:text-white"}`}>{c}</SpecularButton>
           ))}
         </div>
 

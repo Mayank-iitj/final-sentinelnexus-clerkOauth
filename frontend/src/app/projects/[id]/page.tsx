@@ -1,4 +1,5 @@
 "use client";
+import SpecularButton from '../../../components/SpecularButton';
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
@@ -56,12 +57,12 @@ export default function ProjectDetailPage() {
         {/* Header */}
         <div className="flex items-start justify-between">
           <div>
-            <button
+            <SpecularButton
               onClick={() => router.push("/projects")}
               className="text-xs text-slate-400 hover:text-slate-200 mb-2 block"
             >
               ← All Projects
-            </button>
+            </SpecularButton>
             <h1 className="text-2xl font-bold">{project.name}</h1>
             {project.description && (
               <p className="text-sm text-slate-400 mt-1">{project.description}</p>
@@ -123,12 +124,12 @@ export default function ProjectDetailPage() {
                     </div>
                   </div>
                   <span className="text-slate-500">{new Date(s.created_at).toLocaleDateString()}</span>
-                  <button
+                  <SpecularButton
                     onClick={() => generateReport(s.scan_id).catch(() => {})}
                     className="text-xs text-emerald-400 hover:underline"
                   >
                     Report
-                  </button>
+                  </SpecularButton>
                 </div>
               ))}
             </div>

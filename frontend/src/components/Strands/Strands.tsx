@@ -1,5 +1,5 @@
-// @ts-nocheck
 "use client";
+// @ts-nocheck
 import { Renderer, Program, Mesh, Color, Triangle, RenderTarget } from 'ogl';
 import { useEffect, useRef } from 'react';
 

@@ -1,4 +1,5 @@
 "use client";
+import SpecularButton from '../../components/SpecularButton';
 import { useState } from "react";
 import { AppShell } from "../../components/AppShell";
 import { motion } from "framer-motion";
@@ -57,13 +58,13 @@ export default function SimulatorPage() {
               className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-violet-500" 
             />
           </div>
-          <button 
+          <SpecularButton 
             onClick={startSimulation}
             disabled={running}
             className="btn-primary !py-2 !px-6 h-[42px] min-w-[140px]"
           >
             {running ? "Simulating..." : "Launch Attack"}
-          </button>
+          </SpecularButton>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -158,9 +159,9 @@ export default function SimulatorPage() {
                   </pre>
                 </div>
                 
-                <button className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors">
+                <SpecularButton className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors">
                   Deploy Fix Automatically
-                </button>
+                </SpecularButton>
               </div>
             )}
           </motion.div>

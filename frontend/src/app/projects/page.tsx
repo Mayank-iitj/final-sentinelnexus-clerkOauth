@@ -1,4 +1,5 @@
 "use client";
+import SpecularButton from '../../components/SpecularButton';
 
 import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "@clerk/nextjs";
@@ -64,16 +65,16 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: () 
           </div>
         </div>
         <div className="flex gap-3 justify-end">
-          <button onClick={onClose} className="px-4 py-2 rounded-xl bg-white/[0.06] text-sm text-gray-400 hover:bg-slate-700">
+          <SpecularButton onClick={onClose} className="px-4 py-2 rounded-xl bg-white/[0.06] text-sm text-gray-400 hover:bg-slate-700">
             Cancel
-          </button>
-          <button
+          </SpecularButton>
+          <SpecularButton
             onClick={submit}
             disabled={loading}
             className="px-4 py-2 rounded-xl bg-emerald-500 text-slate-950 font-semibold text-sm hover:bg-emerald-400 disabled:opacity-50"
           >
             {loading ? "Creating…" : "Create"}
-          </button>
+          </SpecularButton>
         </div>
       </div>
     </div>
@@ -130,12 +131,12 @@ export default function ProjectsPage() {
               Organise scans by project for team-level risk tracking.
             </p>
           </div>
-          <button
+          <SpecularButton
             onClick={() => setShowCreate(true)}
             className="px-4 py-2 rounded-xl bg-emerald-500 text-slate-950 font-semibold text-sm hover:bg-emerald-400 shadow-lg shadow-emerald-500/20"
           >
             + New Project
-          </button>
+          </SpecularButton>
         </div>
 
         {error && (
@@ -221,12 +222,12 @@ export default function ProjectsPage() {
               </div>
               <div className="flex items-center justify-between text-[11px] text-white0">
                 <span>Created {new Date(p.created_at).toLocaleDateString()}</span>
-                <button
+                <SpecularButton
                   onClick={(e) => { e.stopPropagation(); handleArchive(p.project_id); }}
                   className="text-gray-700 hover:text-red-400"
                 >
                   Archive
-                </button>
+                </SpecularButton>
               </div>
             </div>
           ))}

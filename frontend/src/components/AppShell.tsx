@@ -1,4 +1,6 @@
 "use client";
+import SpecularButton from '../components/SpecularButton';
+import { SimulationEngine } from './SimulationEngine';
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -7,38 +9,44 @@ import { useClerk } from "@clerk/nextjs";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { getUnreadCount } from "../lib/api";
+import { 
+  LayoutDashboard, Briefcase, Star, Map, Store, Crosshair, Shield, 
+  Swords, Scale, CheckCircle, MessageSquare, Activity, Globe, Eye, Zap,
+  ScanFace, GlobeLock, Link as LinkIcon, Users, Network, History, Wrench, ShieldAlert,
+  Bot, Scan, Folder, FileText, Bell, CreditCard, Settings 
+} from "lucide-react";
 
 const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: "◈" },
-  { href: "/boardroom", label: "Boardroom", icon: "❖" },
-  { href: "/trust-score", label: "Trust Score", icon: "✦" },
-  { href: "/heatmap", label: "Risk Heatmap", icon: "🗺" },
-  { href: "/agents/marketplace", label: "Marketplace", icon: "◒" },
-  { href: "/agents/red-team", label: "Red Team AI", icon: "🔴" },
-  { href: "/agents/blue-team", label: "Blue Team AI", icon: "🔵" },
-  { href: "/simulator", label: "Attack Simulator", icon: "⚔" },
-  { href: "/governance", label: "AI Governance", icon: "⬡" },
-  { href: "/compliance", label: "Compliance Auto", icon: "✓" },
-  { href: "/compliance/copilot", label: "Compliance Chat", icon: "💬" },
-  { href: "/security-telemetry", label: "Security Telemetry", icon: "🛡️" },
-  { href: "/regulations", label: "Global Regs", icon: "⚖" },
-  { href: "/explainability", label: "Explainability", icon: "👁" },
-  { href: "/threats/zero-day", label: "Zero-Day Engine", icon: "⚡" },
-  { href: "/threats/deepfake", label: "Deepfake Detection", icon: "🎭" },
-  { href: "/threats/dark-web", label: "Dark Web Monitor", icon: "🕸" },
-  { href: "/supply-chain", label: "Supply Chain", icon: "🔗" },
-  { href: "/digital-twin", label: "Digital Twin", icon: "👯" },
-  { href: "/attack-graph", label: "Attack Graph", icon: "🕸" },
-  { href: "/time-machine", label: "Time Machine", icon: "⏳" },
-  { href: "/remediation", label: "Auto Patch", icon: "🔧" },
-  { href: "/insurance", label: "Cyber Insurance", icon: "🛡" },
-  { href: "/copilot", label: "Exec Copilot", icon: "🤖" },
-  { href: "/scanner", label: "Scanner", icon: "⬡" },
-  { href: "/projects", label: "Projects", icon: "▤" },
-  { href: "/reports", label: "Reports", icon: "☰" },
-  { href: "/notifications", label: "Notifications", icon: "⚐" },
-  { href: "/subscription", label: "Billing & Plans", icon: "💳" },
-  { href: "/settings", label: "Settings", icon: "⚙" },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/boardroom", label: "Boardroom", icon: Briefcase },
+  { href: "/trust-score", label: "Trust Score", icon: Star },
+  { href: "/heatmap", label: "Risk Heatmap", icon: Map },
+  { href: "/agents/marketplace", label: "Marketplace", icon: Store },
+  { href: "/agents/red-team", label: "Red Team AI", icon: Crosshair },
+  { href: "/agents/blue-team", label: "Blue Team AI", icon: Shield },
+  { href: "/simulator", label: "Attack Simulator", icon: Swords },
+  { href: "/governance", label: "AI Governance", icon: Scale },
+  { href: "/compliance", label: "Compliance Auto", icon: CheckCircle },
+  { href: "/compliance/copilot", label: "Compliance Chat", icon: MessageSquare },
+  { href: "/security-telemetry", label: "Security Telemetry", icon: Activity },
+  { href: "/regulations", label: "Global Regs", icon: Globe },
+  { href: "/explainability", label: "Explainability", icon: Eye },
+  { href: "/threats/zero-day", label: "Zero-Day Engine", icon: Zap },
+  { href: "/threats/deepfake", label: "Deepfake Detection", icon: ScanFace },
+  { href: "/threats/dark-web", label: "Dark Web Monitor", icon: GlobeLock },
+  { href: "/supply-chain", label: "Supply Chain", icon: LinkIcon },
+  { href: "/digital-twin", label: "Digital Twin", icon: Users },
+  { href: "/attack-graph", label: "Attack Graph", icon: Network },
+  { href: "/time-machine", label: "Time Machine", icon: History },
+  { href: "/remediation", label: "Auto Patch", icon: Wrench },
+  { href: "/insurance", label: "Cyber Insurance", icon: ShieldAlert },
+  { href: "/copilot", label: "Exec Copilot", icon: Bot },
+  { href: "/scanner", label: "Scanner", icon: Scan },
+  { href: "/projects", label: "Projects", icon: Folder },
+  { href: "/reports", label: "Reports", icon: FileText },
+  { href: "/notifications", label: "Notifications", icon: Bell },
+  { href: "/subscription", label: "Billing & Plans", icon: CreditCard },
+  { href: "/settings", label: "Settings", icon: Settings },
 ];
 
 export function AppShell({ children }: PropsWithChildren) {
@@ -86,7 +94,7 @@ export function AppShell({ children }: PropsWithChildren) {
             <Link
               key={item.href}
               href={item.href}
-              className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 ${
+              className={`group relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 ${
                 active
                   ? "bg-violet-500/12 text-white"
                   : "text-gray-500 hover:bg-white/[0.03] hover:text-gray-300"
@@ -99,7 +107,11 @@ export function AppShell({ children }: PropsWithChildren) {
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 />
               )}
-              <span className="relative z-10 text-base leading-none w-4 text-center opacity-70">{item.icon}</span>
+              <span className={`relative z-10 flex items-center justify-center transition-all duration-300 ${
+                active ? "text-violet-500" : "text-gray-500 group-hover:text-violet-500"
+              }`}>
+                <item.icon size={16} strokeWidth={2} />
+              </span>
               <span className="relative z-10 flex-1">{item.label}</span>
               {isNotifications && unread > 0 && (
                 <motion.span
@@ -131,12 +143,12 @@ export function AppShell({ children }: PropsWithChildren) {
             Online
           </span>
         </div>
-        <button
+        <SpecularButton
           onClick={() => signOut({ redirectUrl: "/login" })}
           className="w-full text-left text-gray-500 hover:text-red-400 transition-colors duration-200 py-1"
         >
           Sign out →
-        </button>
+        </SpecularButton>
       </div>
     </>
   );
@@ -173,15 +185,16 @@ export function AppShell({ children }: PropsWithChildren) {
       </AnimatePresence>
 
       {/* Main */}
-      <div className="flex-1 flex flex-col md:ml-64">
+      <div className="flex-1 flex flex-col md:ml-64 relative">
+        <SimulationEngine />
         {/* Mobile header */}
         <header className="md:hidden border-b border-white/[0.06] bg-black/95 backdrop-blur-xl px-4 py-3 flex items-center justify-between sticky top-0 z-20">
-          <button onClick={() => setMobileOpen(true)} className="text-gray-400 hover:text-white transition-colors">
+          <SpecularButton onClick={() => setMobileOpen(true)} className="text-gray-400 hover:text-white transition-colors">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
-          </button>
+          </SpecularButton>
           <Link href="/dashboard" className="text-sm font-bold">SentinelNexus</Link>
           <Link href="/notifications" className="relative text-gray-400 hover:text-white transition-colors">
-            <span>⚐</span>
+            <Bell size={18} strokeWidth={2} />
             {unread > 0 && (
               <span className="absolute -top-1 -right-1 text-[9px] px-1 rounded-full bg-red-500 text-white font-bold">
                 {unread > 9 ? "9+" : unread}

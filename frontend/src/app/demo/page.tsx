@@ -1,4 +1,5 @@
 "use client";
+import SpecularButton from '../../components/SpecularButton';
 import Image from "next/image";
 export const dynamic = "force-dynamic";
 import Link from "next/link";
@@ -61,7 +62,7 @@ export default function DemoPage() {
           <div className="glass-card rounded-2xl overflow-hidden">
             <div className="flex items-center gap-1 px-4 py-2 border-b border-white/10 text-xs">
               {(["code", "prompt", "text"] as const).map((t) => (
-                <button key={t} onClick={() => setActiveTab(t)} className={`px-3 py-1.5 rounded-lg border transition-colors ${activeTab === t ? "bg-emerald-500/20 border-emerald-300/60 text-emerald-100" : "border-white/10 text-gray-400 hover:bg-white/5"}`}>{t.toUpperCase()}</button>
+                <SpecularButton key={t} onClick={() => setActiveTab(t)} className={`px-3 py-1.5 rounded-lg border transition-colors ${activeTab === t ? "bg-emerald-500/20 border-emerald-300/60 text-emerald-100" : "border-white/10 text-gray-400 hover:bg-white/5"}`}>{t.toUpperCase()}</SpecularButton>
               ))}
             </div>
             <pre className="p-4 text-sm font-mono text-gray-300 h-52 overflow-auto leading-relaxed">
@@ -107,7 +108,7 @@ export default function DemoPage() {
         </div>
 
         <div className="text-center mt-12 flex flex-col items-center gap-4">
-          <button
+          <SpecularButton
             onClick={handleStartDemo}
             disabled={isStartingDemo}
             className="rounded-full bg-emerald-600 px-8 py-3 text-sm font-semibold text-white hover:bg-emerald-500 transition hover:shadow-[0_0_30px_rgba(16,185,129,.4)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
@@ -120,7 +121,7 @@ export default function DemoPage() {
             ) : (
               "Start Full Interactive Dashboard →"
             )}
-          </button>
+          </SpecularButton>
           
           <Link href="/signup" className="text-xs text-gray-500 hover:text-white transition">
             Or create a real account

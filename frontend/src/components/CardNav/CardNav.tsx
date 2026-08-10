@@ -1,4 +1,5 @@
 "use client";
+import SpecularButton from '../../components/SpecularButton';
 
 import { useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
 import { gsap } from "gsap";
@@ -214,14 +215,14 @@ const CardNav: React.FC<CardNavProps> = ({
             )}
           </div>
 
-          <button
+          <SpecularButton
             type="button"
             onClick={() => router.push(isSignedIn ? "/dashboard" : "/signup")}
             className="card-nav-cta-button"
             style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
           >
             {isSignedIn ? "Dashboard" : "Get Started"}
-          </button>
+          </SpecularButton>
         </div>
 
         <div className="card-nav-content" aria-hidden={!isExpanded}>

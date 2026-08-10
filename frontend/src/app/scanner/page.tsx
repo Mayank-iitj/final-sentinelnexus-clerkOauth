@@ -1,4 +1,5 @@
 "use client";
+import SpecularButton from '../../components/SpecularButton';
 
 import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "@clerk/nextjs";
@@ -160,7 +161,7 @@ export default function ScannerPage() {
             <div className="flex items-center justify-between px-4 py-2 border-b border-white/[0.06] text-xs flex-wrap gap-2">
               <div className="flex gap-1">
                 {(["code", "prompt", "text"] as ScanType[]).map((k) => (
-                  <button
+                  <SpecularButton
                     key={k}
                     onClick={() => { setScanType(k); setContent(""); setResult(null); }}
                     className={`px-3 py-1.5 rounded-lg border transition-colors ${
@@ -170,7 +171,7 @@ export default function ScannerPage() {
                     }`}
                   >
                     {k.toUpperCase()}
-                  </button>
+                  </SpecularButton>
                 ))}
               </div>
               <div className="flex items-center gap-2">
@@ -204,13 +205,13 @@ export default function ScannerPage() {
 
             <div className="flex items-center justify-between px-4 py-3 text-xs border-t border-white/[0.06] bg-black">
               <span className="text-white0 font-mono">{content.length.toLocaleString()} chars</span>
-              <button
+              <SpecularButton
                 onClick={handleScan}
                 disabled={loading}
                 className="px-5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold disabled:opacity-50 shadow-lg shadow-emerald-500/20 transition-all"
               >
                 {loading ? "Scanning…" : "Run Scan"}
-              </button>
+              </SpecularButton>
             </div>
           </div>
 
@@ -263,7 +264,7 @@ export default function ScannerPage() {
                   </div>
                   <div className="flex items-center justify-between mt-3">
                     <span className="text-[11px] text-white0">Scan ID: {result.scan_id.slice(0, 8)}…</span>
-                    <button
+                    <SpecularButton
                       onClick={handleGenerateReport}
                       disabled={reportStatus !== "idle"}
                       className={`text-xs px-3 py-1.5 rounded-lg border transition-colors ${
@@ -275,7 +276,7 @@ export default function ScannerPage() {
                       {reportStatus === "idle" && "☰ Generate Report"}
                       {reportStatus === "generating" && "Generating…"}
                       {reportStatus === "done" && "✓ Report Queued → /reports"}
-                    </button>
+                    </SpecularButton>
                   </div>
                 </div>
 

@@ -1,4 +1,5 @@
 "use client";
+import SpecularButton from '../../components/SpecularButton';
 import { useEffect, useState, useRef, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
@@ -79,18 +80,18 @@ function CheckoutContent() {
         <div className="glass-card p-8 rounded-2xl max-w-md w-full text-center">
           <p className="text-red-400 mb-4">⚠️ {error}</p>
           <div className="flex gap-3 justify-center">
-            <button
+            <SpecularButton
               onClick={() => { setError(null); window.location.reload(); }}
               className="px-5 py-2 bg-violet-600 rounded-lg hover:bg-violet-700 transition text-sm font-medium"
             >
               Retry
-            </button>
-            <button
+            </SpecularButton>
+            <SpecularButton
               onClick={() => router.push("/subscription")}
               className="px-5 py-2 border border-white/20 rounded-lg hover:bg-white/10 transition text-sm font-medium"
             >
               Back to Plans
-            </button>
+            </SpecularButton>
           </div>
         </div>
       </div>

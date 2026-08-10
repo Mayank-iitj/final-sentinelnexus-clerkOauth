@@ -1,4 +1,5 @@
 "use client";
+import SpecularButton from '../../components/SpecularButton';
 
 import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "@clerk/nextjs";
@@ -172,13 +173,13 @@ export default function ReportsPage() {
                         ⬇ Download
                       </a>
                     ) : (
-                      <button
+                      <SpecularButton
                         onClick={() => handleGenerate(s.scan_id)}
                         disabled={generating === s.scan_id || existingReport?.status === "generating"}
                         className="px-3 py-1.5 rounded-lg bg-emerald-500 text-slate-950 font-semibold hover:bg-emerald-400 disabled:opacity-50"
                       >
                         {generating === s.scan_id ? "Generating…" : "Generate PDF"}
-                      </button>
+                      </SpecularButton>
                     )}
                   </div>
                 );

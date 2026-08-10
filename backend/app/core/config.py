@@ -65,6 +65,9 @@ class Settings(BaseSettings):
     PAYU_MERCHANT_SALT: str = ""
     PAYU_BASE_URL: str = "https://test.payu.in/_payment"
 
+    # AI Agents
+    GROQ_API_KEY: str = ""
+
     # Rate limiting
     RATE_LIMIT_ENABLED: bool = True
     RATE_LIMIT_REQUESTS: int = 100

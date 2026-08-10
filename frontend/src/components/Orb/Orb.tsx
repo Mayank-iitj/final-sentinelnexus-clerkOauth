@@ -1,5 +1,5 @@
-// @ts-nocheck
 "use client";
+// @ts-nocheck
 import { Mesh, Program, Renderer, Triangle, Vec3 } from 'ogl';
 import { useEffect, useRef } from 'react';
 import './Orb.css';

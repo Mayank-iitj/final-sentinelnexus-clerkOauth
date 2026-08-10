@@ -1,4 +1,5 @@
 "use client";
+import SpecularButton from '../../../components/SpecularButton';
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
@@ -141,12 +142,12 @@ export default function ScanDetailPage() {
     return (
       <AppShell>
         <div className="space-y-4">
-          <button
+          <SpecularButton
             onClick={() => router.back()}
             className="text-xs text-slate-400 hover:text-slate-200"
           >
             ← Back
-          </button>
+          </SpecularButton>
           <div className="rounded-xl border border-red-500/40 bg-red-900/20 text-red-300 text-sm px-4 py-3">
             {error ?? "Scan not found"}
           </div>
@@ -172,12 +173,12 @@ export default function ScanDetailPage() {
       <div className="space-y-6 pb-8">
         {/* Header */}
         <div>
-          <button
+          <SpecularButton
             onClick={() => router.back()}
             className="text-xs text-slate-400 hover:text-slate-200 mb-3 block"
           >
             ← Back to Scans
-          </button>
+          </SpecularButton>
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
               <h1 className="text-2xl font-bold truncate">{scan.target}</h1>
@@ -269,7 +270,7 @@ export default function ScanDetailPage() {
             <h2 className="text-sm font-semibold text-slate-200">
               Severity Breakdown
             </h2>
-            <button
+            <SpecularButton
               onClick={handleGenerateReport}
               disabled={reportStatus !== "idle"}
               className={`text-xs px-3 py-1.5 rounded-lg border transition-colors ${
@@ -281,7 +282,7 @@ export default function ScanDetailPage() {
               {reportStatus === "idle" && "Generate PDF Report"}
               {reportStatus === "generating" && "Generating…"}
               {reportStatus === "done" && "✓ Report queued"}
-            </button>
+            </SpecularButton>
           </div>
           <div className="grid grid-cols-4 gap-3 text-center text-xs">
             {(["critical", "high", "medium", "low"] as const).map((sev) => (

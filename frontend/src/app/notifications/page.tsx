@@ -1,4 +1,5 @@
 "use client";
+import SpecularButton from '../../components/SpecularButton';
 
 import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "@clerk/nextjs";
@@ -54,19 +55,19 @@ function NotifRow({
       </div>
       <div className="flex items-center gap-2 shrink-0">
         {!n.is_read && (
-          <button
+          <SpecularButton
             onClick={() => onRead(n.id)}
             className="text-[11px] text-violet-400 hover:text-violet-300 transition-colors"
           >
             Mark read
-          </button>
+          </SpecularButton>
         )}
-        <button
+        <SpecularButton
           onClick={() => onDelete(n.id)}
           className="text-[11px] text-white0 hover:text-red-400"
         >
           ✕
-        </button>
+        </SpecularButton>
       </div>
     </div>
   );
@@ -141,12 +142,12 @@ export default function NotificationsPage() {
               />
               Unread only
             </label>
-            <button
+            <SpecularButton
               onClick={handleMarkAll}
               className="px-3 py-1.5 rounded-lg bg-white/[0.06] border border-white/[0.08] text-xs text-gray-400 hover:bg-slate-700"
             >
               Mark all read
-            </button>
+            </SpecularButton>
           </div>
         </div>
 
@@ -175,23 +176,23 @@ export default function NotificationsPage() {
         {/* Pagination */}
         {total > PAGE_SIZE && (
           <div className="flex items-center gap-4 text-xs text-gray-500">
-            <button
+            <SpecularButton
               disabled={offset === 0}
               onClick={() => setOffset(Math.max(0, offset - PAGE_SIZE))}
               className="px-3 py-1.5 rounded-lg bg-white/[0.06] disabled:opacity-40"
             >
               ← Previous
-            </button>
+            </SpecularButton>
             <span>
               {offset + 1}–{Math.min(offset + PAGE_SIZE, total)} of {total}
             </span>
-            <button
+            <SpecularButton
               disabled={offset + PAGE_SIZE >= total}
               onClick={() => setOffset(offset + PAGE_SIZE)}
               className="px-3 py-1.5 rounded-lg bg-white/[0.06] disabled:opacity-40"
             >
               Next →
-            </button>
+            </SpecularButton>
           </div>
         )}
       </div>

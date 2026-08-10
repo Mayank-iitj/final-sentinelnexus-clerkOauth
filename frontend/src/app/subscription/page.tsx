@@ -1,4 +1,5 @@
 "use client";
+import SpecularButton from '../../components/SpecularButton';
 import { useEffect, useState } from "react";
 import { AppShell } from "../../components/AppShell";
 import { getCurrentUser, UserProfile } from "../../lib/api";
@@ -75,9 +76,9 @@ export default function SubscriptionPage() {
               </Link>
             )}
             {activeTier === "Enterprise" && (
-              <button disabled className="btn-primary !px-8 !py-3 w-full md:w-auto text-center font-semibold opacity-50 cursor-not-allowed">
+              <SpecularButton disabled className="btn-primary !px-8 !py-3 w-full md:w-auto text-center font-semibold opacity-50 cursor-not-allowed">
                 Max Tier Active
-              </button>
+              </SpecularButton>
             )}
           </div>
         </section>
