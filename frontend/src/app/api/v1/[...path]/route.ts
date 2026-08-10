@@ -96,6 +96,11 @@ async function proxy(request: NextRequest, context: { params: { path?: string[] 
 }
 
 export const dynamic = "force-dynamic";
+// Edge runtime enables true HTTP streaming — without this, Vercel's serverless
+// functions buffer the entire response body before forwarding, making SSE/streaming
+// appear as an empty response on the client.
+export const runtime = "edge";
+
 
 export const GET = proxy;
 export const POST = proxy;
