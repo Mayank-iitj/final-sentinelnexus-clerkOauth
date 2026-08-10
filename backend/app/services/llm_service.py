@@ -2,7 +2,9 @@ import os
 from typing import List, Dict, Any, Optional
 from loguru import logger
 from groq import Groq
-from app.core.config import settings
+from app.core.config import get_settings
+
+settings = get_settings()
 
 class LLMService:
     def __init__(self):
