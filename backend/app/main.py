@@ -118,20 +118,30 @@ def create_app() -> FastAPI:
 
     @app.on_event("startup")
     async def _startup() -> None:
-        # Initialize database tables if they don't exist (for development)
+        # Run Alembic migrations to HEAD on every startup.
+        # This is the only reliable way to ensure the production DB schema is
+        # always in sync with the code, regardless of which deployment platform
+        # (Render, Cloud Run, App Runner) is being used.
+        from alembic.config import Config
+        from alembic import command as alembic_command
+        import os
+
+        # In Docker the CWD is /app (the backend root), so alembic.ini is at ./alembic.ini
+        alembic_cfg = Config("alembic.ini")
         try:
-            from app.db.database import Base
-            from app.models import governance
-            from app.models import threat
-            from app.models import scan
-            from app.models import project
-            from app.models import alert
-            from app.models import report
-            Base.metadata.create_all(bind=engine)
-            logger.info("Database tables initialized")
+            alembic_command.upgrade(alembic_cfg, "head")
+            logger.info("Database migrations applied successfully (alembic upgrade head)")
         except Exception as e:
-            if "already exists" not in str(e):
-                logger.error(f"Failed to initialize database tables: {e}")
+            logger.warning(f"Alembic upgrade skipped or failed (non-fatal): {e}")
+            # Fallback: create any tables that don't exist yet
+            from app.db.database import Base
+            from app.models import governance, threat, scan, project, alert, report  # noqa: F401
+            Base.metadata.create_all(bind=engine)
+            logger.info("Database tables ensured via create_all fallback")
+
+
+
+
         
         try:
             # Redis (shared)

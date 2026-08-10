@@ -24,13 +24,9 @@ ENV PORT=8080
 # Expose port
 EXPOSE ${PORT}
 
-# Run with gunicorn + uvicorn workers for production
-# Cloud Run sends SIGTERM → gunicorn handles graceful shutdown
-CMD exec gunicorn app.main:app \
-    --bind 0.0.0.0:${PORT} \
-    --workers 2 \
-    --worker-class uvicorn.workers.UvicornWorker \
-    --timeout 120 \
-    --graceful-timeout 30 \
-    --access-logfile - \
-    --error-logfile -
+# Copy and permission the entrypoint script
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
+
+# Run migrations then start gunicorn
+CMD ["/start.sh"]
