@@ -40,3 +40,6 @@ python-multipart==0.0.6
 # Tests
 pytest==8.3.4
 pytest-cov==6.0.0
+
+# AI integrations
+groq
