@@ -61,7 +61,15 @@ async def chat_with_agent(request: ChatRequest):
     
     try:
         stream_generator = llm_service.generate_chat_stream(messages, persona_override=persona, use_fast_model=use_fast)
-        return StreamingResponse(stream_generator, media_type="text/event-stream")
+        return StreamingResponse(
+            stream_generator,
+            media_type="text/event-stream",
+            headers={
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive",
+                "X-Accel-Buffering": "no"
+            }
+        )
     except Exception as e:
         raise HTTPException(status_code=503, detail=f"AI Service Unavailable: {str(e)}")
 
