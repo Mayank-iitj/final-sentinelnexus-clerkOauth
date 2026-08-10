@@ -43,13 +43,31 @@ export default function CopilotPage() {
       });
 
       if (!response.ok) throw new Error("Failed to fetch");
-      const data = await response.json();
       
-      setMessages(prev => [...prev, { role: "assistant", content: data.response }]);
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error("No reader available");
+
+      const decoder = new TextDecoder();
+      setMessages(prev => [...prev, { role: "assistant", content: "" }]);
+      setIsLoading(false); // Stop pulse animation once streaming starts
+
+      let assistantMessage = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        
+        const chunk = decoder.decode(value, { stream: true });
+        assistantMessage += chunk;
+        
+        setMessages(prev => {
+          const newMessages = [...prev];
+          newMessages[newMessages.length - 1] = { role: "assistant", content: assistantMessage };
+          return newMessages;
+        });
+      }
     } catch (error) {
-      setMessages(prev => [...prev, { role: "assistant", content: "Error: Could not reach the AI Core. Please check network connection." }]);
-    } finally {
       setIsLoading(false);
+      setMessages(prev => [...prev, { role: "assistant", content: "Error: Could not reach the AI Core. Please check network connection." }]);
     }
   };
 

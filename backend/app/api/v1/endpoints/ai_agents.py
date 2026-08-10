@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, BackgroundTasks, Depends
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from typing import List, Dict, Any, Optional
 from app.services.llm_service import LLMService
@@ -59,8 +60,8 @@ async def chat_with_agent(request: ChatRequest):
     use_fast = request.agent_type in ["copilot", "compliance"]
     
     try:
-        response = llm_service.generate_chat_response(messages, persona_override=persona, use_fast_model=use_fast)
-        return {"response": response}
+        stream_generator = llm_service.generate_chat_stream(messages, persona_override=persona, use_fast_model=use_fast)
+        return StreamingResponse(stream_generator, media_type="text/event-stream")
     except Exception as e:
         raise HTTPException(status_code=503, detail=f"AI Service Unavailable: {str(e)}")
 

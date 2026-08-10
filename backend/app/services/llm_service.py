@@ -46,3 +46,29 @@ class LLMService:
         except Exception as e:
             logger.error(f"Error calling Groq API: {e}")
             return f"Error: Communication with the SentinelNexus AI Core failed. Reason: {str(e)}"
+
+    def generate_chat_stream(
+        self,
+        messages: List[Dict[str, str]],
+        persona_override: Optional[str] = None,
+        use_fast_model: bool = False
+    ):
+        model = self.fast_model if use_fast_model else self.default_model
+        system_content = persona_override if persona_override else self.system_prompt
+        full_messages = [{"role": "system", "content": system_content}] + messages
+
+        try:
+            logger.info(f"Streaming LLM response using {model}")
+            stream = self.client.chat.completions.create(
+                messages=full_messages,
+                model=model,
+                temperature=0.2,
+                max_tokens=2048,
+                stream=True
+            )
+            for chunk in stream:
+                if chunk.choices[0].delta.content is not None:
+                    yield chunk.choices[0].delta.content
+        except Exception as e:
+            logger.error(f"Error streaming from Groq API: {e}")
+            yield f"\n\n[ERROR: Communication with the SentinelNexus AI Core failed. Reason: {str(e)}]"
