@@ -157,9 +157,13 @@ def create_app() -> FastAPI:
             logger.warning(f"Failed to connect to Redis. Rate limiting/cache disabled. {str(e).splitlines()[0]}")
             app.state.redis = None
 
-        # DB connectivity sanity check early
-        with engine.connect() as conn:
-            conn.exec_driver_sql("SELECT 1")
+        # DB connectivity sanity check — non-fatal, logs warning on failure
+        try:
+            with engine.connect() as conn:
+                conn.exec_driver_sql("SELECT 1")
+            logger.info("Database connection verified")
+        except Exception as e:
+            logger.warning(f"DB sanity check failed (non-fatal, will retry on first request): {str(e).splitlines()[0]}")
 
         logger.info("startup complete")
 
