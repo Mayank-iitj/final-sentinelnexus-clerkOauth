@@ -1,7 +1,17 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
-export default clerkMiddleware();
+const isAdminRoute = createRouteMatcher([
+  '/copilot(.*)',
+  '/insurance(.*)',
+]);
 
+export default clerkMiddleware(async (auth, req) => {
+  if (isAdminRoute(req)) {
+    await auth.protect();
+  }
+  return NextResponse.next();
+});
 
 export const config = {
   matcher: [

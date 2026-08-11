@@ -1,11 +1,28 @@
 "use client";
+import { useState } from "react";
 import { AppShell } from "../../components/AppShell";
 import { motion } from "framer-motion";
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } };
 const fadeUp = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.45 } } };
 
-export default function SupplyChainPage() {{
+export default function SupplyChainPage() {
+  const [isAuditing, setIsAuditing] = useState(false);
+  const [deps, setDeps] = useState([
+    { vendor: "Stripe API", type: "Third-Party API", risk: "Low Risk (98/100)", finding: "Clean" },
+    { vendor: "npm: lodash-utils", type: "Dependency", risk: "High Risk (40/100)", finding: "Unpatched RCE vulnerability" }
+  ]);
+
+  const handleAudit = async () => {
+    setIsAuditing(true);
+    await new Promise(r => setTimeout(r, 2000));
+    setDeps([
+      { vendor: "pip: requests-lib", type: "Dependency", risk: "Medium Risk (72/100)", finding: "Outdated version" },
+      ...deps
+    ]);
+    setIsAuditing(false);
+  };
+
   return (
     <AppShell>
       <div className="space-y-6 pb-8">
@@ -24,9 +41,11 @@ export default function SupplyChainPage() {{
           <motion.button 
             whileHover={{ scale: 1.02 }} 
             whileTap={{ scale: 0.98 }}
-            className="btn-primary !py-2 !px-4 text-sm"
+            onClick={handleAudit}
+            disabled={isAuditing}
+            className="btn-primary !py-2 !px-4 text-sm disabled:opacity-50"
           >
-            Audit Dependencies
+            {isAuditing ? "Scanning SBOMs..." : "Audit Dependencies"}
           </motion.button>
         </motion.div>
         
@@ -66,25 +85,19 @@ export default function SupplyChainPage() {{
                 </tr>
               </thead>
               <tbody className="text-sm">
-                <tr className="hover:bg-white/[0.02] transition-colors">
-                  <td className="py-3 border-b border-white/[0.02]">Stripe API</td>
-                  <td className="py-3 border-b border-white/[0.02]">Third-Party API</td>
-                  <td className="py-3 border-b border-white/[0.02]">Low Risk (98/100)</td>
-                  <td className="py-3 border-b border-white/[0.02]">Clean</td>
-                </tr>
-                <tr className="hover:bg-white/[0.02] transition-colors">
-                  <td className="py-3 border-b border-white/[0.02]">npm: lodash-utils</td>
-                  <td className="py-3 border-b border-white/[0.02]">Dependency</td>
-                  <td className="py-3 border-b border-white/[0.02]">High Risk (40/100)</td>
-                  <td className="py-3 border-b border-white/[0.02]">Unpatched RCE vulnerability</td>
-                </tr>
+                {deps.map((d, i) => (
+                  <tr key={i} className="hover:bg-white/[0.02] transition-colors">
+                    <td className="py-3 border-b border-white/[0.02] font-semibold">{d.vendor}</td>
+                    <td className="py-3 border-b border-white/[0.02] text-gray-400">{d.type}</td>
+                    <td className="py-3 border-b border-white/[0.02] font-bold text-gray-300">{d.risk}</td>
+                    <td className="py-3 border-b border-white/[0.02]">{d.finding}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
         </motion.div>
-
-
       </div>
     </AppShell>
   );
-}}
+}

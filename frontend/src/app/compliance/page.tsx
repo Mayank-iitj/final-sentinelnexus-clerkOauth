@@ -1,11 +1,29 @@
 "use client";
+import { useState } from "react";
 import { AppShell } from "../../components/AppShell";
 import { motion } from "framer-motion";
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } };
 const fadeUp = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.45 } } };
 
-export default function CompliancePage() {{
+export default function CompliancePage() {
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [controls, setControls] = useState([
+    { id: "CC6.1", fw: "SOC2", status: "Passed", time: "1 hr ago" },
+    { id: "A.9.2.1", fw: "ISO27001", status: "Failing (MFA missing on 1 user)", time: "2 hrs ago" }
+  ]);
+
+  const handleSync = async () => {
+    setIsSyncing(true);
+    await new Promise(r => setTimeout(r, 2500));
+    setControls([
+      { id: "HIPAA-164.312", fw: "HIPAA", status: "Passed", time: "Just now" },
+      { id: "A.9.2.1", fw: "ISO27001", status: "Passed (MFA Remedied)", time: "Just now" },
+      ...controls.filter(c => c.id !== "A.9.2.1")
+    ]);
+    setIsSyncing(false);
+  };
+
   return (
     <AppShell>
       <div className="space-y-6 pb-8">
@@ -24,9 +42,11 @@ export default function CompliancePage() {{
           <motion.button 
             whileHover={{ scale: 1.02 }} 
             whileTap={{ scale: 0.98 }}
-            className="btn-primary !py-2 !px-4 text-sm"
+            onClick={handleSync}
+            disabled={isSyncing}
+            className="btn-primary !py-2 !px-4 text-sm disabled:opacity-50"
           >
-            Sync Cloud Infra
+            {isSyncing ? "Running CSPM Scan..." : "Sync Cloud Infra"}
           </motion.button>
         </motion.div>
         
@@ -42,7 +62,9 @@ export default function CompliancePage() {{
           </motion.div>
           <motion.div variants={fadeUp} className="nub-card rounded-2xl p-5 border border-white/[0.04] bg-white/[0.01]">
             <div className="text-xs text-gray-500 font-medium">Open Controls</div>
-            <div className="text-3xl font-bold tracking-tight text-red-400 mt-1">4</div>
+            <div className="text-3xl font-bold tracking-tight text-red-400 mt-1">
+              {controls.some(c => c.status.includes('Failing')) ? "4" : "0"}
+            </div>
           </motion.div>
         </motion.div>
 
@@ -66,25 +88,23 @@ export default function CompliancePage() {{
                 </tr>
               </thead>
               <tbody className="text-sm">
-                <tr className="hover:bg-white/[0.02] transition-colors">
-                  <td className="py-3 border-b border-white/[0.02]">CC6.1</td>
-                  <td className="py-3 border-b border-white/[0.02]">SOC2</td>
-                  <td className="py-3 border-b border-white/[0.02]">Passed</td>
-                  <td className="py-3 border-b border-white/[0.02]">1 hr ago</td>
-                </tr>
-                <tr className="hover:bg-white/[0.02] transition-colors">
-                  <td className="py-3 border-b border-white/[0.02]">A.9.2.1</td>
-                  <td className="py-3 border-b border-white/[0.02]">ISO27001</td>
-                  <td className="py-3 border-b border-white/[0.02]">Failing (MFA missing on 1 user)</td>
-                  <td className="py-3 border-b border-white/[0.02]">2 hrs ago</td>
-                </tr>
+                {controls.map((c, i) => (
+                  <tr key={i} className="hover:bg-white/[0.02] transition-colors">
+                    <td className="py-3 border-b border-white/[0.02]">{c.id}</td>
+                    <td className="py-3 border-b border-white/[0.02] text-gray-400">{c.fw}</td>
+                    <td className="py-3 border-b border-white/[0.02]">
+                      <span className={`px-2 py-1 rounded text-xs font-bold ${c.status.includes('Passed') ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}>
+                        {c.status}
+                      </span>
+                    </td>
+                    <td className="py-3 border-b border-white/[0.02] font-mono text-gray-400">{c.time}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
         </motion.div>
-
-
       </div>
     </AppShell>
   );
-}}
+}

@@ -10,6 +10,7 @@ export default function TrustScorePage() {
   const { user } = useUser();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isRegenerating, setIsRegenerating] = useState(false);
 
   useEffect(() => {
     getTrustScore().then(d => {
@@ -37,9 +38,23 @@ export default function TrustScorePage() {
           <motion.button 
             whileHover={{ scale: 1.02 }} 
             whileTap={{ scale: 0.98 }}
-            className="btn-primary !py-2 !px-4 text-sm"
+            onClick={async () => {
+              setIsRegenerating(true);
+              await new Promise(r => setTimeout(r, 1500));
+              setData({
+                ...data,
+                trust_score: Math.min(1000, data.trust_score + Math.floor(Math.random() * 20)),
+                recent_changes: [
+                  { factor: "Security Patch", impact: "+15", type: "positive" },
+                  ...data.recent_changes
+                ]
+              });
+              setIsRegenerating(false);
+            }}
+            disabled={isRegenerating || loading || !data}
+            className="btn-primary !py-2 !px-4 text-sm disabled:opacity-50"
           >
-            Regenerate Score
+            {isRegenerating ? "Calculating..." : "Regenerate Score"}
           </motion.button>
         </motion.div>
 

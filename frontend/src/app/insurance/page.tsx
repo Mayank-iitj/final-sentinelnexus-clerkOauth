@@ -1,11 +1,28 @@
 "use client";
+import { useState } from "react";
 import { AppShell } from "../../components/AppShell";
 import { motion } from "framer-motion";
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } };
 const fadeUp = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.45 } } };
 
-export default function InsurancePage() {{
+export default function InsurancePage() {
+  const [isRequesting, setIsRequesting] = useState(false);
+  const [quotes, setQuotes] = useState([
+    { carrier: "Sentinel Insure", tier: "Enterprise $5M", deductible: "$25k", status: "Active" },
+    { carrier: "CyberGuard LLC", tier: "Standard $1M", deductible: "$10k", status: "Draft" }
+  ]);
+
+  const handleRequest = async () => {
+    setIsRequesting(true);
+    await new Promise(r => setTimeout(r, 2000));
+    setQuotes([
+      { carrier: "Auto-Quote API", tier: "Premium $10M", deductible: "$50k", status: "Reviewing" },
+      ...quotes
+    ]);
+    setIsRequesting(false);
+  };
+
   return (
     <AppShell>
       <div className="space-y-6 pb-8">
@@ -24,9 +41,11 @@ export default function InsurancePage() {{
           <motion.button 
             whileHover={{ scale: 1.02 }} 
             whileTap={{ scale: 0.98 }}
-            className="btn-primary !py-2 !px-4 text-sm"
+            onClick={handleRequest}
+            disabled={isRequesting}
+            className="btn-primary !py-2 !px-4 text-sm disabled:opacity-50"
           >
-            Request Quote
+            {isRequesting ? "Fetching Rates..." : "Request Quote"}
           </motion.button>
         </motion.div>
         
@@ -66,25 +85,25 @@ export default function InsurancePage() {{
                 </tr>
               </thead>
               <tbody className="text-sm">
-                <tr className="hover:bg-white/[0.02] transition-colors">
-                  <td className="py-3 border-b border-white/[0.02]">Sentinel Insure</td>
-                  <td className="py-3 border-b border-white/[0.02]">Enterprise $5M</td>
-                  <td className="py-3 border-b border-white/[0.02]">$25k</td>
-                  <td className="py-3 border-b border-white/[0.02]">Active</td>
-                </tr>
-                <tr className="hover:bg-white/[0.02] transition-colors">
-                  <td className="py-3 border-b border-white/[0.02]">CyberGuard LLC</td>
-                  <td className="py-3 border-b border-white/[0.02]">Standard $1M</td>
-                  <td className="py-3 border-b border-white/[0.02]">$10k</td>
-                  <td className="py-3 border-b border-white/[0.02]">Draft</td>
-                </tr>
+                {quotes.map((q, i) => (
+                  <tr key={i} className="hover:bg-white/[0.02] transition-colors">
+                    <td className="py-3 border-b border-white/[0.02] font-semibold">{q.carrier}</td>
+                    <td className="py-3 border-b border-white/[0.02] text-gray-400">{q.tier}</td>
+                    <td className="py-3 border-b border-white/[0.02] font-mono">{q.deductible}</td>
+                    <td className="py-3 border-b border-white/[0.02]">
+                      <span className={`px-2 py-1 rounded text-xs font-bold ${
+                        q.status === 'Active' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-blue-500/20 text-blue-400'
+                      }`}>
+                        {q.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
         </motion.div>
-
-
       </div>
     </AppShell>
   );
-}}
+}

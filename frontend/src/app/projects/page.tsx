@@ -67,10 +67,21 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: () 
   const handleConnectGithub = async () => {
     if (!user) return;
     try {
-      await user.createExternalAccount({
+      // 1. Check if there's already an unverified github account
+      const existingUnverified = user.externalAccounts.find(a => a.verification?.strategy === "oauth_github" && a.verification?.status === "unverified");
+      if (existingUnverified && existingUnverified.verification?.externalVerificationRedirectURL) {
+        window.location.href = existingUnverified.verification.externalVerificationRedirectURL.href;
+        return;
+      }
+
+      // 2. Otherwise create a new one
+      const extAccount = await user.createExternalAccount({
         strategy: "oauth_github",
         redirectUrl: window.location.href,
       });
+      if (extAccount.verification?.status === "unverified" && extAccount.verification?.externalVerificationRedirectURL) {
+        window.location.href = extAccount.verification.externalVerificationRedirectURL.href;
+      }
     } catch (e: any) {
       setError(e.errors?.[0]?.longMessage || e.message || "Failed to connect GitHub");
     }

@@ -8,6 +8,7 @@ import { getRiskHeatmap } from "../../lib/api";
 export default function HeatmapPage() {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
     getRiskHeatmap().then(d => {
@@ -42,9 +43,20 @@ export default function HeatmapPage() {
           <motion.button 
             whileHover={{ scale: 1.02 }} 
             whileTap={{ scale: 0.98 }}
-            className="btn-primary !py-2 !px-4 text-sm"
+            onClick={async () => {
+              setIsExporting(true);
+              await new Promise(r => setTimeout(r, 2000));
+              // Simulate downloading CSV
+              const a = document.createElement('a');
+              a.href = 'data:text/csv;charset=utf-8,Asset,Type,Score,Severity\\n' + data.map(d => `${d.asset},${d.type},${d.risk_score},${d.severity}`).join('\\n');
+              a.download = 'Heatmap_Risk_Export.csv';
+              a.click();
+              setIsExporting(false);
+            }}
+            disabled={isExporting || loading || data.length === 0}
+            className="btn-primary !py-2 !px-4 text-sm disabled:opacity-50"
           >
-            Export Report
+            {isExporting ? "Compiling CSV..." : "Export Report"}
           </motion.button>
         </motion.div>
 

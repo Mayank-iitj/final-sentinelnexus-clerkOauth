@@ -1,11 +1,28 @@
 "use client";
+import { useState } from "react";
 import { AppShell } from "../../components/AppShell";
 import { motion } from "framer-motion";
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } };
 const fadeUp = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.45 } } };
 
-export default function AttackGraphPage() {{
+export default function AttackGraphPage() {
+  const [isSimulating, setIsSimulating] = useState(false);
+  const [paths, setPaths] = useState([
+    { src: "Web-01", dest: "DB-Primary", vector: "SQL Injection → Privilege Escalation", prob: "High (89%)" },
+    { src: "VPN-Endpoint", dest: "Internal-Subnet", vector: "Stolen Credentials (Simulated)", prob: "Critical (99%)" }
+  ]);
+
+  const handleSimulate = async () => {
+    setIsSimulating(true);
+    await new Promise(res => setTimeout(res, 2000));
+    setPaths([
+      { src: "Compromised-Container", dest: "Kube-API", vector: "RBAC Misconfiguration Escape", prob: "Medium (45%)" },
+      ...paths
+    ]);
+    setIsSimulating(false);
+  };
+
   return (
     <AppShell>
       <div className="space-y-6 pb-8">
@@ -24,9 +41,11 @@ export default function AttackGraphPage() {{
           <motion.button 
             whileHover={{ scale: 1.02 }} 
             whileTap={{ scale: 0.98 }}
-            className="btn-primary !py-2 !px-4 text-sm"
+            onClick={handleSimulate}
+            disabled={isSimulating}
+            className="btn-primary !py-2 !px-4 text-sm disabled:opacity-50"
           >
-            Run Simulation
+            {isSimulating ? "Simulating Attack Trees..." : "Run Simulation"}
           </motion.button>
         </motion.div>
         
@@ -34,7 +53,7 @@ export default function AttackGraphPage() {{
         <motion.div variants={stagger} initial="hidden" animate="show" className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <motion.div variants={fadeUp} className="nub-card rounded-2xl p-5 border border-white/[0.04] bg-white/[0.01]">
             <div className="text-xs text-gray-500 font-medium">Active Lateral Paths</div>
-            <div className="text-3xl font-bold tracking-tight text-red-400 mt-1">12</div>
+            <div className="text-3xl font-bold tracking-tight text-red-400 mt-1">{10 + paths.length}</div>
           </motion.div>
           <motion.div variants={fadeUp} className="nub-card rounded-2xl p-5 border border-white/[0.04] bg-white/[0.01]">
             <div className="text-xs text-gray-500 font-medium">Choke Points</div>
@@ -66,25 +85,19 @@ export default function AttackGraphPage() {{
                 </tr>
               </thead>
               <tbody className="text-sm">
-                <tr className="hover:bg-white/[0.02] transition-colors">
-                  <td className="py-3 border-b border-white/[0.02]">Web-01</td>
-                  <td className="py-3 border-b border-white/[0.02]">DB-Primary</td>
-                  <td className="py-3 border-b border-white/[0.02]">SQL Injection → Privilege Escalation</td>
-                  <td className="py-3 border-b border-white/[0.02]">High (89%)</td>
-                </tr>
-                <tr className="hover:bg-white/[0.02] transition-colors">
-                  <td className="py-3 border-b border-white/[0.02]">VPN-Endpoint</td>
-                  <td className="py-3 border-b border-white/[0.02]">Internal-Subnet</td>
-                  <td className="py-3 border-b border-white/[0.02]">Stolen Credentials (Simulated)</td>
-                  <td className="py-3 border-b border-white/[0.02]">Critical (99%)</td>
-                </tr>
+                {paths.map((p, i) => (
+                  <tr key={i} className="hover:bg-white/[0.02] transition-colors">
+                    <td className="py-3 border-b border-white/[0.02]">{p.src}</td>
+                    <td className="py-3 border-b border-white/[0.02]">{p.dest}</td>
+                    <td className="py-3 border-b border-white/[0.02] text-gray-400">{p.vector}</td>
+                    <td className="py-3 border-b border-white/[0.02] font-semibold text-red-400">{p.prob}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
         </motion.div>
-
-
       </div>
     </AppShell>
   );
-}}
+}

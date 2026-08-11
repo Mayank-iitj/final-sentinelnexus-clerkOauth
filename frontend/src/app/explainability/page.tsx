@@ -1,11 +1,28 @@
 "use client";
+import { useState } from "react";
 import { AppShell } from "../../components/AppShell";
 import { motion } from "framer-motion";
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } };
 const fadeUp = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.45 } } };
 
-export default function ExplainabilityPage() {{
+export default function ExplainabilityPage() {
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [decisions, setDecisions] = useState([
+    { id: "DEC-8991", model: "Prompt Injection Classifier", feature: "Token: 'disregard'", conf: "99.8%" },
+    { id: "DEC-8990", model: "Risk Scorer", feature: "Source IP Reputation", conf: "95.0%" }
+  ]);
+
+  const handleAnalyze = async () => {
+    setIsAnalyzing(true);
+    await new Promise(r => setTimeout(r, 2000));
+    setDecisions([
+      { id: "DEC-8992", model: "DLP Scanner", feature: "Regex Match: SSN Pattern", conf: "99.9%" },
+      ...decisions
+    ]);
+    setIsAnalyzing(false);
+  };
+
   return (
     <AppShell>
       <div className="space-y-6 pb-8">
@@ -24,9 +41,11 @@ export default function ExplainabilityPage() {{
           <motion.button 
             whileHover={{ scale: 1.02 }} 
             whileTap={{ scale: 0.98 }}
-            className="btn-primary !py-2 !px-4 text-sm"
+            onClick={handleAnalyze}
+            disabled={isAnalyzing}
+            className="btn-primary !py-2 !px-4 text-sm disabled:opacity-50"
           >
-            Run SHAP Analysis
+            {isAnalyzing ? "Running XAI Trees..." : "Run SHAP Analysis"}
           </motion.button>
         </motion.div>
         
@@ -34,7 +53,7 @@ export default function ExplainabilityPage() {{
         <motion.div variants={stagger} initial="hidden" animate="show" className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <motion.div variants={fadeUp} className="nub-card rounded-2xl p-5 border border-white/[0.04] bg-white/[0.01]">
             <div className="text-xs text-gray-500 font-medium">Models Monitored</div>
-            <div className="text-3xl font-bold tracking-tight text-white mt-1">4</div>
+            <div className="text-3xl font-bold tracking-tight text-white mt-1">{2 + decisions.length}</div>
           </motion.div>
           <motion.div variants={fadeUp} className="nub-card rounded-2xl p-5 border border-white/[0.04] bg-white/[0.01]">
             <div className="text-xs text-gray-500 font-medium">Drift Detected</div>
@@ -66,25 +85,19 @@ export default function ExplainabilityPage() {{
                 </tr>
               </thead>
               <tbody className="text-sm">
-                <tr className="hover:bg-white/[0.02] transition-colors">
-                  <td className="py-3 border-b border-white/[0.02]">DEC-8991</td>
-                  <td className="py-3 border-b border-white/[0.02]">Prompt Injection Classifier</td>
-                  <td className="py-3 border-b border-white/[0.02]">Token: &apos;disregard&apos;</td>
-                  <td className="py-3 border-b border-white/[0.02]">99.8%</td>
-                </tr>
-                <tr className="hover:bg-white/[0.02] transition-colors">
-                  <td className="py-3 border-b border-white/[0.02]">DEC-8990</td>
-                  <td className="py-3 border-b border-white/[0.02]">Risk Scorer</td>
-                  <td className="py-3 border-b border-white/[0.02]">Source IP Reputation</td>
-                  <td className="py-3 border-b border-white/[0.02]">95.0%</td>
-                </tr>
+                {decisions.map((d, i) => (
+                  <tr key={i} className="hover:bg-white/[0.02] transition-colors">
+                    <td className="py-3 border-b border-white/[0.02] font-mono">{d.id}</td>
+                    <td className="py-3 border-b border-white/[0.02] font-semibold">{d.model}</td>
+                    <td className="py-3 border-b border-white/[0.02] text-gray-400">{d.feature}</td>
+                    <td className="py-3 border-b border-white/[0.02] text-emerald-400 font-bold">{d.conf}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
         </motion.div>
-
-
       </div>
     </AppShell>
   );
-}}
+}

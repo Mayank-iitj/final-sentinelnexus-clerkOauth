@@ -3,6 +3,7 @@ import SpecularButton from '../../components/SpecularButton';
 import { useState } from "react";
 import { AppShell } from "../../components/AppShell";
 import { motion } from "framer-motion";
+import { Terminal, TypingAnimation, AnimatedSpan } from "../../components/Terminal";
 
 import { runSimulation } from "../../lib/api";
 
@@ -72,98 +73,125 @@ export default function SimulatorPage() {
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="nub-card rounded-2xl p-6 border border-red-500/20 bg-red-900/5 min-h-[400px]"
+            className="w-full"
           >
             <div className="flex items-center gap-2 mb-6">
               <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse" />
               <h2 className="text-lg font-bold text-red-400">Red Team Agent</h2>
             </div>
             
-            {!simulation && !running && (
-              <div className="text-gray-500 text-sm text-center py-20">Enter a target and launch the simulation to see adversarial payloads.</div>
-            )}
-            
-            {running && !simulation && (
-              <div className="space-y-4">
-                <div className="h-4 w-3/4 bg-red-500/10 rounded animate-pulse" />
-                <div className="h-4 w-1/2 bg-red-500/10 rounded animate-pulse" />
-                <div className="h-4 w-5/6 bg-red-500/10 rounded animate-pulse" />
-              </div>
-            )}
+            <Terminal className="max-w-none h-[500px]">
+              {!simulation && !running && (
+                <TypingAnimation delay={0}>&gt; Awaiting target configuration...</TypingAnimation>
+              )}
+              
+              {running && !simulation && (
+                <>
+                  <TypingAnimation delay={0}>&gt; root@sentinel --target {target}</TypingAnimation>
+                  <AnimatedSpan show={true} delay={500} className="text-green-500">
+                    ✔ Preflight checks complete.
+                  </AnimatedSpan>
+                  <AnimatedSpan show={true} delay={1000} className="text-green-500">
+                    ✔ Target acquired: {target}
+                  </AnimatedSpan>
+                  <AnimatedSpan show={true} delay={1500} className="text-green-500">
+                    ✔ Initializing reconnaissance modules...
+                  </AnimatedSpan>
+                  <TypingAnimation delay={2500} className="text-gray-400">
+                    &gt; Executing payloads...
+                  </TypingAnimation>
+                </>
+              )}
 
-            {simulation && (
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Execution Log</h3>
-                  <div className="bg-black/40 border border-white/5 rounded-lg p-3 font-mono text-xs text-gray-300 space-y-1">
-                    {simulation.execution_log.map((log: string, i: number) => (
-                      <div key={i}>$ {log}</div>
-                    ))}
-                  </div>
-                </div>
+              {simulation && (
+                <>
+                  <TypingAnimation delay={0}>&gt; root@sentinel --target {target}</TypingAnimation>
+                  <AnimatedSpan show={true} delay={300} className="text-green-500">
+                    ✔ Target acquired: {target}
+                  </AnimatedSpan>
+                  
+                  {simulation.execution_log.map((log: string, i: number) => (
+                    <AnimatedSpan show={true} delay={600 + i * 200} key={`log-${i}`} className="text-gray-400">
+                      <span>[*] {log}</span>
+                    </AnimatedSpan>
+                  ))}
 
-                {simulation.findings.map((f: any, i: number) => (
-                  <div key={i} className="border border-red-500/30 bg-red-500/10 rounded-lg p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <span className="text-sm font-bold text-white">{f.technique}</span>
-                      <span className="text-xs px-2 py-1 bg-red-500/20 text-red-300 rounded uppercase">{f.severity}</span>
-                    </div>
-                    <div className="text-sm text-gray-300 mb-2">Payload: <span className="font-mono text-xs bg-black/30 px-1">{f.payload_used}</span></div>
-                    <div className="text-sm text-gray-400 italic">Response: {f.simulated_response}</div>
-                  </div>
-                ))}
-              </div>
-            )}
+                  {simulation.findings.map((f: any, i: number) => (
+                    <AnimatedSpan show={true} delay={1000 + (simulation.execution_log.length * 200) + (i * 600)} key={`finding-${i}`} className="text-red-400 mt-4 flex flex-col gap-1">
+                      <span>&gt; injecting payload: <span className="text-white bg-red-900/40 px-1 py-0.5 rounded">{f.technique}</span></span>
+                      <span className="text-xs text-gray-500 pl-4">{f.payload_used}</span>
+                      <span className="text-violet-400 font-bold pl-4 uppercase">[+] VULNERABILITY EXPLOITED - {f.severity} RISK</span>
+                    </AnimatedSpan>
+                  ))}
+
+                  <TypingAnimation delay={1500 + (simulation.execution_log.length * 200) + (simulation.findings.length * 600)} className="text-blue-500 mt-4">
+                    &gt; Handing off to Blue Team Agent for autonomous remediation...
+                  </TypingAnimation>
+                </>
+              )}
+            </Terminal>
           </motion.div>
 
           {/* Blue Team Output */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="nub-card rounded-2xl p-6 border border-blue-500/20 bg-blue-900/5 min-h-[400px]"
+            className="w-full"
           >
             <div className="flex items-center gap-2 mb-6">
               <div className="w-3 h-3 rounded-full bg-blue-500 animate-pulse" />
               <h2 className="text-lg font-bold text-blue-400">Blue Team Agent</h2>
             </div>
 
-            {!patch && !running && (
-              <div className="text-gray-500 text-sm text-center py-20">Awaiting Red Team findings to generate remediation.</div>
-            )}
+            <Terminal className="max-w-none h-[500px]">
+              {!patch && !running && (
+                <TypingAnimation delay={0} className="text-gray-500">&gt; Awaiting Red Team findings to generate remediation.</TypingAnimation>
+              )}
 
-            {running && !patch && (
-              <div className="text-gray-500 text-sm text-center py-20 flex flex-col items-center">
-                <div className="animate-spin w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full mb-4" />
-                Monitoring for breaches...
-              </div>
-            )}
+              {running && !patch && (
+                <>
+                  <TypingAnimation delay={0} className="text-blue-400">&gt; sentinel-blue-team --monitor</TypingAnimation>
+                  <AnimatedSpan show={true} delay={1000} className="text-gray-400">
+                    [*] Monitoring for breaches...
+                  </AnimatedSpan>
+                </>
+              )}
 
-            {patch && (
-              <div className="space-y-4">
-                <div className="flex justify-between items-center bg-blue-500/10 border border-blue-500/20 p-3 rounded-lg">
-                  <span className="text-sm text-blue-200">Confidence Score</span>
-                  <span className="font-bold text-white">{patch.confidence_score * 100}%</span>
-                </div>
-                
-                <div>
-                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Generated Patch Code</h3>
-                  <pre className="bg-black/60 border border-white/5 rounded-lg p-4 font-mono text-xs text-blue-300 overflow-x-auto">
-                    {patch.patch_code}
-                  </pre>
-                </div>
+              {patch && (
+                <>
+                  <TypingAnimation delay={0} className="text-blue-400">&gt; sentinel-blue-team --analyze-findings</TypingAnimation>
+                  <AnimatedSpan show={true} delay={500} className="text-green-500">
+                    ✔ Anomalies detected from Red Team payload
+                  </AnimatedSpan>
+                  <AnimatedSpan show={true} delay={1000} className="text-green-500">
+                    ✔ Generating Abstract Syntax Tree (AST) for vulnerable code
+                  </AnimatedSpan>
+                  <AnimatedSpan show={true} delay={1500} className="text-green-500">
+                    ✔ AI confidently proposes patch (Confidence: {patch.confidence_score * 100}%)
+                  </AnimatedSpan>
+                  
+                  <AnimatedSpan show={true} delay={2000} className="text-blue-300 mt-4 flex flex-col gap-2">
+                    <span>&gt; Compiled Patch Code:</span>
+                    <pre className="bg-black/60 border border-white/5 rounded-lg p-3 font-mono text-xs overflow-x-auto text-blue-200">
+                      {patch.patch_code}
+                    </pre>
+                  </AnimatedSpan>
 
-                <div>
-                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">IaC Infrastructure Update</h3>
-                  <pre className="bg-black/60 border border-white/5 rounded-lg p-4 font-mono text-xs text-gray-300 overflow-x-auto">
-                    {patch.iac_update}
-                  </pre>
-                </div>
-                
-                <SpecularButton className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors">
-                  Deploy Fix Automatically
-                </SpecularButton>
-              </div>
-            )}
+                  <AnimatedSpan show={true} delay={2500} className="text-gray-300 mt-4 flex flex-col gap-2">
+                    <span>&gt; Compiled IaC Update:</span>
+                    <pre className="bg-black/60 border border-white/5 rounded-lg p-3 font-mono text-xs overflow-x-auto text-gray-400">
+                      {patch.iac_update}
+                    </pre>
+                  </AnimatedSpan>
+
+                  <AnimatedSpan show={true} delay={3500} className="mt-4">
+                    <SpecularButton className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors">
+                      Deploy Fix Automatically
+                    </SpecularButton>
+                  </AnimatedSpan>
+                </>
+              )}
+            </Terminal>
           </motion.div>
         </div>
       </div>

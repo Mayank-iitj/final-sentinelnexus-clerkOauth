@@ -1,11 +1,28 @@
 "use client";
+import { useState } from "react";
 import { AppShell } from "../../components/AppShell";
 import { motion } from "framer-motion";
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } };
 const fadeUp = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.45 } } };
 
-export default function TimeMachinePage() {{
+export default function TimeMachinePage() {
+  const [isCreating, setIsCreating] = useState(false);
+  const [snapshots, setSnapshots] = useState([
+    { id: "SNAP-402", by: "System (Auto)", integrity: "Verified (100%)", timestamp: "2026-07-31 05:00 UTC" },
+    { id: "SNAP-401", by: "Admin User", integrity: "Verified (100%)", timestamp: "2026-07-30 18:00 UTC" }
+  ]);
+
+  const handleCreate = async () => {
+    setIsCreating(true);
+    await new Promise(res => setTimeout(res, 1500));
+    setSnapshots([
+      { id: `SNAP-${403 + (snapshots.length - 2)}`, by: "Current User", integrity: "Verified (100%)", timestamp: new Date().toISOString().replace('T', ' ').substring(0, 16) + ' UTC' }, 
+      ...snapshots
+    ]);
+    setIsCreating(false);
+  };
+
   return (
     <AppShell>
       <div className="space-y-6 pb-8">
@@ -24,9 +41,11 @@ export default function TimeMachinePage() {{
           <motion.button 
             whileHover={{ scale: 1.02 }} 
             whileTap={{ scale: 0.98 }}
-            className="btn-primary !py-2 !px-4 text-sm"
+            onClick={handleCreate}
+            disabled={isCreating}
+            className="btn-primary !py-2 !px-4 text-sm disabled:opacity-50"
           >
-            Create Snapshot
+            {isCreating ? "Creating..." : "Create Snapshot"}
           </motion.button>
         </motion.div>
         
@@ -34,15 +53,15 @@ export default function TimeMachinePage() {{
         <motion.div variants={stagger} initial="hidden" animate="show" className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <motion.div variants={fadeUp} className="nub-card rounded-2xl p-5 border border-white/[0.04] bg-white/[0.01]">
             <div className="text-xs text-gray-500 font-medium">Available Snapshots</div>
-            <div className="text-3xl font-bold tracking-tight text-white mt-1">14</div>
+            <div className="text-3xl font-bold tracking-tight text-white mt-1">{12 + snapshots.length}</div>
           </motion.div>
           <motion.div variants={fadeUp} className="nub-card rounded-2xl p-5 border border-white/[0.04] bg-white/[0.01]">
             <div className="text-xs text-gray-500 font-medium">Latest Snapshot</div>
-            <div className="text-3xl font-bold tracking-tight text-emerald-400 mt-1">1 hr ago</div>
+            <div className="text-3xl font-bold tracking-tight text-emerald-400 mt-1">Just now</div>
           </motion.div>
           <motion.div variants={fadeUp} className="nub-card rounded-2xl p-5 border border-white/[0.04] bg-white/[0.01]">
             <div className="text-xs text-gray-500 font-medium">Storage Used</div>
-            <div className="text-3xl font-bold tracking-tight text-gray-400 mt-1">1.2 TB</div>
+            <div className="text-3xl font-bold tracking-tight text-gray-400 mt-1">{1.2 + (snapshots.length * 0.1).toFixed(1)} TB</div>
           </motion.div>
         </motion.div>
 
@@ -66,25 +85,19 @@ export default function TimeMachinePage() {{
                 </tr>
               </thead>
               <tbody className="text-sm">
-                <tr className="hover:bg-white/[0.02] transition-colors">
-                  <td className="py-3 border-b border-white/[0.02]">SNAP-402</td>
-                  <td className="py-3 border-b border-white/[0.02]">System (Auto)</td>
-                  <td className="py-3 border-b border-white/[0.02]">Verified (100%)</td>
-                  <td className="py-3 border-b border-white/[0.02]">2026-07-31 05:00 UTC</td>
-                </tr>
-                <tr className="hover:bg-white/[0.02] transition-colors">
-                  <td className="py-3 border-b border-white/[0.02]">SNAP-401</td>
-                  <td className="py-3 border-b border-white/[0.02]">Admin User</td>
-                  <td className="py-3 border-b border-white/[0.02]">Verified (100%)</td>
-                  <td className="py-3 border-b border-white/[0.02]">2026-07-30 18:00 UTC</td>
-                </tr>
+                {snapshots.map(s => (
+                  <tr key={s.id} className="hover:bg-white/[0.02] transition-colors">
+                    <td className="py-3 border-b border-white/[0.02]">{s.id}</td>
+                    <td className="py-3 border-b border-white/[0.02]">{s.by}</td>
+                    <td className="py-3 border-b border-white/[0.02] text-emerald-400">{s.integrity}</td>
+                    <td className="py-3 border-b border-white/[0.02] font-mono text-gray-400">{s.timestamp}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
         </motion.div>
-
-
       </div>
     </AppShell>
   );
-}}
+}

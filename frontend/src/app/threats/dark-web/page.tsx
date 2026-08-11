@@ -1,11 +1,28 @@
 "use client";
+import { useState } from "react";
 import { AppShell } from "../../../components/AppShell";
 import { motion } from "framer-motion";
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } };
 const fadeUp = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.45 } } };
 
-export default function DarkWebPage() {{
+export default function DarkWebPage() {
+  const [isScanning, setIsScanning] = useState(false);
+  const [results, setResults] = useState([
+    { site: "BreachedForums", time: "2 hrs ago", type: "Credential Dump (Finance Dept)", conf: "High" },
+    { site: "Pastebin", time: "1 day ago", type: "API Keys (Revoked)", conf: "Medium" }
+  ]);
+
+  const handleScan = async () => {
+    setIsScanning(true);
+    await new Promise(res => setTimeout(res, 1800));
+    setResults([
+      { site: "XSS-Exploit-Market", time: "Just now", type: "Targeted Phishing Kit", conf: "Critical" },
+      ...results
+    ]);
+    setIsScanning(false);
+  };
+
   return (
     <AppShell>
       <div className="space-y-6 pb-8">
@@ -24,9 +41,11 @@ export default function DarkWebPage() {{
           <motion.button 
             whileHover={{ scale: 1.02 }} 
             whileTap={{ scale: 0.98 }}
-            className="btn-primary !py-2 !px-4 text-sm"
+            onClick={handleScan}
+            disabled={isScanning}
+            className="btn-primary !py-2 !px-4 text-sm disabled:opacity-50"
           >
-            Force Scan
+            {isScanning ? "Scanning Dark Web..." : "Force Scan"}
           </motion.button>
         </motion.div>
         
@@ -34,7 +53,7 @@ export default function DarkWebPage() {{
         <motion.div variants={stagger} initial="hidden" animate="show" className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <motion.div variants={fadeUp} className="nub-card rounded-2xl p-5 border border-white/[0.04] bg-white/[0.01]">
             <div className="text-xs text-gray-500 font-medium">Compromised Credentials</div>
-            <div className="text-3xl font-bold tracking-tight text-red-400 mt-1">2</div>
+            <div className="text-3xl font-bold tracking-tight text-red-400 mt-1">{results.length}</div>
           </motion.div>
           <motion.div variants={fadeUp} className="nub-card rounded-2xl p-5 border border-white/[0.04] bg-white/[0.01]">
             <div className="text-xs text-gray-500 font-medium">Company Mentions</div>
@@ -66,25 +85,19 @@ export default function DarkWebPage() {{
                 </tr>
               </thead>
               <tbody className="text-sm">
-                <tr className="hover:bg-white/[0.02] transition-colors">
-                  <td className="py-3 border-b border-white/[0.02]">BreachedForums</td>
-                  <td className="py-3 border-b border-white/[0.02]">2 hrs ago</td>
-                  <td className="py-3 border-b border-white/[0.02]">Credential Dump (Finance Dept)</td>
-                  <td className="py-3 border-b border-white/[0.02]">High</td>
-                </tr>
-                <tr className="hover:bg-white/[0.02] transition-colors">
-                  <td className="py-3 border-b border-white/[0.02]">Pastebin</td>
-                  <td className="py-3 border-b border-white/[0.02]">1 day ago</td>
-                  <td className="py-3 border-b border-white/[0.02]">API Keys (Revoked)</td>
-                  <td className="py-3 border-b border-white/[0.02]">Medium</td>
-                </tr>
+                {results.map((r, i) => (
+                  <tr key={i} className="hover:bg-white/[0.02] transition-colors">
+                    <td className="py-3 border-b border-white/[0.02]">{r.site}</td>
+                    <td className="py-3 border-b border-white/[0.02] font-mono text-gray-400">{r.time}</td>
+                    <td className="py-3 border-b border-white/[0.02]">{r.type}</td>
+                    <td className="py-3 border-b border-white/[0.02] font-semibold text-red-400">{r.conf}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
         </motion.div>
-
-
       </div>
     </AppShell>
   );
-}}
+}

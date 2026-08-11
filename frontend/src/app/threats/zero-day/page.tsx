@@ -1,11 +1,28 @@
 "use client";
+import { useState } from "react";
 import { AppShell } from "../../../components/AppShell";
 import { motion } from "framer-motion";
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } };
 const fadeUp = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.45 } } };
 
-export default function ZeroDayPage() {{
+export default function ZeroDayPage() {
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [intel, setIntel] = useState([
+    { id: "CVE-2026-XYZ1", severity: "Critical 9.8", component: "Nginx Ingress Controller", status: "Mitigated (WAF Block)" },
+    { id: "Zero-Day-AI-102", severity: "High 8.2", component: "LangChain Core", status: "Patch Pending" }
+  ]);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await new Promise(res => setTimeout(res, 1200));
+    setIntel([
+      { id: `Zero-Day-OS-${Math.floor(Math.random() * 900) + 100}`, severity: "Critical 9.9", component: "Linux Kernel", status: "Analyzing..." },
+      ...intel
+    ]);
+    setIsRefreshing(false);
+  };
+
   return (
     <AppShell>
       <div className="space-y-6 pb-8">
@@ -24,9 +41,11 @@ export default function ZeroDayPage() {{
           <motion.button 
             whileHover={{ scale: 1.02 }} 
             whileTap={{ scale: 0.98 }}
-            className="btn-primary !py-2 !px-4 text-sm"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className="btn-primary !py-2 !px-4 text-sm disabled:opacity-50"
           >
-            View Intel Feed
+            {isRefreshing ? "Fetching Intel..." : "Refresh Intel Feed"}
           </motion.button>
         </motion.div>
         
@@ -34,7 +53,7 @@ export default function ZeroDayPage() {{
         <motion.div variants={stagger} initial="hidden" animate="show" className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <motion.div variants={fadeUp} className="nub-card rounded-2xl p-5 border border-white/[0.04] bg-white/[0.01]">
             <div className="text-xs text-gray-500 font-medium">Tracked Zero-Days</div>
-            <div className="text-3xl font-bold tracking-tight text-red-400 mt-1">5</div>
+            <div className="text-3xl font-bold tracking-tight text-red-400 mt-1">{3 + intel.length}</div>
           </motion.div>
           <motion.div variants={fadeUp} className="nub-card rounded-2xl p-5 border border-white/[0.04] bg-white/[0.01]">
             <div className="text-xs text-gray-500 font-medium">Vulnerable Assets</div>
@@ -66,25 +85,19 @@ export default function ZeroDayPage() {{
                 </tr>
               </thead>
               <tbody className="text-sm">
-                <tr className="hover:bg-white/[0.02] transition-colors">
-                  <td className="py-3 border-b border-white/[0.02]">CVE-2026-XYZ1</td>
-                  <td className="py-3 border-b border-white/[0.02]">Critical 9.8</td>
-                  <td className="py-3 border-b border-white/[0.02]">Nginx Ingress Controller</td>
-                  <td className="py-3 border-b border-white/[0.02]">Mitigated (WAF Block)</td>
-                </tr>
-                <tr className="hover:bg-white/[0.02] transition-colors">
-                  <td className="py-3 border-b border-white/[0.02]">Zero-Day-AI-102</td>
-                  <td className="py-3 border-b border-white/[0.02]">High 8.2</td>
-                  <td className="py-3 border-b border-white/[0.02]">LangChain Core</td>
-                  <td className="py-3 border-b border-white/[0.02]">Patch Pending</td>
-                </tr>
+                {intel.map(item => (
+                  <tr key={item.id} className="hover:bg-white/[0.02] transition-colors">
+                    <td className="py-3 border-b border-white/[0.02]">{item.id}</td>
+                    <td className="py-3 border-b border-white/[0.02]">{item.severity}</td>
+                    <td className="py-3 border-b border-white/[0.02]">{item.component}</td>
+                    <td className="py-3 border-b border-white/[0.02]">{item.status}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
         </motion.div>
-
-
       </div>
     </AppShell>
   );
-}}
+}

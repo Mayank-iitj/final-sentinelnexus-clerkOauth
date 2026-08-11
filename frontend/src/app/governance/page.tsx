@@ -8,6 +8,7 @@ import { getGovernanceDashboard } from "../../lib/api";
 export default function GovernancePage() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isAdding, setIsAdding] = useState(false);
 
   useEffect(() => {
     getGovernanceDashboard().then(d => {
@@ -43,9 +44,27 @@ export default function GovernancePage() {
             <motion.button 
               whileHover={{ scale: 1.02 }} 
               whileTap={{ scale: 0.98 }}
-              className="btn-primary !py-2 !px-4 text-sm"
+              onClick={async () => {
+                setIsAdding(true);
+                await new Promise(r => setTimeout(r, 2000));
+                setData({
+                  ...data,
+                  metrics: {
+                    ...data.metrics,
+                    total_assets: data.metrics.total_assets + 1,
+                    compliant_assets: data.metrics.compliant_assets + 1
+                  },
+                  assets: [
+                    { id: "ast-" + Math.floor(Math.random()*1000), name: "Internal-LLM-v2", type: "Model", compliance: "Pass" },
+                    ...data.assets
+                  ]
+                });
+                setIsAdding(false);
+              }}
+              disabled={isAdding || loading || !data}
+              className="btn-primary !py-2 !px-4 text-sm disabled:opacity-50"
             >
-              Add New Asset
+              {isAdding ? "Registering Asset..." : "Add New Asset"}
             </motion.button>
           </div>
         </motion.div>
