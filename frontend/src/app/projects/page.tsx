@@ -1,5 +1,6 @@
 "use client";
 import SpecularButton from '../../components/SpecularButton';
+import { Github, FileCode2, FolderDown } from "lucide-react";
 
 import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "@clerk/nextjs";
@@ -14,17 +15,29 @@ import {
 } from "../../lib/api";
 
 function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: () => void }) {
+  const [activeTab, setActiveTab] = useState<"blank" | "github" | "local">("blank");
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
+  const [githubUrl, setGithubUrl] = useState("");
+  const [localPath, setLocalPath] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const submit = async () => {
     if (!name.trim()) { setError("Name is required"); return; }
+    if (activeTab === "github" && !githubUrl.trim()) { setError("GitHub URL is required"); return; }
+    if (activeTab === "local" && !localPath.trim()) { setError("Local path is required"); return; }
+
     setLoading(true);
     setError(null);
     try {
-      await createProject({ name: name.trim(), description: desc.trim() || undefined });
+      await createProject({ 
+        name: name.trim(), 
+        description: desc.trim() || undefined,
+        source_type: activeTab,
+        github_url: activeTab === "github" ? githubUrl.trim() : undefined,
+        local_path: activeTab === "local" ? localPath.trim() : undefined
+      });
       onCreate();
       onClose();
     } catch (e: any) {
@@ -38,6 +51,28 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: () 
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
       <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6 w-full max-w-md shadow-2xl space-y-4">
         <h2 className="text-lg font-bold">New Project</h2>
+        
+        <div className="flex gap-2 p-1 bg-white/[0.04] rounded-lg">
+          <button 
+            onClick={() => setActiveTab("blank")}
+            className={`flex-1 flex items-center justify-center gap-2 py-1.5 text-xs font-semibold rounded-md transition ${activeTab === "blank" ? "bg-white/[0.1] text-white" : "text-gray-400 hover:text-white"}`}
+          >
+            <FileCode2 size={14} /> Blank
+          </button>
+          <button 
+            onClick={() => setActiveTab("github")}
+            className={`flex-1 flex items-center justify-center gap-2 py-1.5 text-xs font-semibold rounded-md transition ${activeTab === "github" ? "bg-white/[0.1] text-white" : "text-gray-400 hover:text-white"}`}
+          >
+            <Github size={14} /> GitHub
+          </button>
+          <button 
+            onClick={() => setActiveTab("local")}
+            className={`flex-1 flex items-center justify-center gap-2 py-1.5 text-xs font-semibold rounded-md transition ${activeTab === "local" ? "bg-white/[0.1] text-white" : "text-gray-400 hover:text-white"}`}
+          >
+            <FolderDown size={14} /> Local
+          </button>
+        </div>
+
         {error && (
           <div className="text-xs text-red-400 border border-red-500/30 bg-red-900/20 rounded-lg px-3 py-2">
             {error}
@@ -50,10 +85,35 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: () 
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full bg-white/[0.06] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-emerald-500"
-              placeholder="e.g. API Gateway Security"
+              placeholder={activeTab === "github" ? "e.g. sentinel-nexus-repo" : "e.g. API Gateway Security"}
               autoFocus
             />
           </div>
+
+          {activeTab === "github" && (
+            <div>
+              <label className="text-xs text-gray-500 block mb-1">GitHub Repository URL</label>
+              <input
+                value={githubUrl}
+                onChange={(e) => setGithubUrl(e.target.value)}
+                className="w-full bg-white/[0.06] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-emerald-500"
+                placeholder="https://github.com/username/repo"
+              />
+            </div>
+          )}
+
+          {activeTab === "local" && (
+            <div>
+              <label className="text-xs text-gray-500 block mb-1">Local Storage Path</label>
+              <input
+                value={localPath}
+                onChange={(e) => setLocalPath(e.target.value)}
+                className="w-full bg-white/[0.06] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-emerald-500"
+                placeholder="/path/to/local/source"
+              />
+            </div>
+          )}
+
           <div>
             <label className="text-xs text-gray-500 block mb-1">Description (optional)</label>
             <textarea
@@ -73,7 +133,7 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: () 
             disabled={loading}
             className="px-4 py-2 rounded-xl bg-emerald-500 text-slate-950 font-semibold text-sm hover:bg-emerald-400 disabled:opacity-50"
           >
-            {loading ? "Creating…" : "Create"}
+            {loading ? "Creating…" : activeTab === "blank" ? "Create" : "Import"}
           </SpecularButton>
         </div>
       </div>

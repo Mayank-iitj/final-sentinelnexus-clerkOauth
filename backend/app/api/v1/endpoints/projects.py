@@ -17,6 +17,9 @@ router = APIRouter(prefix="/projects", tags=["projects"])
 class CreateProjectRequest(BaseModel):
     name: str = Field(min_length=1, max_length=255)
     description: Optional[str] = Field(default=None, max_length=2000)
+    source_type: Optional[str] = Field(default="blank")
+    github_url: Optional[str] = Field(default=None)
+    local_path: Optional[str] = Field(default=None)
 
 
 class UpdateProjectRequest(BaseModel):
@@ -73,6 +76,11 @@ def create_project(
         risk_level="low",
         scan_count=0,
         open_finding_count=0,
+        meta={
+            "source_type": body.source_type,
+            "github_url": body.github_url,
+            "local_path": body.local_path,
+        }
     )
     db.add(proj)
     db.commit()

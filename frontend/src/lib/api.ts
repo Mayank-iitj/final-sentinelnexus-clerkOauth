@@ -315,7 +315,7 @@ export const listProjects = (params?: { include_archived?: boolean }) => {
   return api<Paginated<ProjectOut>>(`/projects${qs}`);
 };
 
-export const createProject = (payload: { name: string; description?: string }) =>
+export const createProject = (payload: { name: string; description?: string; source_type?: string; github_url?: string; local_path?: string }) =>
   api<ProjectOut>("/projects", { method: "POST", body: JSON.stringify(payload) });
 
 export const getProject = (projectId: string) =>
