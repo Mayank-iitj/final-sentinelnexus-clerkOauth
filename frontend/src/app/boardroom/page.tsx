@@ -1,14 +1,62 @@
 "use client";
 import { AppShell } from "../../components/AppShell";
 import { motion } from "framer-motion";
+import { useRef, useState } from "react";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } };
 const fadeUp = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.45 } } };
 
-export default function BoardroomPage() {{
+export default function BoardroomPage() {
+  const reportRef = useRef<HTMLDivElement>(null);
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExportPDF = async () => {
+    if (!reportRef.current) return;
+    setIsExporting(true);
+    try {
+      // Add a small delay to ensure all animations are settled
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      const canvas = await html2canvas(reportRef.current, {
+        scale: 2,
+        backgroundColor: '#020617', // Match dark slate-950 theme
+        useCORS: true,
+        logging: false
+      });
+      
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'p',
+        unit: 'mm',
+        format: 'a4'
+      });
+      
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      // Calculate height to perfectly maintain aspect ratio
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      // Add margins (10mm on each side, top/bottom)
+      const margin = 10;
+      const usableWidth = pdfWidth - margin * 2;
+      const usableHeight = (canvas.height * usableWidth) / canvas.width;
+
+      // Dark background for the PDF margins
+      pdf.setFillColor(2, 6, 23);
+      pdf.rect(0, 0, pdfWidth, pdf.internal.pageSize.getHeight(), 'F');
+
+      pdf.addImage(imgData, 'PNG', margin, margin, usableWidth, usableHeight);
+      pdf.save(`Executive_Report_${new Date().toISOString().split('T')[0]}.pdf`);
+    } catch (err) {
+      console.error("PDF export failed", err);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <AppShell>
-      <div className="space-y-6 pb-8">
+      <div className="space-y-6 pb-8" ref={reportRef}>
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -24,9 +72,11 @@ export default function BoardroomPage() {{
           <motion.button 
             whileHover={{ scale: 1.02 }} 
             whileTap={{ scale: 0.98 }}
-            className="btn-primary !py-2 !px-4 text-sm"
+            className="btn-primary !py-2 !px-4 text-sm disabled:opacity-50"
+            onClick={handleExportPDF}
+            disabled={isExporting}
           >
-            Export PDF Report
+            {isExporting ? "Generating PDF..." : "Export PDF Report"}
           </motion.button>
         </motion.div>
         
@@ -87,4 +137,4 @@ export default function BoardroomPage() {{
       </div>
     </AppShell>
   );
-}}
+}
