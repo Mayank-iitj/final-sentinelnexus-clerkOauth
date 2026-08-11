@@ -20,7 +20,7 @@ const GithubIcon = ({ size = 14 }: { size?: number }) => (
 );
 
 import { useEffect, useState, useCallback } from "react";
-import { useAuth } from "@clerk/nextjs";
+import { useAuth, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { AppShell } from "../../components/AppShell";
 import {
@@ -29,6 +29,7 @@ import {
   archiveProject,
   ProjectOut,
   riskColor,
+  uploadLocalFiles,
 } from "../../lib/api";
 
 function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: () => void }) {
@@ -37,8 +38,10 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: () 
   const [desc, setDesc] = useState("");
   const [githubUrl, setGithubUrl] = useState("");
   const [localPath, setLocalPath] = useState("");
+  const [localFiles, setLocalFiles] = useState<FileList | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useUser();
 
   // GitHub Repos State
   const [repos, setRepos] = useState<GithubRepo[]>([]);
@@ -61,21 +64,50 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: () 
     }
   }, [activeTab]);
 
+  const handleConnectGithub = async () => {
+    if (!user) return;
+    try {
+      await user.createExternalAccount({
+        strategy: "oauth_github",
+        redirectUrl: window.location.href,
+      });
+    } catch (e: any) {
+      setError(e.errors?.[0]?.longMessage || e.message || "Failed to connect GitHub");
+    }
+  };
+
   const submit = async () => {
     if (!name.trim()) { setError("Name is required"); return; }
     if (activeTab === "github" && !githubUrl.trim()) { setError("GitHub URL is required"); return; }
-    if (activeTab === "local" && !localPath.trim()) { setError("Local path is required"); return; }
+    if (activeTab === "local" && (!localFiles || localFiles.length === 0)) { setError("Please select a folder"); return; }
 
     setLoading(true);
     setError(null);
     try {
-      await createProject({ 
+      const proj = await createProject({ 
         name: name.trim(), 
         description: desc.trim() || undefined,
         source_type: activeTab,
         github_url: activeTab === "github" ? githubUrl.trim() : undefined,
-        local_path: activeTab === "local" ? localPath.trim() : undefined
+        local_path: undefined
       });
+
+      if (activeTab === "local" && localFiles) {
+        const formData = new FormData();
+        let addedCount = 0;
+        for (let i = 0; i < localFiles.length; i++) {
+          const file = localFiles[i];
+          const path = file.webkitRelativePath || file.name;
+          if (path.includes('/node_modules/') || path.includes('/.git/') || path.includes('/.next/') || path.includes('/venv/')) {
+            continue;
+          }
+          formData.append("files", file, path);
+          addedCount++;
+        }
+        if (addedCount === 0) throw new Error("No valid source files found in the selected folder.");
+        await uploadLocalFiles(proj.project_id, formData);
+      }
+
       onCreate();
       onClose();
     } catch (e: any) {
@@ -174,10 +206,13 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: () 
                 </div>
               ) : (
                 <div>
-                  <div className="text-xs text-amber-400/80 mb-3 bg-amber-500/10 border border-amber-500/20 p-2 rounded-lg">
-                    GitHub is not connected via Clerk OAuth. You can paste a URL manually.
+                  <div className="text-xs text-amber-400/80 mb-3 bg-amber-500/10 border border-amber-500/20 p-3 rounded-lg flex flex-col gap-2 items-start">
+                    <span>GitHub is not connected. Connect your account to select repositories directly.</span>
+                    <button onClick={handleConnectGithub} className="bg-amber-500 text-amber-950 px-3 py-1.5 rounded-md font-semibold text-xs hover:bg-amber-400 transition">
+                      Connect GitHub
+                    </button>
                   </div>
-                  <label className="text-xs text-gray-500 block mb-1">GitHub Repository URL</label>
+                  <label className="text-xs text-gray-500 block mb-1">Or paste a GitHub Repository URL manually</label>
                   <input
                     value={githubUrl}
                     onChange={(e) => setGithubUrl(e.target.value)}
@@ -191,13 +226,21 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: () 
 
           {activeTab === "local" && (
             <div>
-              <label className="text-xs text-gray-500 block mb-1">Local Storage Path</label>
-              <input
-                value={localPath}
-                onChange={(e) => setLocalPath(e.target.value)}
-                className="w-full bg-white/[0.06] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-emerald-500"
-                placeholder="/path/to/local/source"
-              />
+              <label className="text-xs text-gray-500 block mb-1">Select Source Folder</label>
+              <div className="relative w-full bg-white/[0.03] border-2 border-dashed border-white/[0.1] hover:border-emerald-500/50 hover:bg-white/[0.05] transition-colors rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer group">
+                <FolderDown className="w-8 h-8 text-gray-400 group-hover:text-emerald-400 mb-2" />
+                <span className="text-sm font-medium text-white">{localFiles ? `${localFiles.length} files selected` : "Click to select a folder"}</span>
+                <span className="text-xs text-gray-500 mt-1">.git, node_modules, and venv are ignored</span>
+                <input
+                  type="file"
+                  // @ts-ignore
+                  webkitdirectory="true"
+                  directory="true"
+                  multiple
+                  onChange={(e) => setLocalFiles(e.target.files)}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+              </div>
             </div>
           )}
 

@@ -32,6 +32,10 @@ async function api<T>(
     ...(options.headers as Record<string, string> ?? {}),
   };
 
+  if (options.body instanceof FormData) {
+    delete headers["Content-Type"];
+  }
+
   // Attach Clerk JWT if available
   if (_clerkToken) {
     headers["Authorization"] = `Bearer ${_clerkToken}`;
@@ -330,6 +334,9 @@ export const listGithubRepos = () =>
 
 export const createProject = (payload: { name: string; description?: string; source_type?: string; github_url?: string; local_path?: string }) =>
   api<ProjectOut>("/projects", { method: "POST", body: JSON.stringify(payload) });
+
+export const uploadLocalFiles = (projectId: string, formData: FormData) =>
+  api<{status: string, message: string}>(`/projects/${projectId}/upload`, { method: "POST", body: formData });
 
 export const getProject = (projectId: string) =>
   api<ProjectDetail>(`/projects/${projectId}`);
