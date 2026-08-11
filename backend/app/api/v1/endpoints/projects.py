@@ -10,9 +10,16 @@ from app.api.v1.deps import get_current_active_user
 from app.db.database import get_db
 from app.models.project import Project
 from app.models.scan import Scan
+from fastapi import BackgroundTasks
 import urllib.request
 import urllib.error
 import json
+import subprocess
+import tempfile
+import os
+from loguru import logger
+from app.services.scanners.code_scanner import CodeSecurityScanner
+from app.services.notification_service import create_alerts_from_scan
 from app.core.config import get_settings
 
 settings = get_settings()
@@ -152,6 +159,110 @@ def list_github_repos(user=Depends(get_current_active_user)):
         })
     
     return {"items": repos}
+
+
+# ── POST /projects/{id}/webhook ───────────────────────────────────────────────
+def process_github_webhook(db_session_factory, project_id: str, github_url: str):
+    db = db_session_factory()
+    try:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            logger.info(f"Cloning {github_url} for webhook scan...")
+            subprocess.run(["git", "clone", "--depth", "1", github_url, tmpdir], check=True, capture_output=True)
+            
+            all_findings = []
+            max_score = 0
+            
+            for root, dirs, files in os.walk(tmpdir):
+                if '.git' in dirs: dirs.remove('.git')
+                if 'node_modules' in dirs: dirs.remove('node_modules')
+                if 'venv' in dirs: dirs.remove('venv')
+                
+                for file in files:
+                    if file.endswith(('.png', '.jpg', '.jpeg', '.pdf', '.zip', '.tar', '.gz', '.pyc', '.exe')):
+                        continue
+                        
+                    filepath = os.path.join(root, file)
+                    relpath = os.path.relpath(filepath, tmpdir)
+                    
+                    try:
+                        with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
+                            content = f.read()
+                        
+                        findings, score = CodeSecurityScanner.scan_code(content, target=relpath)
+                        all_findings.extend(findings)
+                        max_score = max(max_score, score)
+                    except Exception:
+                        pass
+            
+            risk_level = CodeSecurityScanner.get_risk_level(max_score)
+            cvss_scores = [f.cvss_score for f in all_findings if hasattr(f, 'cvss_score') and f.cvss_score is not None]
+            cvss_max = max(cvss_scores) if cvss_scores else None
+
+            findings_dicts = [f.to_dict() for f in all_findings]
+            
+            proj = db.query(Project).filter(Project.id == project_id).first()
+            if not proj:
+                return
+
+            scan = Scan(
+                user_id=proj.owner_id,
+                project_id=project_id,
+                target=github_url,
+                scan_type="code",
+                status="completed",
+                pii_risk_score=max_score,
+                risk_level=risk_level,
+                cvss_max_score=cvss_max,
+                finding_count=len(all_findings),
+                duration_ms=0,
+                result=json.dumps({"findings": findings_dicts, "score": max_score}),
+                meta={"engine": "code_scanner_webhook", "trigger": "github_push"}
+            )
+            db.add(scan)
+            
+            proj.scan_count = (proj.scan_count or 0) + 1
+            high_crit = sum(1 for f in findings_dicts if f.get("severity") in ("high", "critical"))
+            proj.open_finding_count = (proj.open_finding_count or 0) + high_crit
+            _risk_ord = {"critical": 4, "high": 3, "medium": 2, "low": 1}
+            if _risk_ord.get(risk_level, 0) > _risk_ord.get(proj.risk_level, 0):
+                proj.risk_level = risk_level
+
+            db.commit()
+            db.refresh(scan)
+
+            if findings_dicts:
+                create_alerts_from_scan(
+                    db,
+                    scan_id=scan.id,
+                    user_id=proj.owner_id,
+                    target=github_url,
+                    findings=findings_dicts,
+                    threshold_severity="high",
+                )
+    except Exception as e:
+        logger.error(f"Webhook processing failed for {project_id}: {e}")
+    finally:
+        db.close()
+
+
+@router.post("/{project_id}/webhook")
+def github_webhook(
+    project_id: str,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db)
+):
+    proj = db.query(Project).filter(Project.id == project_id).first()
+    if not proj:
+        raise HTTPException(status_code=404, detail="Project not found")
+        
+    github_url = proj.meta.get("github_url") if proj.meta else None
+    if not github_url:
+        raise HTTPException(status_code=400, detail="Project does not have a GitHub URL configured")
+        
+    from app.db.database import SessionLocal
+    background_tasks.add_task(process_github_webhook, SessionLocal, project_id, github_url)
+    
+    return {"status": "accepted", "message": "Scan queued"}
 
 
 # ── GET /projects ─────────────────────────────────────────────────────────────

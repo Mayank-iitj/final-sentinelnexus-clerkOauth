@@ -52,7 +52,7 @@ def generate_payu_hash(
             "firstname": firstname,
             "email": email,
             "hash": hash_value,
-            "payu_url": settings.PAYU_BASE_URL,
+            "payu_url": settings.active_payu_url,
             "surl": f"{settings.BACKEND_BASE_URL}/api/v1/payments/payu/success",
             "furl": f"{settings.BACKEND_BASE_URL}/api/v1/payments/payu/failure"
         }

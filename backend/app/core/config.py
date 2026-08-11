@@ -65,6 +65,12 @@ class Settings(BaseSettings):
     PAYU_MERCHANT_SALT: str = ""
     PAYU_BASE_URL: str = "https://test.payu.in/_payment"
 
+    @property
+    def active_payu_url(self) -> str:
+        if self.is_production and "test.payu.in" in self.PAYU_BASE_URL:
+            return "https://secure.payu.in/_payment"
+        return self.PAYU_BASE_URL
+
     # AI Agents
     GROQ_API_KEY: str = ""
 
