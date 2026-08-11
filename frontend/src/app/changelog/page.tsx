@@ -4,6 +4,13 @@ import type { Metadata } from "next";
 export const metadata: Metadata = { title: "Changelog", description: "SentinelNexus platform release history and updates." };
 
 const releases = [
+  { version: "2.5.0", date: "2026-08-11", title: "Production Readiness & Live AI Engine", type: "major", changes: [
+    { tag: "added", text: "Transitioned AI Agents to live Groq LLM streaming API (llama3-8b-8192)" },
+    { tag: "improved", text: "Enforced backend Database integration for persistent Scans, Projects, and Findings" },
+    { tag: "fixed", text: "Resolved strict Content Security Policy (CSP) blocking external assets" },
+    { tag: "fixed", text: "Fixed React render crashes in TypingAnimation components" },
+    { tag: "security", text: "Added Next.js Route Middleware to protect executive dashboards with Clerk RBAC" },
+  ]},
   { version: "2.4.0", date: "2026-08-08", title: "PayU Subscriptions & Automated Billing", type: "major", changes: [
     { tag: "added", text: "Integrated PayU for secure subscription payment processing" },
     { tag: "added", text: "Dedicated Subscription Dashboard for users to manage active plans" },

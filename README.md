@@ -39,7 +39,7 @@ Our platform delivers production-ready risk intelligence and monitoring for mode
 - 📡 **Live Security Telemetry**: Real-time Redis-backed dashboard surfacing block events, attack vectors, and Layer-0 automated bans natively within the platform.
 - 🔍 **Code Security Scanning**: 120+ SAST rules for secrets, injections, and IaC misconfigurations with CVSS v3.1 scoring.
 - ⚙️ **Real-Time Digital Twin**: Interactive live attack graphs and zero-day threat prediction for your entire AI infrastructure.
-- ⚔️ **Autonomous Red/Blue Agents**: Continuous automated attack simulation and infrastructure-as-code patch generation.
+- ⚔️ **Autonomous Red/Blue Agents**: Continuous automated attack simulation powered by live **Groq LLM streaming API** (`llama3-8b-8192`).
 - ⚖️ **Global Regulation Engine**: One-click multi-framework compliance automation with automated evidence collection.
 - 📊 **Universal AI Trust Score™**: Real-time, dynamic risk quantification engine combining vulnerabilities, supply chain risk, and brand trust.
 - 🎨 **Enterprise-Grade UI**: 18+ fully designed, responsive, dark-mode modules (including Cyber Insurance, XAI Explainability, and Executive Boardroom) leveraging Tailwind CSS and Framer Motion.
@@ -106,6 +106,7 @@ BACKEND_URL=http://localhost:8000
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your-clerk-publishable-key
 CLERK_SECRET_KEY=your-clerk-secret-key
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
+GROQ_API_KEY=your-groq-api-key
 ```
 
 ### 2. Start the Stack

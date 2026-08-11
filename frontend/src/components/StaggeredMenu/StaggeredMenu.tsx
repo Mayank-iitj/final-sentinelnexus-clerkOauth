@@ -383,7 +383,7 @@ export const StaggeredMenu = ({
             height={24}
           />
         </div>
-        <SpecularButton
+        <button
           ref={toggleBtnRef}
           className="sm-toggle"
           aria-label={open ? 'Close menu' : 'Open menu'}
@@ -405,7 +405,7 @@ export const StaggeredMenu = ({
             <span ref={plusHRef} className="sm-icon-line" />
             <span ref={plusVRef} className="sm-icon-line sm-icon-line-v" />
           </span>
-        </SpecularButton>
+        </button>
       </header>
 
       <aside id="staggered-menu-panel" ref={panelRef} className="staggered-menu-panel" aria-hidden={!open}>
