@@ -315,6 +315,19 @@ export const listProjects = (params?: { include_archived?: boolean }) => {
   return api<Paginated<ProjectOut>>(`/projects${qs}`);
 };
 
+export interface GithubRepo {
+  id: number;
+  name: string;
+  full_name: string;
+  description: string;
+  html_url: string;
+  private: boolean;
+  language: string;
+}
+
+export const listGithubRepos = () =>
+  api<{ items: GithubRepo[] }>("/projects/github/repos");
+
 export const createProject = (payload: { name: string; description?: string; source_type?: string; github_url?: string; local_path?: string }) =>
   api<ProjectOut>("/projects", { method: "POST", body: JSON.stringify(payload) });
 

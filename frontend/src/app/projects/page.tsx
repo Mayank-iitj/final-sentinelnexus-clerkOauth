@@ -1,6 +1,7 @@
 "use client";
 import SpecularButton from '../../components/SpecularButton';
 import { FileCode2, FolderDown } from "lucide-react";
+import { GithubRepo, listGithubRepos } from "../../lib/api";
 
 const GithubIcon = ({ size = 14 }: { size?: number }) => (
   <svg
@@ -38,6 +39,27 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: () 
   const [localPath, setLocalPath] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // GitHub Repos State
+  const [repos, setRepos] = useState<GithubRepo[]>([]);
+  const [reposLoading, setReposLoading] = useState(false);
+  const [githubConnected, setGithubConnected] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (activeTab === "github") {
+      setReposLoading(true);
+      listGithubRepos()
+        .then((res) => {
+          setRepos(res.items);
+          setGithubConnected(true);
+        })
+        .catch((err) => {
+          console.warn("GitHub fetch error:", err.message);
+          setGithubConnected(false);
+        })
+        .finally(() => setReposLoading(false));
+    }
+  }, [activeTab]);
 
   const submit = async () => {
     if (!name.trim()) { setError("Name is required"); return; }
@@ -107,14 +129,63 @@ function CreateModal({ onClose, onCreate }: { onClose: () => void; onCreate: () 
           </div>
 
           {activeTab === "github" && (
-            <div>
-              <label className="text-xs text-gray-500 block mb-1">GitHub Repository URL</label>
-              <input
-                value={githubUrl}
-                onChange={(e) => setGithubUrl(e.target.value)}
-                className="w-full bg-white/[0.06] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-emerald-500"
-                placeholder="https://github.com/username/repo"
-              />
+            <div className="space-y-3">
+              {reposLoading ? (
+                <div className="text-sm text-gray-500 py-4 flex items-center justify-center gap-2">
+                  <div className="w-4 h-4 rounded-full border-2 border-emerald-500 border-t-transparent animate-spin" />
+                  Loading repositories...
+                </div>
+              ) : githubConnected ? (
+                <div>
+                  <label className="text-xs text-gray-500 block mb-2">Select a Repository</label>
+                  <div className="max-h-48 overflow-y-auto space-y-2 pr-2 scrollbar-thin scrollbar-thumb-white/[0.1]">
+                    {repos.map((repo) => (
+                      <div 
+                        key={repo.id}
+                        onClick={() => {
+                          setGithubUrl(repo.html_url);
+                          if (!name) setName(repo.name);
+                        }}
+                        className={`p-3 rounded-xl border transition cursor-pointer ${
+                          githubUrl === repo.html_url 
+                            ? "border-emerald-500/50 bg-emerald-500/10" 
+                            : "border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.06]"
+                        }`}
+                      >
+                        <div className="flex justify-between items-start">
+                          <div className="font-semibold text-sm">{repo.full_name}</div>
+                          {repo.private && <span className="text-[10px] bg-white/10 px-1.5 py-0.5 rounded text-gray-400">Private</span>}
+                        </div>
+                        {repo.description && (
+                          <div className="text-xs text-gray-500 mt-1 line-clamp-1">{repo.description}</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-3">
+                    <label className="text-xs text-gray-500 block mb-1">Or paste a URL directly</label>
+                    <input
+                      value={githubUrl}
+                      onChange={(e) => setGithubUrl(e.target.value)}
+                      className="w-full bg-white/[0.06] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-emerald-500"
+                      placeholder="https://github.com/username/repo"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div className="text-xs text-amber-400/80 mb-3 bg-amber-500/10 border border-amber-500/20 p-2 rounded-lg">
+                    GitHub is not connected via Clerk OAuth. You can paste a URL manually.
+                  </div>
+                  <label className="text-xs text-gray-500 block mb-1">GitHub Repository URL</label>
+                  <input
+                    value={githubUrl}
+                    onChange={(e) => setGithubUrl(e.target.value)}
+                    className="w-full bg-white/[0.06] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-emerald-500"
+                    placeholder="https://github.com/username/repo"
+                  />
+                </div>
+              )}
             </div>
           )}
 

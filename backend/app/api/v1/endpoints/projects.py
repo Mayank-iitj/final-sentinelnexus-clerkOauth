@@ -10,6 +10,12 @@ from app.api.v1.deps import get_current_active_user
 from app.db.database import get_db
 from app.models.project import Project
 from app.models.scan import Scan
+import urllib.request
+import urllib.error
+import json
+from app.core.config import get_settings
+
+settings = get_settings()
 
 router = APIRouter(prefix="/projects", tags=["projects"])
 
@@ -86,6 +92,66 @@ def create_project(
     db.commit()
     db.refresh(proj)
     return _to_out(proj)
+
+
+# ── GET /projects/github/repos ────────────────────────────────────────────────
+@router.get("/github/repos")
+def list_github_repos(user=Depends(get_current_active_user)):
+    if user.oauth_provider != "clerk" or not user.oauth_provider_id:
+        raise HTTPException(status_code=400, detail="User is not authenticated via Clerk")
+    
+    if not settings.CLERK_SECRET_KEY:
+        raise HTTPException(status_code=500, detail="CLERK_SECRET_KEY not configured")
+
+    # Fetch OAuth token from Clerk
+    clerk_id = user.oauth_provider_id
+    url = f"https://api.clerk.com/v1/users/{clerk_id}/oauth_access_tokens/oauth_github"
+    req = urllib.request.Request(url)
+    req.add_header("Authorization", f"Bearer {settings.CLERK_SECRET_KEY}")
+    
+    try:
+        with urllib.request.urlopen(req, timeout=10) as response:
+            clerk_data = json.loads(response.read().decode())
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            raise HTTPException(status_code=400, detail="GitHub account not connected")
+        raise HTTPException(status_code=500, detail=f"Clerk API error: {e}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Clerk API error: {e}")
+
+    if not clerk_data or len(clerk_data) == 0:
+        raise HTTPException(status_code=400, detail="GitHub account not connected")
+    
+    github_token = clerk_data[0].get("token")
+    if not github_token:
+        raise HTTPException(status_code=400, detail="No GitHub access token found")
+
+    # Fetch repos from GitHub
+    gh_url = "https://api.github.com/user/repos?sort=updated&per_page=100"
+    gh_req = urllib.request.Request(gh_url)
+    gh_req.add_header("Authorization", f"Bearer {github_token}")
+    gh_req.add_header("Accept", "application/vnd.github.v3+json")
+    gh_req.add_header("User-Agent", "SentinelNexus")
+
+    try:
+        with urllib.request.urlopen(gh_req, timeout=10) as response:
+            gh_data = json.loads(response.read().decode())
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"GitHub API error: {e}")
+
+    repos = []
+    for r in gh_data:
+        repos.append({
+            "id": r.get("id"),
+            "name": r.get("name"),
+            "full_name": r.get("full_name"),
+            "description": r.get("description"),
+            "html_url": r.get("html_url"),
+            "private": r.get("private"),
+            "language": r.get("language")
+        })
+    
+    return {"items": repos}
 
 
 # ── GET /projects ─────────────────────────────────────────────────────────────
