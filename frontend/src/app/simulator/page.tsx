@@ -87,7 +87,7 @@ export default function SimulatorPage() {
               
               {running && !simulation && (
                 <>
-                  <TypingAnimation delay={0}>&gt; root@sentinel --target {target}</TypingAnimation>
+                  <TypingAnimation delay={0}>{`> root@sentinel --target ${target}`}</TypingAnimation>
                   <AnimatedSpan show={true} delay={500} className="text-green-500">
                     ✔ Preflight checks complete.
                   </AnimatedSpan>
@@ -105,7 +105,7 @@ export default function SimulatorPage() {
 
               {simulation && (
                 <>
-                  <TypingAnimation delay={0}>&gt; root@sentinel --target {target}</TypingAnimation>
+                  <TypingAnimation delay={0}>{`> root@sentinel --target ${target}`}</TypingAnimation>
                   <AnimatedSpan show={true} delay={300} className="text-green-500">
                     ✔ Target acquired: {target}
                   </AnimatedSpan>
