@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 
-const PRODUCTION_BACKEND = "https://sentinelnexus-backend.onrender.com";
+const PRODUCTION_BACKEND = "https://final-sentinelnexus-clerkoauth.onrender.com";
 
 /**
  * Resolve the backend origin, guarding against localhost/private addresses
