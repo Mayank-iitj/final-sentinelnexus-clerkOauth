@@ -3,6 +3,7 @@ from __future__ import annotations
 import sys
 import time
 import uuid
+from contextlib import asynccontextmanager
 from typing import Any, Dict
 
 from fastapi import FastAPI, Request
@@ -137,59 +138,99 @@ def create_app() -> FastAPI:
 
     Instrumentator().instrument(app).expose(app, endpoint="/metrics", include_in_schema=False)
 
-    @app.on_event("startup")
-    async def _startup() -> None:
-        # Run Alembic migrations to HEAD on every startup.
-        # Entire block is non-fatal — a DB connection failure must NEVER crash workers.
-        from alembic.config import Config
-        from alembic import command as alembic_command
-        import os
+    return app
 
-        alembic_cfg = Config("alembic.ini")
+
+@asynccontextmanager
+async def _lifespan(app: FastAPI):
+    """Modern FastAPI lifespan — replaces the deprecated @app.on_event pattern."""
+    # ── Startup ────────────────────────────────────────────────────────────────
+    # Run Alembic migrations to HEAD on every startup.
+    # Entire block is non-fatal — a DB connection failure must NEVER crash workers.
+    from alembic.config import Config
+    from alembic import command as alembic_command
+
+    alembic_cfg = Config("alembic.ini")
+    try:
+        alembic_command.upgrade(alembic_cfg, "head")
+        logger.info("Database migrations applied successfully (alembic upgrade head)")
+    except Exception as alembic_err:
+        logger.warning(f"Alembic upgrade skipped or failed (non-fatal): {str(alembic_err).splitlines()[0]}")
+        # Fallback: attempt create_all — also non-fatal
         try:
-            alembic_command.upgrade(alembic_cfg, "head")
-            logger.info("Database migrations applied successfully (alembic upgrade head)")
-        except Exception as alembic_err:
-            logger.warning(f"Alembic upgrade skipped or failed (non-fatal): {str(alembic_err).splitlines()[0]}")
-            # Fallback: attempt create_all — also non-fatal
-            try:
-                from app.db.database import Base
-                from app.models import governance, threat, scan, project, alert, report  # noqa: F401
-                Base.metadata.create_all(bind=engine)
-                logger.info("Database tables ensured via create_all fallback")
-            except Exception as create_err:
-                logger.warning(f"create_all fallback also failed (non-fatal): {str(create_err).splitlines()[0]}")
+            from app.db.database import Base
+            from app.models import governance, threat, scan, project, alert, report  # noqa: F401
+            Base.metadata.create_all(bind=engine)
+            logger.info("Database tables ensured via create_all fallback")
+        except Exception as create_err:
+            logger.warning(f"create_all fallback also failed (non-fatal): {str(create_err).splitlines()[0]}")
+
+    try:
+        # Redis (shared)
+        redis: Redis = redis_from_url(settings.REDIS_URL, encoding="utf-8", decode_responses=True)
+        await redis.ping()
+        app.state.redis = redis
+
+        # Rate limiter — mark as ready only on success
+        await FastAPILimiter.init(redis)
+        mark_limiter_ready()
+        logger.info("Connected to Redis successfully — rate limiter active")
+    except Exception as e:
+        logger.warning(f"Failed to connect to Redis. Rate limiting/cache disabled. {str(e).splitlines()[0]}")
+        app.state.redis = None
+
+    # DB connectivity sanity check — non-fatal, logs warning on failure
+    try:
+        with engine.connect() as conn:
+            conn.exec_driver_sql("SELECT 1")
+        logger.info("Database connection verified")
+    except Exception as e:
+        logger.warning(f"DB sanity check failed (non-fatal, will retry on first request): {str(e).splitlines()[0]}")
+
+    logger.info("startup complete")
+
+    yield  # ── application runs ──────────────────────────────────────────────
+
+    # ── Shutdown ───────────────────────────────────────────────────────────────
+    redis_conn: Redis | None = getattr(app.state, "redis", None)
+    if redis_conn is not None:
+        await redis_conn.aclose()
 
 
-        try:
-            # Redis (shared)
-            redis: Redis = redis_from_url(settings.REDIS_URL, encoding="utf-8", decode_responses=True)
-            await redis.ping()
-            app.state.redis = redis
+def create_app() -> FastAPI:
+    _configure_logging()
 
-            # Rate limiter — mark as ready only on success
-            await FastAPILimiter.init(redis)
-            mark_limiter_ready()
-            logger.info("Connected to Redis successfully — rate limiter active")
-        except Exception as e:
-            logger.warning(f"Failed to connect to Redis. Rate limiting/cache disabled. {str(e).splitlines()[0]}")
-            app.state.redis = None
+    app = FastAPI(
+        title=settings.APP_NAME,
+        version=settings.APP_VERSION,
+        description="AI Compliance & Risk Intelligence Platform",
+        lifespan=_lifespan,
+        openapi_tags=[
+            {"name": "auth", "description": "Authentication & OAuth"},
+            {"name": "users", "description": "User profile"},
+            {"name": "scans", "description": "Security scanning"},
+        ],
+    )
 
-        # DB connectivity sanity check — non-fatal, logs warning on failure
-        try:
-            with engine.connect() as conn:
-                conn.exec_driver_sql("SELECT 1")
-            logger.info("Database connection verified")
-        except Exception as e:
-            logger.warning(f"DB sanity check failed (non-fatal, will retry on first request): {str(e).splitlines()[0]}")
+    app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
 
-        logger.info("startup complete")
+    app.add_middleware(SecurityHeadersMiddleware)
 
-    @app.on_event("shutdown")
-    async def _shutdown() -> None:
-        redis: Redis | None = getattr(app.state, "redis", None)
-        if redis is not None:
-            await redis.aclose()
+    # ── SecurityMiddleware ────────────────────────────────────────────────────
+    # SECURITY_SHADOW_MODE=true in ALL environments until explicitly changed.
+    app.add_middleware(SecurityMiddleware)
+
+    app.add_middleware(RequestLoggingMiddleware)
+
+    # CORSMiddleware MUST be the outermost middleware (added last in Starlette)
+    # so that it wraps all inner middlewares (including SecurityMiddleware).
+    # This guarantees CORS headers are present even on 400/500 error responses.
+    # CORSMiddleware will be wrapped at the ASGI app level below to ensure
+    # it sits outside ServerErrorMiddleware.
+
+    app.include_router(api_router)
+
+    Instrumentator().instrument(app).expose(app, endpoint="/metrics", include_in_schema=False)
 
     @app.get("/", include_in_schema=False)
     async def root() -> Dict[str, str]:
