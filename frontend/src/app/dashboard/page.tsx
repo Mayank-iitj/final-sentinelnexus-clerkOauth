@@ -77,6 +77,22 @@ export default function DashboardPage() {
       .finally(() => setLoading(false));
   }, [isSignedIn]);
 
+  const isFallback = stats?._is_fallback === true;
+
+  // Auto-retry when in fallback/demo mode — poll every 30 s until live data is available
+  useEffect(() => {
+    if (!isFallback) return;
+    const id = setInterval(() => {
+      getDashboardStats().then((data) => {
+        if (!data._is_fallback) {
+          setStats(data);
+          setError(null);
+        }
+      }).catch(() => {/* stay in fallback */});
+    }, 30_000);
+    return () => clearInterval(id);
+  }, [isFallback]);
+
   if (!isLoaded || loading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
@@ -102,7 +118,9 @@ export default function DashboardPage() {
               Welcome, {user.firstName ?? "there"}
             </h1>
             <p className="text-sm text-gray-500 mt-0.5">
-              Your AI security posture at a glance — live from the database.
+              {isFallback
+                ? "Demo data — backend connecting…"
+                : "Your AI security posture at a glance — live from the database."}
             </p>
           </div>
           <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
@@ -112,7 +130,23 @@ export default function DashboardPage() {
           </motion.div>
         </motion.div>
 
-        {error && (
+        {/* Demo mode notice — shown when backend is unreachable */}
+        {isFallback && (
+          <motion.div
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center gap-2.5 rounded-xl border border-amber-500/25 bg-amber-900/10 px-4 py-2.5 text-xs text-amber-300/80"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse shrink-0" />
+            <span>
+              Backend is warming up — showing <strong>demo data</strong>.
+              Live data will load automatically once it&apos;s ready.
+            </span>
+          </motion.div>
+        )}
+
+        {/* Unexpected errors only (auth failures, etc.) */}
+        {error && !isFallback && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}

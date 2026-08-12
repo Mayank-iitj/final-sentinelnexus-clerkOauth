@@ -156,7 +156,119 @@ export interface DashboardStats {
   active_projects: number;
   recent_scans: ScanListItem[];
   recent_alerts: NotificationOut[];
+  /** Set to true when real API call failed and fallback data is shown */
+  _is_fallback?: boolean;
 }
+
+// ── Fallback / Demo Data ─────────────────────────────────────────────────────
+// Shown when the backend is unreachable (e.g. CORS error during cold-start,
+// network failure, or backend not yet deployed). Gives users a full working
+// dashboard demo rather than a broken/empty screen.
+const FALLBACK_DASHBOARD_STATS: DashboardStats = {
+  _is_fallback: true,
+  scans_last_24h: 4,
+  total_scans: 37,
+  open_risks: 3,
+  unread_notifications: 5,
+  compliance_score: 84,
+  active_projects: 6,
+  severity_distribution: { critical: 2, high: 7, medium: 14, low: 21 },
+  recent_scans: [
+    {
+      scan_id: "demo-1",
+      target: "api.example.com/v1/auth",
+      scan_type: "code",
+      status: "completed",
+      risk_level: "critical",
+      score: 91,
+      cvss_max_score: 9.1,
+      finding_count: 4,
+      created_at: new Date(Date.now() - 3_600_000).toISOString(),
+    },
+    {
+      scan_id: "demo-2",
+      target: "Summarise this user document: <script>alert(1)</script>",
+      scan_type: "prompt",
+      status: "completed",
+      risk_level: "high",
+      score: 74,
+      cvss_max_score: 7.4,
+      finding_count: 2,
+      created_at: new Date(Date.now() - 7_200_000).toISOString(),
+    },
+    {
+      scan_id: "demo-3",
+      target: "compliance-checker.py",
+      scan_type: "code",
+      status: "completed",
+      risk_level: "medium",
+      score: 54,
+      cvss_max_score: 5.4,
+      finding_count: 6,
+      created_at: new Date(Date.now() - 14_400_000).toISOString(),
+    },
+    {
+      scan_id: "demo-4",
+      target: "SOC2 policy document — 2024 revision",
+      scan_type: "text",
+      status: "completed",
+      risk_level: "low",
+      score: 18,
+      cvss_max_score: null,
+      finding_count: 1,
+      created_at: new Date(Date.now() - 86_400_000).toISOString(),
+    },
+    {
+      scan_id: "demo-5",
+      target: "data-pipeline/ingestion.py",
+      scan_type: "code",
+      status: "completed",
+      risk_level: "high",
+      score: 68,
+      cvss_max_score: 6.8,
+      finding_count: 3,
+      created_at: new Date(Date.now() - 172_800_000).toISOString(),
+    },
+  ],
+  recent_alerts: [
+    {
+      id: "alert-1",
+      alert_type: "vulnerability",
+      severity: "critical",
+      cvss_score: 9.1,
+      title: "SQL Injection via unsanitised ORM filter — api/auth",
+      description: null,
+      link: null,
+      is_read: false,
+      scan_id: "demo-1",
+      created_at: new Date(Date.now() - 3_600_000).toISOString(),
+    },
+    {
+      id: "alert-2",
+      alert_type: "prompt_injection",
+      severity: "high",
+      cvss_score: 7.4,
+      title: "Prompt injection: XSS payload in user-supplied summary request",
+      description: null,
+      link: null,
+      is_read: false,
+      scan_id: "demo-2",
+      created_at: new Date(Date.now() - 7_200_000).toISOString(),
+    },
+    {
+      id: "alert-3",
+      alert_type: "compliance",
+      severity: "high",
+      cvss_score: 6.5,
+      title: "Hardcoded AWS secret key detected in data-pipeline/ingestion.py",
+      description: null,
+      link: null,
+      is_read: false,
+      scan_id: "demo-5",
+      created_at: new Date(Date.now() - 172_800_000).toISOString(),
+    },
+  ],
+};
 
 export interface Paginated<T> {
   total: number;
@@ -169,7 +281,23 @@ export const startDemoSession = () =>
 
 // ── Dashboard ────────────────────────────────────────────────────────────────
 export const getDashboardStats = async (): Promise<DashboardStats> => {
-  return await api<DashboardStats>("/dashboard/stats");
+  try {
+    return await api<DashboardStats>("/dashboard/stats");
+  } catch (err: any) {
+    // Network/CORS errors (TypeError: Failed to fetch), backend cold-start 5xx,
+    // or any transient failure → serve fallback demo data so the UI never breaks.
+    const isCorsOrNetwork =
+      err?.name === "TypeError" ||
+      (typeof err?.message === "string" &&
+        (err.message.includes("Failed to fetch") ||
+          err.message.includes("Network error") ||
+          err.message.includes("CORS")));
+    if (isCorsOrNetwork || (err?.status ?? 0) >= 500) {
+      console.warn("[SentinelNexus] Dashboard API unreachable — showing demo data.", err?.message);
+      return FALLBACK_DASHBOARD_STATS;
+    }
+    throw err;
+  }
 };
 
 // ── Scans ────────────────────────────────────────────────────────────────────
