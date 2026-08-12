@@ -119,34 +119,32 @@ def create_app() -> FastAPI:
 
     app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
 
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=settings.parsed_allowed_origins,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
-
     app.add_middleware(SecurityHeadersMiddleware)
 
     # ── SecurityMiddleware ────────────────────────────────────────────────────
-    # Ordering rationale (Starlette reverses add_middleware order; last = outermost):
-    #   RequestLoggingMiddleware  ← outermost (runs first on request)
-    #   SecurityMiddleware        ← 2nd outermost (inside logging, before CORS/auth)
-    #   SecurityHeadersMiddleware
-    #   CORSMiddleware
-    #   SessionMiddleware         ← innermost
-    #
-    # Placing SecurityMiddleware here means it:
-    #   • Runs AFTER RequestLoggingMiddleware wraps the request (request-id available)
-    #   • Runs BEFORE CORS, auth, and route handlers (catches unauthenticated abuse)
-    #   • Uses pure-ASGI class (not BaseHTTPMiddleware) for explicit body reconstruction
-    #     — prevents double-consumption conflict with the Clerk webhook handler.
-    #
     # SECURITY_SHADOW_MODE=true in ALL environments until explicitly changed.
     app.add_middleware(SecurityMiddleware)
 
     app.add_middleware(RequestLoggingMiddleware)
+
+    # CORSMiddleware MUST be the outermost middleware (added last in Starlette)
+    # so that it wraps all inner middlewares (including SecurityMiddleware).
+    # This guarantees CORS headers are present even on 400/500 error responses.
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.parsed_allowed_origins,
+        allow_credentials=True,
+        allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allow_headers=[
+            "Authorization", 
+            "Content-Type", 
+            "Accept", 
+            "Origin", 
+            "X-Requested-With",
+            "x-clerk-auth-reason",
+            "x-clerk-auth-token"
+        ],
+    )
 
     app.include_router(api_router)
 
