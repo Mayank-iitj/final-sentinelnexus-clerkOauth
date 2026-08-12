@@ -130,21 +130,8 @@ def create_app() -> FastAPI:
     # CORSMiddleware MUST be the outermost middleware (added last in Starlette)
     # so that it wraps all inner middlewares (including SecurityMiddleware).
     # This guarantees CORS headers are present even on 400/500 error responses.
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=settings.parsed_allowed_origins,
-        allow_credentials=True,
-        allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-        allow_headers=[
-            "Authorization", 
-            "Content-Type", 
-            "Accept", 
-            "Origin", 
-            "X-Requested-With",
-            "x-clerk-auth-reason",
-            "x-clerk-auth-token"
-        ],
-    )
+    # CORSMiddleware will be wrapped at the ASGI app level below to ensure 
+    # it sits outside ServerErrorMiddleware.
 
     app.include_router(api_router)
 
@@ -274,3 +261,22 @@ def create_app() -> FastAPI:
 
 
 app = create_app()
+
+# Wrap the FastAPI app instance in CORSMiddleware at the ASGI level.
+# This ensures CORSMiddleware is OUTSIDE Starlette's built-in ServerErrorMiddleware.
+# Any exception that bubbles up and becomes a 500 will now correctly get CORS headers.
+app = CORSMiddleware(
+    app=app,
+    allow_origins=settings.parsed_allowed_origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=[
+        "Authorization", 
+        "Content-Type", 
+        "Accept", 
+        "Origin", 
+        "X-Requested-With",
+        "x-clerk-auth-reason",
+        "x-clerk-auth-token"
+    ],
+)
