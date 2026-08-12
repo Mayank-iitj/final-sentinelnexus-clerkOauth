@@ -27,20 +27,29 @@ def client():
 
 
 def test_security_telemetry_no_redis(client):
-    # redis is None in app.state
+    """When Redis is unavailable the endpoint returns 200 with zeroed/empty
+    data (graceful degradation) rather than a hard 503."""
     app.state.redis = None
     response = client.get("/api/v1/security/telemetry")
-    assert response.status_code == 503
-    assert "Redis is not available" in response.text
+    assert response.status_code == 200
+    data = response.json()
+    assert data["total_blocks_24h"] == 0
+    assert data["active_banned_ips"] == 0
+    assert data["top_attack_vector"] == "None"
+    assert data["threat_distribution"] == []
+    assert data["recent_events"] == []
+    assert data["banned_ips_list"] == []
+    assert data["redis_available"] is False
 
 
-@pytest.mark.asyncio
-async def test_security_telemetry_with_redis():
-    # Because we're using TestClient (synchronous) to test an async endpoint
-    # that uses an async mock, we need to mock the endpoint's internals or use AsyncClient.
-    # Alternatively, just inject a mocked redis into app.state and use TestClient.
+def test_security_telemetry_with_redis(client):
+    """When Redis is available the endpoint returns live telemetry data.
+
+    NOTE: The real Redis client is initialised with decode_responses=True so
+    smembers() returns str values, not bytes.  The mock mirrors that.
+    """
     mock_redis = AsyncMock()
-    
+
     import time
     now = time.time()
     mock_event = {
@@ -49,15 +58,16 @@ async def test_security_telemetry_with_redis():
         "decision": "block",
         "timestamp": now,
     }
-    
-    mock_redis.lrange = AsyncMock(return_value=[json.dumps(mock_event).encode("utf-8")])
-    mock_redis.smembers = AsyncMock(return_value=[b"1.2.3.4"])
-    
+
+    # lrange returns raw JSON strings (decode_responses=True on real Redis)
+    mock_redis.lrange = AsyncMock(return_value=[json.dumps(mock_event)])
+    # smembers returns str, not bytes (decode_responses=True)
+    mock_redis.smembers = AsyncMock(return_value={"1.2.3.4"})
+
     app.state.redis = mock_redis
-    
-    with TestClient(app) as c:
-        response = c.get("/api/v1/security/telemetry")
-        
+
+    response = client.get("/api/v1/security/telemetry")
+
     assert response.status_code == 200
     data = response.json()
     assert data["total_blocks_24h"] == 1
@@ -68,3 +78,4 @@ async def test_security_telemetry_with_redis():
     assert data["threat_distribution"][0]["count"] == 1
     assert data["banned_ips_list"] == [{"ip": "1.2.3.4"}]
     assert len(data["recent_events"]) == 1
+    assert data["redis_available"] is True
