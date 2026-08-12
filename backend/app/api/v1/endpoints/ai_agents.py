@@ -32,6 +32,10 @@ async def chat_with_agent(request: ChatRequest):
     """
     Chat endpoint powered by Groq. Handles different AI personas based on agent_type.
     """
+    # Fail fast with 503 if the LLM service is not configured (e.g. missing GROQ_API_KEY)
+    if not llm_service._available:
+        raise HTTPException(status_code=503, detail="AI service is not configured. Please set GROQ_API_KEY.")
+
     persona = None
     if request.agent_type == "compliance":
         persona = (
@@ -55,10 +59,10 @@ async def chat_with_agent(request: ChatRequest):
 
     # Convert Pydantic models to dicts
     messages = [{"role": msg.role, "content": msg.content} for msg in request.messages]
-    
+
     # Exec Copilot uses fast model, complex analysis uses default model
     use_fast = request.agent_type in ["copilot", "compliance"]
-    
+
     try:
         stream_generator = llm_service.generate_chat_stream(messages, persona_override=persona, use_fast_model=use_fast)
         return StreamingResponse(

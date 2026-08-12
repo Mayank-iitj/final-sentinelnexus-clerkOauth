@@ -8,7 +8,19 @@ settings = get_settings()
 
 class LLMService:
     def __init__(self):
-        self.client = Groq(api_key=settings.GROQ_API_KEY)
+        api_key = settings.GROQ_API_KEY
+        # Detect unresolved Render blueprint placeholders or empty key
+        if not api_key or api_key.startswith("{{"):
+            self._available = False
+            self.client = None
+            logger.warning(
+                "GROQ_API_KEY is not configured or is an unresolved template placeholder. "
+                "AI chat endpoints will return 503."
+            )
+        else:
+            self._available = True
+            self.client = Groq(api_key=api_key)
+
         self.default_model = "llama-3.3-70b-versatile"
         self.fast_model = "llama-3.1-8b-instant"
         
@@ -20,26 +32,28 @@ class LLMService:
         )
 
     def generate_chat_response(
-        self, 
-        messages: List[Dict[str, str]], 
-        persona_override: Optional[str] = None, 
+        self,
+        messages: List[Dict[str, str]],
+        persona_override: Optional[str] = None,
         use_fast_model: bool = False
     ) -> str:
         """
         Generates a chat response using Groq.
         messages: List of dicts like [{"role": "user", "content": "..."}]
         """
+        if not self._available:
+            return "Error: AI service is not configured. Please set GROQ_API_KEY."
+
         model = self.fast_model if use_fast_model else self.default_model
-        
         system_content = persona_override if persona_override else self.system_prompt
         full_messages = [{"role": "system", "content": system_content}] + messages
-        
+
         try:
             logger.info(f"Generating LLM response using {model}")
             chat_completion = self.client.chat.completions.create(
                 messages=full_messages,
                 model=model,
-                temperature=0.2, # Low temperature for more precise, technical answers
+                temperature=0.2,
                 max_tokens=2048,
             )
             return chat_completion.choices[0].message.content
@@ -53,6 +67,10 @@ class LLMService:
         persona_override: Optional[str] = None,
         use_fast_model: bool = False
     ):
+        if not self._available:
+            yield "[ERROR: AI service is not configured. Please contact the administrator.]"
+            return
+
         model = self.fast_model if use_fast_model else self.default_model
         system_content = persona_override if persona_override else self.system_prompt
         full_messages = [{"role": "system", "content": system_content}] + messages

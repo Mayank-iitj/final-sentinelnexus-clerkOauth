@@ -24,46 +24,51 @@ async def security_telemetry(
     """
     Returns security telemetry data from the Phase 1 Security Middleware.
     This includes recent blocks/warnings, top attack vectors, and currently banned IPs.
+    When Redis is unavailable, returns an empty-but-valid response so the UI degrades
+    gracefully instead of showing an error.
     """
     if not redis:
-        raise HTTPException(status_code=503, detail="Redis is not available")
+        return {
+            "total_blocks_24h": 0,
+            "active_banned_ips": 0,
+            "top_attack_vector": "None",
+            "threat_distribution": [],
+            "recent_events": [],
+            "banned_ips_list": [],
+            "redis_available": False,
+        }
 
     # Fetch recent security events
     raw_events = await redis.lrange("sec:events", 0, 999)
-    
-    events = []
+
+    events: List[Dict[str, Any]] = []
     vector_counts: Dict[str, int] = {}
     total_blocks_24h = 0
     import time
     now = time.time()
-    
+
     for raw in raw_events:
         try:
             event = json.loads(raw)
             events.append(event)
-            
+
             # Count vectors (only primary for simplicity)
             kind = event.get("primary_kind", "unknown")
             if kind != "none":
                 vector_counts[kind] = vector_counts.get(kind, 0) + 1
-            
+
             # Count blocks in last 24h
             event_time = event.get("timestamp", 0)
             if event.get("decision") == "block" and (now - event_time) <= 86400:
                 total_blocks_24h += 1
-                
+
         except (json.JSONDecodeError, TypeError):
             continue
 
     # Fetch active banned IPs
-    banned_ips_bytes = await redis.smembers("sec:banned")
-    banned_ips = []
-    for ip_b in banned_ips_bytes:
-        ip = ip_b.decode("utf-8")
-        # Fetch TTL
-        ttl = await redis.ttl(f"sec:banned") # note: we don't track TTL per IP in the set, just the set TTL, but wait: 
-        # Actually in rate_limiter.py we set expiry on the set itself.
-        banned_ips.append({"ip": ip})
+    # Note: Redis is initialised with decode_responses=True so smembers returns str, not bytes.
+    banned_ips_raw = await redis.smembers("sec:banned")
+    banned_ips = [{"ip": ip} for ip in banned_ips_raw]
 
     # Prepare Top Attack Vectors sorted by count
     sorted_vectors = sorted(
@@ -78,5 +83,6 @@ async def security_telemetry(
         "top_attack_vector": sorted_vectors[0]["vector"] if sorted_vectors else "None",
         "threat_distribution": sorted_vectors,
         "recent_events": events[:100],  # Return latest 100 for the activity feed
-        "banned_ips_list": banned_ips
+        "banned_ips_list": banned_ips,
+        "redis_available": True,
     }

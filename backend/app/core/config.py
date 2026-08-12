@@ -35,9 +35,25 @@ class Settings(BaseSettings):
     ALLOWED_ORIGINS: str = Field(default="http://localhost:3000")
     ALLOWED_HOSTS: str = Field(default="*")
 
+    # Hardcoded production origins — merged in as a safety net so CORS is never
+    # broken by a stale Render dashboard env var.
+    _PRODUCTION_ORIGINS: List[str] = [
+        "https://sentinelnexus.mayankiitj.in",
+        "https://www.sentinelnexus.mayankiitj.in",
+        "https://sentinelnexus.vercel.app",
+        "https://www.sentinelnexus.vercel.app",
+        "https://sentinelnexus.mayyanks.app",
+        "https://www.sentinelnexus.mayyanks.app",
+    ]
+
     @property
     def parsed_allowed_origins(self) -> List[str]:
-        return self._parse_list_var(self.ALLOWED_ORIGINS)
+        origins = self._parse_list_var(self.ALLOWED_ORIGINS)
+        if self.is_production:
+            # Merge env-var list with hardcoded production origins (deduplicated)
+            merged = list(dict.fromkeys(origins + self._PRODUCTION_ORIGINS))
+            return merged
+        return origins
 
     @property
     def parsed_allowed_hosts(self) -> List[str]:
