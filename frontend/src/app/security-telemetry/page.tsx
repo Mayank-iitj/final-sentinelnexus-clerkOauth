@@ -67,6 +67,8 @@ export default function SecurityTelemetryPage() {
       .finally(() => setLoading(false));
   }, [isSignedIn]);
 
+  const isFallback = (data as any)?._is_fallback === true;
+
   if (!isLoaded || loading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
@@ -97,7 +99,19 @@ export default function SecurityTelemetryPage() {
           </div>
         </motion.div>
 
-        {error && (
+        {/* Demo mode notice */}
+        {isFallback && (
+          <motion.div
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center gap-2.5 rounded-xl border border-amber-500/25 bg-amber-900/10 px-4 py-2.5 text-xs text-amber-300/80"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse shrink-0" />
+            <span>Backend is warming up — showing <strong>demo telemetry</strong>. Live data loads automatically.</span>
+          </motion.div>
+        )}
+
+        {error && !isFallback && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
