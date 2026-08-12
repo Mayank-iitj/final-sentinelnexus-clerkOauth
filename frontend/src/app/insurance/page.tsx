@@ -9,15 +9,15 @@ const fadeUp = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transi
 export default function InsurancePage() {
   const [isRequesting, setIsRequesting] = useState(false);
   const [quotes, setQuotes] = useState([
-    { carrier: "Sentinel Insure", tier: "Enterprise $5M", deductible: "$25k", status: "Active" },
-    { carrier: "CyberGuard LLC", tier: "Standard $1M", deductible: "$10k", status: "Draft" }
+    { carrier: "Sentinel Insure", tier: "Enterprise ₹5M", deductible: "₹25k", status: "Active" },
+    { carrier: "CyberGuard LLC", tier: "Standard ₹1M", deductible: "₹10k", status: "Draft" }
   ]);
 
   const handleRequest = async () => {
     setIsRequesting(true);
     await new Promise(r => setTimeout(r, 2000));
     setQuotes([
-      { carrier: "Auto-Quote API", tier: "Premium $10M", deductible: "$50k", status: "Reviewing" },
+      { carrier: "Auto-Quote API", tier: "Premium ₹10M", deductible: "₹50k", status: "Reviewing" },
       ...quotes
     ]);
     setIsRequesting(false);
@@ -53,7 +53,7 @@ export default function InsurancePage() {
         <motion.div variants={stagger} initial="hidden" animate="show" className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <motion.div variants={fadeUp} className="nub-card rounded-2xl p-5 border border-white/[0.04] bg-white/[0.01]">
             <div className="text-xs text-gray-500 font-medium">Estimated Premium</div>
-            <div className="text-3xl font-bold tracking-tight text-white mt-1">$12,400/yr</div>
+            <div className="text-3xl font-bold tracking-tight text-white mt-1">₹12,400/yr</div>
           </motion.div>
           <motion.div variants={fadeUp} className="nub-card rounded-2xl p-5 border border-white/[0.04] bg-white/[0.01]">
             <div className="text-xs text-gray-500 font-medium">Insurability Score</div>

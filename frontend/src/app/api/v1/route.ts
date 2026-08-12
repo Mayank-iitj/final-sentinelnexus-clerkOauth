@@ -52,26 +52,37 @@ async function proxy(request: NextRequest) {
     (init as RequestInit & { duplex?: "half" }).duplex = "half";
   }
 
-  const backendResponse = await fetch(backendUrl, init);
-  const responseHeaders = new Headers();
+  try {
+    const backendResponse = await fetch(backendUrl, init);
+    const responseHeaders = new Headers();
 
-  backendResponse.headers.forEach((value, key) => {
-    if (key.toLowerCase() !== "set-cookie") responseHeaders.set(key, value);
-  });
+    backendResponse.headers.forEach((value, key) => {
+      if (key.toLowerCase() !== "set-cookie") responseHeaders.set(key, value);
+    });
 
-  const setCookies = (backendResponse.headers as Headers & { getSetCookie?: () => string[] }).getSetCookie?.();
-  if (setCookies?.length) {
-    for (const cookie of setCookies) responseHeaders.append("set-cookie", cookie);
-  } else {
-    const setCookie = backendResponse.headers.get("set-cookie");
-    if (setCookie) responseHeaders.append("set-cookie", setCookie);
+    const setCookies = (backendResponse.headers as Headers & { getSetCookie?: () => string[] }).getSetCookie?.();
+    if (setCookies?.length) {
+      for (const cookie of setCookies) responseHeaders.append("set-cookie", cookie);
+    } else {
+      const setCookie = backendResponse.headers.get("set-cookie");
+      if (setCookie) responseHeaders.append("set-cookie", setCookie);
+    }
+
+    return new Response(backendResponse.body, {
+      status: backendResponse.status,
+      statusText: backendResponse.statusText,
+      headers: responseHeaders,
+    });
+  } catch (error: any) {
+    console.error(`[proxy] fetch error for ${backendUrl.toString()}:`, error.message || error);
+    return new Response(
+      JSON.stringify({ detail: "Backend service is currently unavailable. Please try again later." }),
+      {
+        status: 502,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
-
-  return new Response(backendResponse.body, {
-    status: backendResponse.status,
-    statusText: backendResponse.statusText,
-    headers: responseHeaders,
-  });
 }
 
 export const dynamic = "force-dynamic";

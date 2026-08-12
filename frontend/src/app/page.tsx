@@ -34,9 +34,9 @@ const features = [
 ];
 
 const plans = [
-  { tier: "Starter", price: "$0", period: "forever", items: ["5 scans/month", "All scan engines", "Basic CVSS scoring", "Email support", "1 project"], cta: "Start Free", tag: "Most Pick" },
-  { tier: "Professional", price: "$299", period: "/month", items: ["100 scans/month", "All scan engines", "Custom rules", "PDF reports", "10 projects", "Slack alerts", "Priority support"], cta: "Upgrade to Pro", tag: "Recommended", popular: true },
-  { tier: "Enterprise", price: "$999", period: "/month", items: ["Unlimited scans", "SOC 2 exports", "SSO / SAML", "Unlimited projects", "Dedicated CSM", "SLA < 30 min", "Custom integrations"], cta: "Talk to Sales", tag: "Advanced" },
+  { tier: "Starter", price: "₹0", period: "forever", items: ["5 scans/month", "All scan engines", "Basic CVSS scoring", "Email support", "1 project"], cta: "Start Free", tag: "Most Pick" },
+  { tier: "Professional", price: "₹299", period: "/month", items: ["100 scans/month", "All scan engines", "Custom rules", "PDF reports", "10 projects", "Slack alerts", "Priority support"], cta: "Upgrade to Pro", tag: "Recommended", popular: true },
+  { tier: "Enterprise", price: "₹999", period: "/month", items: ["Unlimited scans", "SOC 2 exports", "SSO / SAML", "Unlimited projects", "Dedicated CSM", "SLA < 30 min", "Custom integrations"], cta: "Talk to Sales", tag: "Advanced" },
 ];
 
 const marqueeItems = [

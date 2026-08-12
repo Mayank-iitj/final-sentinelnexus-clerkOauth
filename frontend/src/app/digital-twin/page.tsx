@@ -63,7 +63,7 @@ export default function DigitalTwinPage() {
           </motion.div>
           <motion.div variants={fadeUp} className="nub-card rounded-2xl p-5 border border-white/[0.04] bg-white/[0.01]">
             <div className="text-xs text-gray-500 font-medium">Cost / Hr</div>
-            <div className="text-3xl font-bold tracking-tight text-gray-400 mt-1">$1.20</div>
+            <div className="text-3xl font-bold tracking-tight text-gray-400 mt-1">₹1.20</div>
           </motion.div>
         </motion.div>
 

@@ -41,11 +41,19 @@ async function api<T>(
     headers["Authorization"] = `Bearer ${_clerkToken}`;
   }
 
-  const res = await fetch(buildApiUrl(path), {
-    credentials: "include",
-    headers,
-    ...options,
-  });
+  let res: Response;
+  try {
+    res = await fetch(buildApiUrl(path), {
+      credentials: "include",
+      headers,
+      ...options,
+    });
+  } catch (error: any) {
+    if (error.name === "TypeError" && error.message === "Failed to fetch") {
+      throw new Error("Network error: Unable to connect to the server. Please check your connection or try again later.");
+    }
+    throw error;
+  }
 
   if (!res.ok) {
     const detail = await res.text();

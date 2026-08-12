@@ -7,9 +7,9 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 
 const plans = [
-  { tier: "Starter", price: "$0", period: "forever", details: ["5 scans/month", "Code + Prompt + Text scanners", "1 project"], checkoutUrl: "/checkout?plan=Starter" },
-  { tier: "Pro", price: "$299", period: "/month", details: ["100 scans/month", "All scan engines", "PDF report generation", "10 projects"], checkoutUrl: "/checkout?plan=Pro" },
-  { tier: "Enterprise", price: "$999", period: "/month", details: ["Unlimited scans", "SOC 2 evidence exports", "Unlimited projects", "Dedicated CSM"], checkoutUrl: "/checkout?plan=Enterprise" },
+  { tier: "Starter", price: "₹0", period: "forever", details: ["5 scans/month", "Code + Prompt + Text scanners", "1 project"], checkoutUrl: "/checkout?plan=Starter" },
+  { tier: "Pro", price: "₹299", period: "/month", details: ["100 scans/month", "All scan engines", "PDF report generation", "10 projects"], checkoutUrl: "/checkout?plan=Pro" },
+  { tier: "Enterprise", price: "₹999", period: "/month", details: ["Unlimited scans", "SOC 2 evidence exports", "Unlimited projects", "Dedicated CSM"], checkoutUrl: "/checkout?plan=Enterprise" },
 ];
 
 export default function SubscriptionPage() {
