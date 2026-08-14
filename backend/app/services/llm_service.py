@@ -1,28 +1,31 @@
 import os
 from typing import List, Dict, Any, Optional
 from loguru import logger
-from groq import Groq
+from openai import OpenAI
 from app.core.config import get_settings
 
 settings = get_settings()
 
 class LLMService:
     def __init__(self):
-        api_key = settings.GROQ_API_KEY
+        api_key = settings.OPENROUTER_API_KEY
         # Detect unresolved Render blueprint placeholders or empty key
         if not api_key or api_key.startswith("{{"):
             self._available = False
             self.client = None
             logger.warning(
-                "GROQ_API_KEY is not configured or is an unresolved template placeholder. "
+                "OPENROUTER_API_KEY is not configured or is an unresolved template placeholder. "
                 "AI chat endpoints will return 503."
             )
         else:
             self._available = True
-            self.client = Groq(api_key=api_key)
+            self.client = OpenAI(
+                base_url="https://openrouter.ai/api/v1",
+                api_key=api_key,
+            )
 
-        self.default_model = "llama-3.3-70b-versatile"
-        self.fast_model = "llama-3.1-8b-instant"
+        self.default_model = "nvidia/nemotron-3-ultra-550b-a55b:free"
+        self.fast_model = "nvidia/nemotron-3-ultra-550b-a55b:free"
         
         self.system_prompt = (
             "You are SentinelNexus, an elite, highly advanced autonomous CyberSecurity AI. "
@@ -38,11 +41,11 @@ class LLMService:
         use_fast_model: bool = False
     ) -> str:
         """
-        Generates a chat response using Groq.
+        Generates a chat response using OpenRouter.
         messages: List of dicts like [{"role": "user", "content": "..."}]
         """
         if not self._available:
-            return "Error: AI service is not configured. Please set GROQ_API_KEY."
+            return "Error: AI service is not configured. Please set OPENROUTER_API_KEY."
 
         model = self.fast_model if use_fast_model else self.default_model
         system_content = persona_override if persona_override else self.system_prompt
@@ -58,7 +61,7 @@ class LLMService:
             )
             return chat_completion.choices[0].message.content
         except Exception as e:
-            logger.error(f"Error calling Groq API: {e}")
+            logger.error(f"Error calling OpenRouter API: {e}")
             return f"Error: Communication with the SentinelNexus AI Core failed. Reason: {str(e)}"
 
     def generate_chat_stream(
@@ -88,5 +91,5 @@ class LLMService:
                 if chunk.choices[0].delta.content is not None:
                     yield chunk.choices[0].delta.content
         except Exception as e:
-            logger.error(f"Error streaming from Groq API: {e}")
+            logger.error(f"Error streaming from OpenRouter API: {e}")
             yield f"\n\n[ERROR: Communication with the SentinelNexus AI Core failed. Reason: {str(e)}]"

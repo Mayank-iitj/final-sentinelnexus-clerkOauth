@@ -11,11 +11,10 @@ services:
         fromDatabase:
           name: sentinelnexus-db
           property: connectionString
+      # External managed Redis (Redis Cloud free tier), not a Render-managed
+      # instance. Set the real value in the Render dashboard — never commit it.
       - key: REDIS_URL
-        fromService:
-          type: redis
-          name: sentinelnexus-cache
-          property: connectionString
+        value: {{REDIS_URL}}
       - key: SECRET_KEY
         generateValue: true
       - key: JWT_SECRET_KEY
@@ -31,7 +30,7 @@ services:
       - key: FRONTEND_BASE_URL
         value: https://sentinelnexus.mayankiitj.in
       - key: BACKEND_BASE_URL
-        value: https://sentinelnexus-backend.onrender.com
+        value: https://final-sentinelnexus-clerkoauth.onrender.com
       - key: CLERK_SECRET_KEY
         value: {{CLERK_SECRET_KEY}}
       - key: CLERK_JWKS_URL
@@ -46,8 +45,8 @@ services:
         value: "60"
       - key: CLERK_WEBHOOK_SECRET
         value: {{CLERK_WEBHOOK_SECRET}}
-      - key: GROQ_API_KEY
-        value: {{GROQ_API_KEY}}
+      - key: OPENROUTER_API_KEY
+        value: {{OPENROUTER_API_KEY}}
       - key: PAYU_MERCHANT_KEY
         value: "JiZpKZ"
       - key: PAYU_MERCHANT_SALT
@@ -116,14 +115,12 @@ services:
         value: {{NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}}
       - key: CLERK_SECRET_KEY
         value: {{CLERK_SECRET_KEY}}
+      # Required by the /api/v1/ai-agents/chat route handler, which calls OpenRouter
+      # directly from the Next.js server (not via the FastAPI backend).
+      - key: OPENROUTER_API_KEY
+        value: {{OPENROUTER_API_KEY}}
 
 databases:
   - name: sentinelnexus-db
     plan: standard
     postgresMajorVersion: "15"
-
-# ── Managed Redis ───────────────────────────────────────────────────────────
-redis:
-  - name: sentinelnexus-cache
-    plan: standard
-    ipAllowList: [] # Only allow internal connections

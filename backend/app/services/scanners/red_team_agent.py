@@ -19,7 +19,7 @@ class AgentState(Enum):
 class AutonomousRedTeamAgent:
     """
     Real LLM-driven Autonomous Red Team Agent.
-    Generates payloads via Groq, executes them against the target via httpx,
+    Generates payloads via OpenRouter, executes them against the target via httpx,
     and evaluates the real responses.
     """
     

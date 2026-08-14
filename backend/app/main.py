@@ -150,7 +150,15 @@ async def _lifespan(app: FastAPI):
     from alembic.config import Config
     from alembic import command as alembic_command
 
-    alembic_cfg = Config("alembic.ini")
+    # Resolve alembic.ini relative to the backend package, not the process CWD.
+    # "alembic.ini" only worked if the server happened to be started from
+    # backend/; under any other CWD Alembic silently loaded nothing, migrations
+    # were skipped, and the schema drifted from the models.
+    from pathlib import Path
+
+    _backend_root = Path(__file__).resolve().parent.parent
+    alembic_cfg = Config(str(_backend_root / "alembic.ini"))
+    alembic_cfg.set_main_option("script_location", str(_backend_root / "alembic"))
     try:
         alembic_command.upgrade(alembic_cfg, "head")
         logger.info("Database migrations applied successfully (alembic upgrade head)")
@@ -167,7 +175,17 @@ async def _lifespan(app: FastAPI):
 
     try:
         # Redis (shared)
-        redis: Redis = redis_from_url(settings.REDIS_URL, encoding="utf-8", decode_responses=True)
+        # Timeouts matter for a managed/remote Redis: without them a network
+        # black-hole hangs startup indefinitely and the deploy never goes live.
+        redis: Redis = redis_from_url(
+            settings.REDIS_URL,
+            encoding="utf-8",
+            decode_responses=True,
+            socket_connect_timeout=5,
+            socket_timeout=5,
+            retry_on_timeout=True,
+            health_check_interval=30,
+        )
         await redis.ping()
         app.state.redis = redis
 
@@ -236,29 +254,60 @@ def create_app() -> FastAPI:
     async def root() -> Dict[str, str]:
         return {"status": "ok", "app": settings.APP_NAME}
 
-    @app.get("/health", include_in_schema=False)
-    async def health() -> Dict[str, Any]:
-        status_str = "healthy"
+    # GET and HEAD: uptime probes (UptimeRobot, Render) often send HEAD, which
+    # a GET-only route answers with 405 — a false outage.
+    @app.api_route("/health", methods=["GET", "HEAD"], include_in_schema=False)
+    async def health() -> JSONResponse:
+        # Two tiers, because they mean different things to Render's health check:
+        #   "unhealthy" -> 503, the service cannot serve requests (DB is down).
+        #   "degraded"  -> 200, reduced capability but still serving. Returning
+        #                  503 here would make Render roll back deploys over a
+        #                  non-fatal dependency like a cold cache.
+        db_ok = True
+        redis_ok = True
 
-        # DB
+        # DB — critical.
         try:
             with engine.connect() as conn:
                 conn.exec_driver_sql("SELECT 1")
             db = "ok"
-        except Exception:
+        except Exception as exc:
+            logger.error(f"Health check: database unreachable: {exc}")
             db = "error"
-            status_str = "degraded"
+            db_ok = False
 
-        # Redis
+        # Redis — non-critical.
         try:
             redis: Redis = app.state.redis
             pong = await redis.ping()
             redis_status = "ok" if pong else "error"
-        except Exception:
+            redis_ok = bool(pong)
+        except Exception as exc:
+            logger.warning(f"Health check: redis unavailable: {exc}")
             redis_status = "unavailable"
-            status_str = "degraded"
+            redis_ok = False
 
-        return {"status": status_str, "db": db, "redis": redis_status}
+        # LLM — non-critical, but the most common misconfiguration in prod.
+        key = settings.OPENROUTER_API_KEY
+        llm = "ok" if key and not key.startswith("{{") else "unconfigured"
+
+        if not db_ok:
+            status_str = "unhealthy"
+        elif not redis_ok or llm != "ok":
+            status_str = "degraded"
+        else:
+            status_str = "healthy"
+
+        return JSONResponse(
+            status_code=503 if status_str == "unhealthy" else 200,
+            content={
+                "status": status_str,
+                "db": db,
+                "redis": redis_status,
+                "llm": llm,
+                "env": settings.ENV,
+            },
+        )
 
     # Global exception handlers
     @app.exception_handler(StarletteHTTPException)

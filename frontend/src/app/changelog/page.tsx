@@ -5,7 +5,7 @@ export const metadata: Metadata = { title: "Changelog", description: "SentinelNe
 
 const releases = [
   { version: "2.5.0", date: "2026-08-11", title: "Production Readiness & Live AI Engine", type: "major", changes: [
-    { tag: "added", text: "Transitioned AI Agents to live Groq LLM streaming API (llama3-8b-8192)" },
+    { tag: "added", text: "Transitioned AI Agents to live OpenRouter LLM streaming API" },
     { tag: "improved", text: "Enforced backend Database integration for persistent Scans, Projects, and Findings" },
     { tag: "fixed", text: "Resolved strict Content Security Policy (CSP) blocking external assets" },
     { tag: "fixed", text: "Fixed React render crashes in TypingAnimation components" },

@@ -43,4 +43,4 @@ pytest-cov==6.0.0
 pytest-asyncio==0.24.0
 
 # AI integrations
-groq
+openai

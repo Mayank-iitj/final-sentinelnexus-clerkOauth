@@ -1,5 +1,8 @@
 import { NextRequest } from "next/server";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -16,36 +19,45 @@ export async function POST(req: NextRequest) {
       systemPrompt = "You are a Compliance and Governance AI expert. Provide guidance on SOC2, ISO27001, GDPR, and other regulatory frameworks.";
     }
 
-    const groqMessages = [
+    const chatMessages = [
       { role: "system", content: systemPrompt },
       ...messages.map((m: any) => ({ role: m.role, content: m.content }))
     ];
 
-    const apiKey = process.env.GROQ_API_KEY;
-    
-    if (!apiKey) {
-      throw new Error("GROQ_API_KEY environment variable is missing.");
+    const apiKey = process.env.OPENROUTER_API_KEY;
+
+    if (!apiKey || apiKey.startsWith("{{")) {
+      console.error("OPENROUTER_API_KEY is missing or an unresolved placeholder in this environment.");
+      return new Response("AI service is not configured (missing OPENROUTER_API_KEY).", { status: 503 });
     }
 
-    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${apiKey}`,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL || "https://sentinelnexus.mayankiitj.in",
+        "X-Title": "SentinelNexus Guard"
       },
       body: JSON.stringify({
-        model: "llama3-8b-8192", // Fast and capable for this use case
-        messages: groqMessages,
+        model: process.env.OPENROUTER_MODEL || "nvidia/nemotron-3-ultra-550b-a55b:free",
+        messages: chatMessages,
         stream: true,
         temperature: 0.2
       })
     });
 
     if (!response.ok) {
-      throw new Error(`Groq API error: ${response.statusText}`);
+      // OpenRouter actual cause (bad key, rate limit)
+      // in the body — statusText alone is useless for diagnosing production.
+      const detail = await response.text().catch(() => "");
+      console.error(`OpenRouter API error ${response.status}: ${detail}`);
+      return new Response(`OpenRouter API error ${response.status}: ${detail}`, {
+        status: response.status === 401 || response.status === 429 ? response.status : 502,
+      });
     }
 
-    // Transform Groq's SSE stream into a simple text stream for our frontend
+    // Transform OpenRouter's SSE stream into a simple text stream for our frontend
     const stream = new ReadableStream({
       async start(controller) {
         const reader = response.body?.getReader();

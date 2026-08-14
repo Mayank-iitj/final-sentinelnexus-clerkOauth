@@ -30,11 +30,11 @@ class RemediationRequest(BaseModel):
 @router.post("/chat", dependencies=[Depends(safe_rate_limiter(times=20, seconds=60))])
 async def chat_with_agent(request: ChatRequest):
     """
-    Chat endpoint powered by Groq. Handles different AI personas based on agent_type.
+    Chat endpoint powered by OpenRouter. Handles different AI personas based on agent_type.
     """
-    # Fail fast with 503 if the LLM service is not configured (e.g. missing GROQ_API_KEY)
+    # Fail fast with 503 if the LLM service is not configured (e.g. missing OPENROUTER_API_KEY)
     if not llm_service._available:
-        raise HTTPException(status_code=503, detail="AI service is not configured. Please set GROQ_API_KEY.")
+        raise HTTPException(status_code=503, detail="AI service is not configured. Please set OPENROUTER_API_KEY.")
 
     persona = None
     if request.agent_type == "compliance":

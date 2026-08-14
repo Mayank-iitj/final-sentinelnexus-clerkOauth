@@ -42,6 +42,7 @@ class Settings(BaseSettings):
         "https://www.sentinelnexus.mayankiitj.in",
         "https://sentinelnexus.vercel.app",
         "https://www.sentinelnexus.vercel.app",
+        "https://final-sentinelnexus-clerkoauth.vercel.app",
         "https://sentinelnexus.mayyanks.app",
         "https://www.sentinelnexus.mayyanks.app",
     ]
@@ -49,11 +50,13 @@ class Settings(BaseSettings):
     @property
     def parsed_allowed_origins(self) -> List[str]:
         origins = self._parse_list_var(self.ALLOWED_ORIGINS)
-        if self.is_production:
-            # Merge env-var list with hardcoded production origins (deduplicated)
-            merged = list(dict.fromkeys(origins + self._PRODUCTION_ORIGINS))
-            return merged
-        return origins
+        # Merge unconditionally. This list used to apply only when
+        # is_production was true — but the failure it guards against (a stale
+        # or missing dashboard env var) is exactly the case where ENV itself is
+        # unset, so the guard disabled the safety net precisely when it was
+        # needed. These are fixed public frontend origins; allowing them in
+        # development is harmless.
+        return list(dict.fromkeys(origins + self._PRODUCTION_ORIGINS))
 
     @property
     def parsed_allowed_hosts(self) -> List[str]:
@@ -88,7 +91,7 @@ class Settings(BaseSettings):
         return self.PAYU_BASE_URL
 
     # AI Agents
-    GROQ_API_KEY: str = ""
+    OPENROUTER_API_KEY: str = ""
 
     # Rate limiting
     RATE_LIMIT_ENABLED: bool = True

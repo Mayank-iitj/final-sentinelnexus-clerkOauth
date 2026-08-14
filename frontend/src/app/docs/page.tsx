@@ -26,12 +26,12 @@ const endpoints = [
     ],
   },
   {
-    category: "AI Agents (Groq LLM)",
+    category: "AI Agents (OpenRouter LLM)",
     items: [
       {
         method: "POST",
         path: "/ai-agents/chat",
-        desc: "Interact with Red Team, Blue Team, and Compliance AI Agents. Streams responses using the Groq API.",
+        desc: "Interact with Red Team, Blue Team, and Compliance AI Agents. Streams responses using the OpenRouter API.",
         payload: '{ "agent_type": "red_team", "messages": [...] }',
         auth: "Clerk JWT",
       },
