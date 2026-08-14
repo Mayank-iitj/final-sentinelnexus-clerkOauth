@@ -38,6 +38,19 @@ from pydantic import BaseModel
 class SimRequest(BaseModel):
     target: str
 
+from fastapi import BackgroundTasks
+from app.services.scanners.darkweb_scanner import scan_domain_darkweb
+from app.db.database import SessionLocal
+
+@router.post("/dark-web/scan")
+def trigger_darkweb_scan(
+    body: SimRequest,
+    background_tasks: BackgroundTasks,
+    user = Depends(get_current_active_user)
+):
+    background_tasks.add_task(scan_domain_darkweb, SessionLocal, user.id, body.target)
+    return {"status": "accepted", "message": f"Dark Web scan initiated for {body.target}"}
+
 @router.post("/simulate")
 def run_simulation(
     body: SimRequest,

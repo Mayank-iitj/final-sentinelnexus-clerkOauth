@@ -17,6 +17,7 @@ from app.api.v1.endpoints import (
     security,
     payments,
     ai_agents,
+    deepfake,
 )
 
 api_router = APIRouter(prefix="/api/v1")
@@ -35,3 +36,4 @@ api_router.include_router(trust.router)
 api_router.include_router(security.router)
 api_router.include_router(payments.router)
 api_router.include_router(ai_agents.router)
+api_router.include_router(deepfake.router)

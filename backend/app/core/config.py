@@ -92,6 +92,7 @@ class Settings(BaseSettings):
 
     # AI Agents
     OPENROUTER_API_KEY: str = ""
+    ALIENVAULT_OTX_API_KEY: str = ""
 
     # Rate limiting
     RATE_LIMIT_ENABLED: bool = True
