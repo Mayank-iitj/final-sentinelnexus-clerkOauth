@@ -1,22 +1,24 @@
-// Returns the base URL for the backend API.
-// 1️⃣ NEXT_PUBLIC_API_URL (e.g. "https://final-sentinelnexus-clerkoauth.onrender.com/api/v1")
-//    is the primary source of truth — always set this in production.
-// 2️⃣ In the browser without the env var we fall back to window.location.origin + "/api/v1".
-//    This works for same-origin local dev or custom proxy setups.
-// 3️⃣ In SSR without the env var we fall back to a relative "/api/v1" path.
+/**
+ * API base URL resolution.
+ *
+ * Architecture: ALL browser requests go through the Next.js API route proxy
+ * at /api/v1/* (same origin → zero CORS issues).  The proxy forwards
+ * server-to-server to the Render backend using the BACKEND_URL env var.
+ *
+ * This means NEXT_PUBLIC_API_URL is no longer needed for production — it is
+ * kept only for tools that call the backend directly (e.g. curl, Postman).
+ *
+ * Flow:
+ *   Browser → /api/v1/... (Vercel, same-origin) → BACKEND_URL/api/v1/... (Render)
+ */
+
 export const getApiBaseUrl = (): string => {
-  const envUrl = (process.env.NEXT_PUBLIC_API_URL ?? "").trim();
-  if (envUrl) {
-    // Normalise – strip trailing slash so concatenation is always clean.
-    return envUrl.replace(/\/+$/, "");
-  }
-  if (typeof window !== "undefined") {
-    return `${window.location.origin.replace(/\/+$/, "")}/api/v1`;
-  }
+  // In the browser (or SSR) we always hit the local Next.js proxy route.
+  // This is the ONLY correct value — it eliminates CORS permanently.
   return "/api/v1";
 };
 
-// Build a full endpoint URL; always prepends a leading slash to the path.
+// Build a full endpoint URL. Guarantees the path starts with a leading slash.
 export const buildApiUrl = (path: string): string => {
   const base = getApiBaseUrl();
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
