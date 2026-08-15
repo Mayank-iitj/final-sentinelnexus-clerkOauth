@@ -86,6 +86,8 @@ async function proxy(request: NextRequest) {
 }
 
 export const dynamic = "force-dynamic";
+// Node.js runtime: 60-second timeout (vs 25s edge) — needed for Render cold-starts.
+export const runtime = "nodejs";
 
 export const GET = proxy;
 export const POST = proxy;

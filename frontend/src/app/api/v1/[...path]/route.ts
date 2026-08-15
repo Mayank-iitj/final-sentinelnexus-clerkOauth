@@ -3,8 +3,9 @@ import { NextRequest } from "next/server";
 const PRODUCTION_BACKEND = "https://final-sentinelnexus-clerkoauth.onrender.com";
 
 /**
- * Resolve the backend origin, guarding against localhost/private addresses
- * leaking into production (which causes DNS_HOSTNAME_RESOLVED_PRIVATE on Vercel).
+ * Resolve the backend origin.
+ * Guards against localhost/private addresses leaking into production
+ * (which causes DNS_HOSTNAME_RESOLVED_PRIVATE errors on Vercel).
  */
 function resolveBackendOrigin(): string {
   const raw = (
@@ -13,15 +14,13 @@ function resolveBackendOrigin(): string {
     PRODUCTION_BACKEND
   ).replace(/\/+$/, "");
 
-  // If the URL points to localhost or a private address, and we're running
-  // in a deployed environment, fall back to the public backend URL.
   const isPrivate =
     raw.includes("localhost") ||
     raw.includes("127.0.0.1") ||
     raw.includes("0.0.0.0") ||
-    raw.match(/https?:\/\/10\.\d+\.\d+\.\d+/) !== null ||
-    raw.match(/https?:\/\/192\.168\.\d+\.\d+/) !== null ||
-    raw.match(/https?:\/\/172\.(1[6-9]|2\d|3[01])\.\d+\.\d+/) !== null;
+    /https?:\/\/10\.\d+\.\d+\.\d+/.test(raw) ||
+    /https?:\/\/192\.168\.\d+\.\d+/.test(raw) ||
+    /https?:\/\/172\.(1[6-9]|2\d|3[01])\.\d+\.\d+/.test(raw);
 
   if (isPrivate && process.env.VERCEL === "1") {
     console.warn(
@@ -36,7 +35,7 @@ function resolveBackendOrigin(): string {
 
 const BACKEND_ORIGIN = resolveBackendOrigin();
 
-const HOP_BY_HOP_HEADERS = new Set([
+const HOP_BY_HOP = new Set([
   "connection",
   "keep-alive",
   "proxy-authenticate",
@@ -47,71 +46,105 @@ const HOP_BY_HOP_HEADERS = new Set([
   "upgrade",
 ]);
 
-function buildBackendUrl(request: NextRequest, pathSegments: string[]) {
-  const path = pathSegments.length > 0 ? `/api/v1/${pathSegments.join("/")}` : "/api/v1";
-  return new URL(`${path}${request.nextUrl.search}`, BACKEND_ORIGIN);
+function errorResponse(detail: string, status = 502): Response {
+  return new Response(JSON.stringify({ detail }), {
+    status,
+    headers: { "Content-Type": "application/json" },
+  });
 }
 
-async function proxy(request: NextRequest, context: { params: { path?: string[] } }) {
-  const backendUrl = buildBackendUrl(request, context.params.path ?? []);
-  const headers = new Headers(request.headers);
-  headers.delete("host");
-  headers.delete("content-length");
+async function proxy(
+  request: NextRequest,
+  // Next.js 15: params is a Promise; Next.js 14: params is synchronous.
+  // We handle both by awaiting regardless.
+  context: { params: Promise<{ path?: string[] }> | { path?: string[] } }
+) {
+  let pathSegments: string[] = [];
+  try {
+    // Await in case Next.js 15 passes a Promise, no-op for Next.js 14.
+    const resolved = await Promise.resolve(context.params);
+    pathSegments = resolved?.path ?? [];
+  } catch {
+    // params resolution failed — proxy to root
+    pathSegments = [];
+  }
 
-  const init: RequestInit = {
+  const pathStr =
+    pathSegments.length > 0 ? `/api/v1/${pathSegments.join("/")}` : "/api/v1";
+  let backendUrl: URL;
+  try {
+    backendUrl = new URL(`${pathStr}${request.nextUrl.search}`, BACKEND_ORIGIN);
+  } catch {
+    return errorResponse("Invalid backend URL", 500);
+  }
+
+  // Forward safe headers only — drop host and content-length.
+  const forwardHeaders = new Headers();
+  request.headers.forEach((value, key) => {
+    const lower = key.toLowerCase();
+    if (lower === "host" || lower === "content-length" || HOP_BY_HOP.has(lower)) return;
+    forwardHeaders.set(key, value);
+  });
+
+  // Build fetch options.
+  // duplex:"half" is Node.js only — the nodejs runtime supports it.
+  const init: RequestInit & { duplex?: "half" } = {
     method: request.method,
-    headers,
+    headers: forwardHeaders,
     redirect: "manual",
     cache: "no-store",
   };
 
-  if (request.method !== "GET" && request.method !== "HEAD") {
-    init.body = request.body;
-    // The body stream is already consumed by fetch; keep duplex for Node runtimes.
-    (init as RequestInit & { duplex?: "half" }).duplex = "half";
+  const hasBody = request.method !== "GET" && request.method !== "HEAD";
+  if (hasBody) {
+    // Read the full body as ArrayBuffer — safe for both Node.js runtime
+    // (no duplex needed) and avoids streaming issues.
+    try {
+      init.body = await request.arrayBuffer();
+    } catch {
+      init.body = undefined;
+    }
   }
 
   try {
-    const backendResponse = await fetch(backendUrl, init);
-    const responseHeaders = new Headers();
+    const upstream = await fetch(backendUrl, init);
 
-    backendResponse.headers.forEach((value, key) => {
-      if (!HOP_BY_HOP_HEADERS.has(key.toLowerCase()) && key.toLowerCase() !== "set-cookie") {
-        responseHeaders.set(key, value);
-      }
+    // Copy safe response headers.
+    const responseHeaders = new Headers();
+    upstream.headers.forEach((value, key) => {
+      const lower = key.toLowerCase();
+      if (HOP_BY_HOP.has(lower) || lower === "set-cookie") return;
+      responseHeaders.set(key, value);
     });
 
-    const setCookies = (backendResponse.headers as Headers & { getSetCookie?: () => string[] }).getSetCookie?.();
-    if (setCookies?.length) {
-      for (const cookie of setCookies) responseHeaders.append("set-cookie", cookie);
-    } else {
-      const setCookie = backendResponse.headers.get("set-cookie");
-      if (setCookie) responseHeaders.append("set-cookie", setCookie);
-    }
+    // Preserve Set-Cookie (important for auth).
+    const rawSetCookie = upstream.headers.get("set-cookie");
+    if (rawSetCookie) responseHeaders.append("set-cookie", rawSetCookie);
 
-    return new Response(backendResponse.body, {
-      status: backendResponse.status,
-      statusText: backendResponse.statusText,
+    return new Response(upstream.body, {
+      status: upstream.status,
+      statusText: upstream.statusText,
       headers: responseHeaders,
     });
-  } catch (error: any) {
-    console.error(`[proxy] fetch error for ${backendUrl.toString()}:`, error.message || error);
-    return new Response(
-      JSON.stringify({ detail: "Backend service is currently unavailable. Please try again later." }),
-      {
-        status: 502,
-        headers: { "Content-Type": "application/json" },
-      }
+  } catch (err: any) {
+    console.error(
+      `[proxy] upstream fetch failed for ${backendUrl.toString()}:`,
+      err?.message ?? err
+    );
+    return errorResponse(
+      "The backend service is temporarily unavailable. Please try again in a few seconds."
     );
   }
 }
 
+// ── Runtime ────────────────────────────────────────────────────────────────────
+// Node.js runtime (NOT edge) because:
+//   1. 60-second function timeout vs 25s for edge — needed for Render cold-starts.
+//   2. Full Node.js API support (ArrayBuffer body reading, etc.).
+//   3. No streaming limitations from edge sandbox.
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-// Edge runtime enables true HTTP streaming — without this, Vercel's serverless
-// functions buffer the entire response body before forwarding, making SSE/streaming
-// appear as an empty response on the client.
-export const runtime = "edge";
-
+export const maxDuration = 60; // seconds — Vercel Pro/Hobby max
 
 export const GET = proxy;
 export const POST = proxy;
