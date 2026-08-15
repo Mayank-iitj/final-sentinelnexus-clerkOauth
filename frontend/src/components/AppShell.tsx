@@ -5,7 +5,8 @@ import { SimulationEngine } from './SimulationEngine';
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PropsWithChildren, useEffect, useState } from "react";
-import { useClerk } from "@clerk/nextjs";
+import { useClerk, useAuth } from "@clerk/nextjs";
+import { setClerkToken } from "../lib/api";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { getUnreadCount } from "../lib/api";
@@ -51,11 +52,27 @@ const navItems = [
 
 export function AppShell({ children }: PropsWithChildren) {
   const { signOut } = useClerk();
+  const { isSignedIn, getToken } = useAuth();
   const pathname = usePathname();
   const [unread, setUnread] = useState(0);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // Keep the Clerk JWT fresh for all downstream API calls.
   useEffect(() => {
+    if (!isSignedIn) return;
+    const refresh = async () => {
+      const token = await getToken();
+      setClerkToken(token);
+    };
+    refresh();
+    // Re-fetch the token every 55 seconds (tokens expire after 60s).
+    const id = setInterval(refresh, 55_000);
+    return () => clearInterval(id);
+  }, [isSignedIn, getToken]);
+
+  // Only poll notifications once the user is signed in (token is ready).
+  useEffect(() => {
+    if (!isSignedIn) return;
     let mounted = true;
     const fetchCount = async () => {
       try {
@@ -66,7 +83,7 @@ export function AppShell({ children }: PropsWithChildren) {
     fetchCount();
     const interval = setInterval(fetchCount, 30_000);
     return () => { mounted = false; clearInterval(interval); };
-  }, []);
+  }, [isSignedIn]);
 
   useEffect(() => { setMobileOpen(false); }, [pathname]);
 

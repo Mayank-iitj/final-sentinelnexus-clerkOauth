@@ -5,23 +5,41 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Fix file tracing root removed — Vercel handles this natively 
-  // when the Project Root is correctly set to 'frontend'.
   outputFileTracingRoot: __dirname,
   reactStrictMode: true,
   poweredByHeader: false,
-  // Skip type checks during production builds to avoid
-  // platform-specific CLI/flag issues during deployment
+  // Skip type checks during production builds
   typescript: {
     ignoreBuildErrors: true,
   },
   eslint: {
     ignoreDuringBuilds: true,
   },
-  // Image optimization domains (add any CDN domains here)
+  // Image optimization
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 60,
+  },
+
+  // ── API Proxy ──────────────────────────────────────────────────────────────
+  // When NEXT_PUBLIC_API_URL is set (production), the frontend makes direct
+  // cross-origin requests to the Render backend — rewrites are not used.
+  // When NEXT_PUBLIC_API_URL is NOT set (local dev), /api/v1/* requests are
+  // proxied to the local backend at http://localhost:8000 so there are no
+  // CORS issues during development.
+  async rewrites() {
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL
+      ? null // direct cross-origin in prod — no rewrite needed
+      : "http://localhost:8000";
+
+    if (!backendUrl) return [];
+
+    return [
+      {
+        source: "/api/v1/:path*",
+        destination: `${backendUrl}/api/v1/:path*`,
+      },
+    ];
   },
 
   async headers() {
@@ -35,7 +53,17 @@ const nextConfig = {
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
           { key: "X-DNS-Prefetch-Control", value: "on" },
           { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
-          { key: "Content-Security-Policy", value: "default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com https://*.clerk.accounts.dev https://clerk.mayankiitj.in https://*.clerk.mayankiitj.in https://*.clerk.com https://*.clerk.dev; style-src 'self' 'unsafe-inline' https://unpkg.com; img-src 'self' data: blob: https:; connect-src 'self' http://localhost:* ws://localhost:* https://*.clerk.accounts.dev https://sentinelnexus-backend.onrender.com https://final-sentinelnexus-clerkoauth.onrender.com https://clerk.mayankiitj.in https://*.clerk.mayankiitj.in https://*.clerk.com https://*.clerk.dev https://unpkg.com https://openrouter.ai https://clerk-telemetry.com; worker-src 'self' blob:;" }
+          {
+            key: "Content-Security-Policy",
+            value: [
+              "default-src 'self' https:;",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com https://*.clerk.accounts.dev https://clerk.mayankiitj.in https://*.clerk.mayankiitj.in https://*.clerk.com https://*.clerk.dev;",
+              "style-src 'self' 'unsafe-inline' https://unpkg.com;",
+              "img-src 'self' data: blob: https:;",
+              "connect-src 'self' http://localhost:* ws://localhost:* https://*.clerk.accounts.dev https://sentinelnexus-backend.onrender.com https://final-sentinelnexus-clerkoauth.onrender.com https://clerk.mayankiitj.in https://*.clerk.mayankiitj.in https://*.clerk.com https://*.clerk.dev https://unpkg.com https://openrouter.ai https://clerk-telemetry.com;",
+              "worker-src 'self' blob:;",
+            ].join(" "),
+          },
         ],
       },
     ];

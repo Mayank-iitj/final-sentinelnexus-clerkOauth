@@ -32,7 +32,7 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
     # CORS / hosts (Stored as string to prevent pydantic_settings JSONDecodeError)
-    ALLOWED_ORIGINS: str = Field(default="http://localhost:3000")
+    ALLOWED_ORIGINS: str = Field(default='["http://localhost:3000"]')
     ALLOWED_HOSTS: str = Field(default="*")
 
     # Hardcoded production origins — merged in as a safety net so CORS is never
