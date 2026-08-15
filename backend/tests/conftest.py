@@ -23,8 +23,12 @@ def _override_redis():
     return DummyRedis()
 
 
-# Access .state on the inner FastAPI app (since outer app is CORSMiddleware)
-app.app.state.redis = _override_redis()
+# Traverse middlewares to find the base FastAPI app
+base_app = app
+while not hasattr(base_app, "state") and hasattr(base_app, "app"):
+    base_app = base_app.app
+
+base_app.state.redis = _override_redis()
 
 
 def pytest_sessionstart(session):
