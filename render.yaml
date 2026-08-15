@@ -96,17 +96,12 @@ services:
     startCommand: cd frontend && npm run start
     healthCheckPath: /
     envVars:
+      # ⚠️  fromService+path is NOT valid Render syntax — use an explicit value.
+      # The backend is deployed at the URL below; update if the Render service name changes.
       - key: NEXT_PUBLIC_API_URL
-        fromService:
-          type: web
-          name: sentinelnexus-backend
-          property: url
-        path: /api/v1
+        value: "https://final-sentinelnexus-clerkoauth.onrender.com/api/v1"
       - key: BACKEND_URL
-        fromService:
-          type: web
-          name: sentinelnexus-backend
-          property: url
+        value: "https://final-sentinelnexus-clerkoauth.onrender.com"
       - key: NEXT_PUBLIC_SITE_URL
         value: https://sentinelnexus.mayankiitj.in
       - key: NODE_ENV
