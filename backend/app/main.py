@@ -407,14 +407,17 @@ class _AsgiErrorCatcher:
     """
 
     def __init__(self, asgi_app: Any) -> None:
-        self._app = asgi_app
+        self.app = asgi_app
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self.app, name)
 
     async def __call__(self, scope: Dict[str, Any], receive: Any, send: Any) -> None:
         if scope["type"] != "http":
-            await self._app(scope, receive, send)
+            await self.app(scope, receive, send)
             return
         try:
-            await self._app(scope, receive, send)
+            await self.app(scope, receive, send)
         except Exception as exc:  # noqa: BLE001
             logger.error(
                 f"[AsgiErrorCatcher] unhandled exception: "
