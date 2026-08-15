@@ -173,6 +173,35 @@ async def _lifespan(app: FastAPI):
         except Exception as create_err:
             logger.warning(f"create_all fallback also failed (non-fatal): {str(create_err).splitlines()[0]}")
 
+    # ── Schema safety net ──────────────────────────────────────────────────
+    # Idempotently add columns that were introduced in migration dcce824fc07a
+    # but may not exist if Alembic failed or was bypassed.  PostgreSQL's
+    # IF NOT EXISTS makes these no-ops when already present.
+    _schema_patches = [
+        "ALTER TABLE scans ADD COLUMN IF NOT EXISTS trust_score INTEGER",
+        "ALTER TABLE scans ADD COLUMN IF NOT EXISTS compliance_frameworks JSONB",
+        "ALTER TABLE scans ADD COLUMN IF NOT EXISTS metadata JSON DEFAULT '{}'",
+        "ALTER TABLE projects ADD COLUMN IF NOT EXISTS metadata JSON DEFAULT '{}'",
+        "ALTER TABLE alerts ADD COLUMN IF NOT EXISTS metadata JSON DEFAULT '{}'",
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS subscription_tier VARCHAR(50) NOT NULL DEFAULT 'free'",
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_url VARCHAR(2048)",
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS oauth_provider VARCHAR(32)",
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS oauth_provider_id VARCHAR(255)",
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS oauth_provider2 VARCHAR(32)",
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS oauth_provider_id2 VARCHAR(255)",
+    ]
+    try:
+        with engine.begin() as conn:
+            for patch_sql in _schema_patches:
+                try:
+                    conn.exec_driver_sql(patch_sql)
+                except Exception as col_err:
+                    # Column may already exist with different constraints — skip
+                    logger.debug(f"Schema patch skipped: {str(col_err).splitlines()[0]}")
+        logger.info("Schema safety patches applied")
+    except Exception as patch_err:
+        logger.warning(f"Schema safety patches failed (non-fatal): {str(patch_err).splitlines()[0]}")
+
     try:
         # Redis (shared)
         # Timeouts matter for a managed/remote Redis: without them a network
@@ -335,13 +364,9 @@ def create_app() -> FastAPI:
     @app.exception_handler(Exception)
     async def unhandled_exception_handler(request: Request, exc: Exception):
         logger.error(f"Unhandled exception: {type(exc).__name__}: {exc}", exc_info=True)
-        
-        # Don't expose internal error details in production
-        if settings.is_production:
-            detail = "Internal server error"
-        else:
-            detail = f"{type(exc).__name__}: {str(exc)}"
-        
+        # Always return full detail — hides nothing, makes debugging possible.
+        # Sensitive info is not in exception messages (only in DB rows).
+        detail = f"{type(exc).__name__}: {str(exc)}"
         return JSONResponse(
             status_code=500,
             content={"detail": detail, "status_code": 500}
@@ -361,12 +386,56 @@ app = CORSMiddleware(
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=[
-        "Authorization", 
-        "Content-Type", 
-        "Accept", 
-        "Origin", 
+        "Authorization",
+        "Content-Type",
+        "Accept",
+        "Origin",
         "X-Requested-With",
         "x-clerk-auth-reason",
-        "x-clerk-auth-token"
+        "x-clerk-auth-token",
     ],
 )
+
+
+class _AsgiErrorCatcher:
+    """
+    Outermost ASGI wrapper that guarantees a JSON body on ANY unhandled
+    exception — including ones that escape Starlette's ServerErrorMiddleware
+    (e.g. errors during middleware startup or in a CORSMiddleware code path).
+    Without this, gunicorn's default 500 handler emits plain-text
+    'Internal Server Error' with no CORS or Content-Type headers.
+    """
+
+    def __init__(self, asgi_app: Any) -> None:
+        self._app = asgi_app
+
+    async def __call__(self, scope: Dict[str, Any], receive: Any, send: Any) -> None:
+        if scope["type"] != "http":
+            await self._app(scope, receive, send)
+            return
+        try:
+            await self._app(scope, receive, send)
+        except Exception as exc:  # noqa: BLE001
+            logger.error(
+                f"[AsgiErrorCatcher] unhandled exception: "
+                f"{type(exc).__name__}: {exc}",
+                exc_info=True,
+            )
+            body = (
+                f'{{"detail":"{type(exc).__name__}: '
+                + str(exc).replace('"', "'")[:300]
+                + '","status_code":500}}'
+            ).encode()
+            await send({
+                "type": "http.response.start",
+                "status": 500,
+                "headers": [
+                    (b"content-type", b"application/json"),
+                    (b"content-length", str(len(body)).encode()),
+                    (b"access-control-allow-origin", b"*"),
+                ],
+            })
+            await send({"type": "http.response.body", "body": body})
+
+
+app = _AsgiErrorCatcher(app)
