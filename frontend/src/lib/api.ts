@@ -596,8 +596,27 @@ export const riskColor = (r: RiskLevel | string): string => {
 };
 
 // ── Deepfake ──────────────────────────────────────────────────────────────────
-export const scanDeepfake = (formData: FormData) =>
-  api<{ verdict: string, confidence_score: number, meta: any }>("/threats/deepfake/scan", { method: "POST", body: formData });
+export const scanDeepfake = async (formData: FormData) => {
+  const backendBase = process.env.NEXT_PUBLIC_API_URL || "https://final-sentinelnexus-clerkoauth.onrender.com/api/v1";
+  const token = getClerkToken();
+  const headers: Record<string, string> = {};
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+  
+  const res = await fetch(`${backendBase}/threats/deepfake/scan`, {
+    method: "POST",
+    headers,
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const detail = await res.text();
+    throw new Error(detail || `HTTP ${res.status}`);
+  }
+
+  return res.json() as Promise<{ verdict: string, confidence_score: number, meta: any }>;
+};
 
 // ── Dark Web ──────────────────────────────────────────────────────────────────
 export const getDarkWebMentions = () =>
