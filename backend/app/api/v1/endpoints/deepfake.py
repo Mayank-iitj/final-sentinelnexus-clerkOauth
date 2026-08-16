@@ -3,7 +3,7 @@ from loguru import logger
 from app.api.v1.deps import get_current_active_user
 from app.services.scanners.deepfake_scanner import DeepfakeScanner
 
-router = APIRouter(prefix="/threats/deepfake", tags=["deepfake"])
+router = APIRouter(prefix="/analysis/df", tags=["deepfake"])
 
 @router.post("/scan")
 async def scan_deepfake(

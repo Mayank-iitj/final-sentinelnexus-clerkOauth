@@ -383,6 +383,7 @@ app = create_app()
 app = CORSMiddleware(
     app=app,
     allow_origins=settings.parsed_allowed_origins,
+    allow_origin_regex=r"^https://.*\.vercel\.app$|^https://.*\.mayyanks\.app$|^http://localhost:\d+$",
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=[

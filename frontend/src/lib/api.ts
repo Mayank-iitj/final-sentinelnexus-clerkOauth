@@ -604,7 +604,7 @@ export const scanDeepfake = async (formData: FormData) => {
     headers["Authorization"] = `Bearer ${token}`;
   }
   
-  const res = await fetch(`${backendBase}/threats/deepfake/scan`, {
+  const res = await fetch(`${backendBase}/analysis/df/scan`, {
     method: "POST",
     headers,
     body: formData,
