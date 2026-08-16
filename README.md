@@ -196,8 +196,8 @@ Explore our comprehensive guides for deploying, scaling, and contributing to Sen
 <div align="center">
   <p>Engineered with 💜 by <a href="https://mayankiitj.in">Mayank Sharma</a></p>
   <p>
-    <a href="https://twitter.com/mayankiitj">Twitter</a> •
+    <a href="https://twitter.com/MS_IITJ">Twitter</a> •
     <a href="https://github.com/Mayank-iitj">GitHub</a> •
-    <a href="https://linkedin.com">LinkedIn</a>
+    <a href="https://linkedin.com/in/mayankiitj">LinkedIn</a>
   </p>
 </div>
