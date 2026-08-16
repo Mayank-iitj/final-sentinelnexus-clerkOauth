@@ -8,51 +8,12 @@ const DEFAULT_SPOTLIGHT_RADIUS = 300;
 const DEFAULT_GLOW_COLOR = '132, 0, 255';
 const MOBILE_BREAKPOINT = 768;
 
-interface CardData {
+export interface CardData {
   color: string;
   title: string;
   description: string;
   label: string;
 }
-
-const cardData: CardData[] = [
-  {
-    color: '#120F17',
-    title: 'Analytics',
-    description: 'Track user behavior',
-    label: 'Insights'
-  },
-  {
-    color: '#120F17',
-    title: 'Dashboard',
-    description: 'Centralized data view',
-    label: 'Overview'
-  },
-  {
-    color: '#120F17',
-    title: 'Collaboration',
-    description: 'Work together seamlessly',
-    label: 'Teamwork'
-  },
-  {
-    color: '#120F17',
-    title: 'Automation',
-    description: 'Streamline workflows',
-    label: 'Efficiency'
-  },
-  {
-    color: '#120F17',
-    title: 'Integration',
-    description: 'Connect favorite tools',
-    label: 'Connectivity'
-  },
-  {
-    color: '#120F17',
-    title: 'Security',
-    description: 'Enterprise-grade protection',
-    label: 'Protection'
-  }
-];
 
 const createParticleElement = (x: number, y: number, color = DEFAULT_GLOW_COLOR) => {
   const el = document.createElement('div');
@@ -504,6 +465,7 @@ const useMobileDetection = () => {
 };
 
 interface MagicBentoProps {
+  cards: CardData[];
   textAutoHide?: boolean;
   enableStars?: boolean;
   enableSpotlight?: boolean;
@@ -518,6 +480,7 @@ interface MagicBentoProps {
 }
 
 const MagicBento = ({
+  cards,
   textAutoHide = true,
   enableStars = true,
   enableSpotlight = true,
@@ -547,7 +510,7 @@ const MagicBento = ({
       )}
 
       <BentoCardGrid gridRef={gridRef}>
-        {cardData.map((card, index) => {
+        {cards.map((card, index) => {
           const baseClassName = `magic-bento-card ${textAutoHide ? 'magic-bento-card--text-autohide' : ''} ${enableBorderGlow ? 'magic-bento-card--border-glow' : ''}`;
           const cardProps = {
             className: baseClassName,

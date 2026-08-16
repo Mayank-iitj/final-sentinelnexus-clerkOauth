@@ -8,7 +8,7 @@ import BlurText from "../components/BlurText/BlurText";
 
 import { useUser } from "@clerk/nextjs";
 import Hyperspeed from "../components/Hyperspeed/Hyperspeed";
-import { OptionWheel, LogoLoop as LogoLoopOriginal, BorderGlow, ScrollVelocity, Plasma, PlasmaWave, StaggeredMenu as StaggeredMenuOriginal, PixelCard } from "../components";
+import { OptionWheel, LogoLoop as LogoLoopOriginal, BorderGlow, ScrollVelocity, Plasma, PlasmaWave, StaggeredMenu as StaggeredMenuOriginal, PixelCard, MagicBento } from "../components";
 
 const LogoLoop = LogoLoopOriginal as any;
 const StaggeredMenu = StaggeredMenuOriginal as any;
@@ -52,6 +52,45 @@ const marqueeItems = [
   "Model Governance", "Runtime Policy Enforcement", "Audit Trail Management",
   "Prompt Injection", "PII Detection", "SOC2 Evidence", "AI Act Mapping",
   "CVSS Scoring", "PDF Reports", "CWE Mapping", "SHA-256 Dedup",
+];
+
+const bentoCards = [
+  {
+    color: '#0a0a0a',
+    title: 'Risk Matrix',
+    description: 'Dynamic CVSS v3.1 5x5 Grid',
+    label: 'Visualization'
+  },
+  {
+    color: '#0a0a0a',
+    title: 'Zero-Day AI',
+    description: 'Predictive threat modeling engine',
+    label: 'Intelligence'
+  },
+  {
+    color: '#0a0a0a',
+    title: 'Compliance',
+    description: 'SOC2 & EU AI Act automation',
+    label: 'Governance'
+  },
+  {
+    color: '#0a0a0a',
+    title: 'Dark Web',
+    description: 'OSINT leak detection monitoring',
+    label: 'Intelligence'
+  },
+  {
+    color: '#0a0a0a',
+    title: 'LLM Firewall',
+    description: 'Block prompt injections live',
+    label: 'Security'
+  },
+  {
+    color: '#0a0a0a',
+    title: 'Red Team',
+    description: 'Autonomous penetration testing',
+    label: 'Simulation'
+  }
 ];
 
 const processSteps = [
@@ -498,6 +537,26 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── Capabilities Showcase (MagicBento) ─────────────────────────────────── */}
+      <section className="relative w-full bg-black py-24 overflow-hidden border-t border-white/[0.06]">
+        <Reveal className="mb-14 text-center px-4">
+          <div className="liquid-glass rounded-full px-4 py-1.5 text-xs font-medium text-white inline-block mb-4">Enterprise Features</div>
+          <h2 className="font-heading italic text-5xl sm:text-6xl text-white tracking-tight">AI Infrastructure Security</h2>
+          <p className="mt-4 text-white/70 font-body max-w-xl mx-auto">Automate your entire security posture from code commits to runtime LLM defense.</p>
+        </Reveal>
+        <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
+          <MagicBento 
+            cards={bentoCards}
+            enableSpotlight={true}
+            enableBorderGlow={true}
+            glowColor="132, 0, 255"
+            enableTilt={true}
+            enableMagnetism={true}
+            particleCount={15}
+          />
+        </div>
+      </section>
+
       {/* ── Visual Showcase (PixelCard) ─────────────────────────────────── */}
       <section className="relative w-full bg-black py-24 overflow-hidden border-t border-white/[0.06] flex flex-col items-center">
         <Reveal className="mb-14 text-center px-4">
@@ -505,19 +564,19 @@ export default function HomePage() {
           <h2 className="font-heading italic text-5xl sm:text-6xl text-white tracking-tight">Active Defense Vectors</h2>
         </Reveal>
         <div className="flex justify-center gap-8 flex-wrap w-full max-w-5xl">
-          <PixelCard variant="blue">
+          <PixelCard variant="blue" gap={10} speed={25} colors="#e0f2fe,#7dd3fc,#0ea5e9" noFocus={false}>
             <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 pointer-events-none">
               <h3 className="text-2xl font-bold text-white mb-2">Threat Detection</h3>
               <p className="text-sm text-gray-300">Identify anomalies in real-time.</p>
             </div>
           </PixelCard>
-          <PixelCard variant="pink">
+          <PixelCard variant="pink" gap={6} speed={80} colors="#fecdd3,#fda4af,#e11d48" noFocus={true}>
             <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 pointer-events-none">
               <h3 className="text-2xl font-bold text-white mb-2">Vulnerability Scan</h3>
               <p className="text-sm text-gray-300">Automated endpoint scanning.</p>
             </div>
           </PixelCard>
-          <PixelCard variant="yellow">
+          <PixelCard variant="yellow" gap={3} speed={20} colors="#fef08a,#fde047,#eab308" noFocus={false}>
             <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 pointer-events-none">
               <h3 className="text-2xl font-bold text-white mb-2">Compliance</h3>
               <p className="text-sm text-gray-300">Track and enforce standards.</p>
